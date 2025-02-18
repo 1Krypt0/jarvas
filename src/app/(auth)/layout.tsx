@@ -7,15 +7,16 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <main className="flex min-h-screen flex-col">
       <div className="flex w-full items-center justify-center border-b">
-        <div className="flex w-full max-w-[1280px] items-center gap-x-8 px-4 md:px-8">
+        <div className="flex w-full max-w-[1280px] items-center py-4 gap-x-8 px-4 md:px-8">
           <div className="md:flex-0 min-w-fit flex-1">
             <Link href="/" className="pointer flex items-center">
               <Image
+                priority
                 src="/jarvas.png"
                 alt="Logo"
-                width="150"
-                height="100"
-                className="mr-3"
+                width={150}
+                height={100}
+                style={{ width: "auto", height: "auto" }}
               />
             </Link>
           </div>

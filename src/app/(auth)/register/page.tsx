@@ -21,16 +21,23 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
+import { useState } from "react";
 
 export default function Login() {
-  const registerSchema = z.object({
-    name: z.string(),
-    email: z.string().email(),
-    password: z
-      .string()
-      .min(8, { message: "A password precisa de pelo menos 8 dígitos" }),
-    passwordConfirmation: z.string(),
-  });
+  const registerSchema = z
+    .object({
+      name: z.string(),
+      email: z.string().email(),
+      password: z
+        .string()
+        .min(8, { message: "A password precisa de pelo menos 8 dígitos" }),
+      passwordConfirmation: z.string(),
+    })
+    .refine((data) => data.password === data.passwordConfirmation, {
+      message: "As passwords têm de condizer",
+      path: ["passwordConfirmation"],
+    });
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -39,10 +46,30 @@ export default function Login() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof registerSchema>) => {
-    console.log(values.email);
-    console.log(values.password);
+  const onSubmit = async (values: z.infer<typeof registerSchema>) => {
+    if (values.password !== values.passwordConfirmation) {
+      // TODO: Display errors
+      return;
+    }
+    await authClient.signUp.email({
+      email: values.email,
+      password: values.password,
+      name: values.name,
+      callbackURL: "/app",
+      fetchOptions: {
+        onResponse: () => setLoading(false),
+        onRequest: () => setLoading(true),
+        onError: () => {
+          // TODO: Display errors
+        },
+        onSuccess: () => {
+          // TODO: Go to Stripe Checkout
+        },
+      },
+    });
   };
+
+  const [loading, setLoading] = useState(false);
 
   return (
     <div className="flex w-full items-center justify-center px-4">
@@ -162,7 +189,12 @@ export default function Login() {
                   )}
                 />
 
-                <Button type="submit" variant="outline" className="w-full">
+                <Button
+                  type="submit"
+                  variant="outline"
+                  className="w-full"
+                  disabled={loading}
+                >
                   Ir para Checkout
                 </Button>
                 <div className="text-center text-sm">

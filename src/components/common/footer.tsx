@@ -12,9 +12,9 @@ export function Footer() {
               <Image
                 src="/jarvas.png"
                 alt="Logo"
-                width="150"
-                height="100"
-                className="mr-3"
+                width={150}
+                height={100}
+                style={{ width: "auto", height: "auto" }}
               />
             </Link>
           </div>
