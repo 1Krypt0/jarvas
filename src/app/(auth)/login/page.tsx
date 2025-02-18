@@ -21,6 +21,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
+import { useState } from "react";
 
 export default function Login() {
   const loginSchema = z.object({
@@ -32,12 +34,28 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
+      password: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    console.log(values.email);
-    console.log(values.password);
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+    await authClient.signIn.email({
+      email: values.email,
+      password: values.password,
+      callbackURL: "/app",
+      fetchOptions: {
+        onResponse: () => setLoading(false),
+        onRequest: () => setLoading(true),
+        onError: () => {
+          // TODO: Display errors
+        },
+        onSuccess: () => {
+          // TODO: Check Stripe Status
+        },
+      },
+    });
   };
 
   return (
@@ -129,7 +147,12 @@ export default function Login() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" variant="outline" className="w-full">
+                <Button
+                  type="submit"
+                  variant="outline"
+                  className="w-full"
+                  disabled={loading}
+                >
                   Login
                 </Button>
                 <div className="text-center text-sm">

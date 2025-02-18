@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 export default function Login() {
   const registerSchema = z
@@ -42,9 +43,14 @@ export default function Login() {
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
+      name: "",
       email: "",
+      password: "",
+      passwordConfirmation: "",
     },
   });
+
+  const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
     if (values.password !== values.passwordConfirmation) {
@@ -55,7 +61,6 @@ export default function Login() {
       email: values.email,
       password: values.password,
       name: values.name,
-      callbackURL: "/app",
       fetchOptions: {
         onResponse: () => setLoading(false),
         onRequest: () => setLoading(true),
@@ -64,6 +69,7 @@ export default function Login() {
         },
         onSuccess: () => {
           // TODO: Go to Stripe Checkout
+          router.push("/app");
         },
       },
     });
