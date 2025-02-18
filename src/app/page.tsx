@@ -1,101 +1,166 @@
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { Button } from "@/components/ui/button";
+import Typography from "@/components/ui/typography";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { ArrowUpDown, Check, Info, Timer, Workflow } from "lucide-react";
+import Link from "next/link";
+import { Feature } from "./feature";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import Image from "next/image";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const features = [
+    {
+      icon: Timer,
+      headline: "Obtenha Respostas",
+      description:
+        "Navegue na sua documentação mais rapidamente e encontre a informação que procura instantaneamente. Torne minutos de procura em segundos de espera",
+    },
+    {
+      icon: ArrowUpDown,
+      headline: "Nativamente Português",
+      description:
+        "Use um sistema capaz de interpretar documentos em português de Portugal e responder de forma apropriada, citando todas as fontes que usou",
+    },
+    {
+      icon: Workflow,
+      headline: "Use intuitivamente",
+      description:
+        "O Jarvas faz uso de uma interface já comum a todos os que já interagiram com Inteligência Artificial. Não vai ter problemas em adaptar-se a esta nova ferramenta.",
+    },
+  ];
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+  return (
+    <main className="flex min-h-screen flex-col">
+      <Header />
+
+      <div className="mx-auto flex h-full w-full max-w-[1280px] flex-1 justify-center">
+        <main className="flex h-full w-full flex-col items-center gap-24 px-8 pb-24 pt-11 text-center md:gap-36 md:px-32 md:py-36">
+          <section id="features" className="flex flex-col items-center gap-12 ">
+            <Typography
+              className="max-w-2xl !text-5xl md:!text-8xl"
+              variant="h1"
+            >
+              Um assistente pessoal para a sua empresa
+            </Typography>
+            <Typography
+              className="max-w-2xl !text-xl md:!text-2xl"
+              variant="h5"
+            >
+              Simplifique o acesso à informação importante para si com o poder
+              da Inteligência Artifical.
+            </Typography>
+            <Button size="lg" asChild>
+              <Link href="/register">Aderir Agora</Link>
+            </Button>
+            {/* TODO: Add video explaining how to use it */}
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              alt="Jarvas hero"
+              src="/hero1.png"
+              width={1024}
+              height={632}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </section>
+
+          <section className="flex flex-col items-center gap-12">
+            <Typography className="max-w-2xl" variant="h1">
+              Tudo o que precisa, sem esforço adicional
+            </Typography>
+            <div className="flex flex-col gap-8 lg:flex-row">
+              {features.map((feature, idx) => {
+                return (
+                  <Feature
+                    icon={<feature.icon className="size-6" />}
+                    headline={feature.headline}
+                    description={feature.description}
+                    key={idx}
+                  />
+                );
+              })}
+            </div>
+          </section>
+
+          <section
+            id="pricing"
+            className="flex min-w-full flex-col items-center gap-8"
           >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            <Typography className="max-w-2xl" variant="h1">
+              Preço simples e direto
+            </Typography>
+
+            <Card className="w-72">
+              <CardHeader className="text-start">
+                <div className="text-center">
+                  <span className="text-5xl font-bold">49€</span>
+                  <span className="text-gray-500 dark:text-gray-400">/mês</span>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="mt-6 space-y-3">
+                  <li className="flex items-center justify-between">
+                    <span className="flex items-center">
+                      <Check className="mr-2 h-4 w-4 text-primary" />
+                      10 Documentos
+                    </span>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info className="h-4 w-4 text-gray-400" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Documentos adicionais: 0.10€ cada</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span className="flex items-center">
+                      <Check className="mr-2 h-4 w-4 text-primary" />
+                      100 Mensagens
+                    </span>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info className="h-4 w-4 text-gray-400" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Mensagens adicionais: 0.05€ cada</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="mr-2 h-4 w-4 text-primary" />
+                    Apoio 24/7
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="mr-2 h-4 w-4 text-primary" />
+                    Atualizações regulares
+                  </li>
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button className="w-full">
+                  <Link href="/register">Começar Agora</Link>
+                </Button>
+              </CardFooter>
+            </Card>
+          </section>
+        </main>
+      </div>
+
+      <Footer />
+    </main>
   );
 }
