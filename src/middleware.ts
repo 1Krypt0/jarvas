@@ -12,5 +12,5 @@ export const middleware = async (request: NextRequest) => {
 };
 
 export const config = {
-  matcher: ["/app"],
+  matcher: ["/app/:path*"],
 };

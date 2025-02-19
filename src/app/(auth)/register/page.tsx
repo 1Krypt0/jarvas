@@ -23,9 +23,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { loadStripe } from "@stripe/stripe-js";
 
-export default function Login() {
+export default function Register() {
   const registerSchema = z
     .object({
       name: z.string(),
@@ -50,13 +50,7 @@ export default function Login() {
     },
   });
 
-  const router = useRouter();
-
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
-    if (values.password !== values.passwordConfirmation) {
-      // TODO: Display errors
-      return;
-    }
     await authClient.signUp.email({
       email: values.email,
       password: values.password,
@@ -64,12 +58,22 @@ export default function Login() {
       fetchOptions: {
         onResponse: () => setLoading(false),
         onRequest: () => setLoading(true),
-        onError: () => {
-          // TODO: Display errors
+        onError: (ctx) => {
+          // TODO: Display errors on a toast
+          console.log("Errors found");
+          console.log(ctx);
         },
-        onSuccess: () => {
-          // TODO: Go to Stripe Checkout
-          router.push("/app");
+        onSuccess: async () => {
+          const res = await fetch("/api/stripe");
+          if (!res.ok) {
+            return;
+          }
+          const { id } = await res.json();
+
+          const stripe = await loadStripe(
+            process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "",
+          );
+          await stripe?.redirectToCheckout({ sessionId: id });
         },
       },
     });

@@ -1,0 +1,64 @@
+import Stripe from "stripe";
+import { redis } from "./kv";
+
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
+  apiVersion: "2025-01-27.acacia",
+});
+
+export const stripeRedirectURL =
+  process.env.STRIPE_REDIRECT_BASE_URL ?? "http://localhost:3000";
+
+export type StripeSubCache =
+  | {
+      subscriptionId: string | null;
+      status: Stripe.Subscription.Status;
+      priceId: string | null;
+      currentPeriodStart: number | null;
+      currentPeriodEnd: number | null;
+      cancelAtPeriodEnd: boolean;
+      paymentMethod: {
+        brand: string | null; // e.g., "visa", "mastercard"
+        last4: string | null; // e.g., "4242"
+      } | null;
+    }
+  | {
+      status: "none";
+    };
+
+export const syncStripeDataToKV = async (customerId: string) => {
+  const subscriptions = await stripe.subscriptions.list({
+    customer: customerId,
+    limit: 1,
+    status: "all",
+    expand: ["data.default_payment_method"],
+  });
+
+  if (subscriptions.data.length === 0) {
+    const subData = { status: "none" };
+    await redis.set(`stripe:customer:${customerId}`, subData);
+    return subData;
+  }
+
+  const subscription = subscriptions.data[0];
+
+  const subData: StripeSubCache = {
+    subscriptionId: subscription.id,
+    status: subscription.status,
+    priceId: subscription.items.data[0].price.id,
+    currentPeriodEnd: subscription.current_period_end,
+    currentPeriodStart: subscription.current_period_start,
+    cancelAtPeriodEnd: subscription.cancel_at_period_end,
+    paymentMethod:
+      subscription.default_payment_method &&
+      typeof subscription.default_payment_method !== "string"
+        ? {
+            brand: subscription.default_payment_method.card?.brand ?? null,
+            last4: subscription.default_payment_method.card?.last4 ?? null,
+          }
+        : null,
+  };
+
+  // Store the data in your KV
+  await redis.set(`stripe:customer:${customerId}`, subData);
+  return subData;
+};
