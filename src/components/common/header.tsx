@@ -19,30 +19,30 @@ export function Header() {
         </div>
         <div className="hidden items-center md:flex">
           <div className="flex items-center gap-x-8">
-            <a href="/login">
+            <Link href="/login">
               <p className="text-minor text-sm leading-7 md:text-sm">Entrar</p>
-            </a>
-            <a href="/register">
-              <Button size="sm">
+            </Link>
+            <Button size="sm">
+              <Link href="/register">
                 <p className="text-minor text-sm leading-7 md:text-sm">
                   Registar
                 </p>
-              </Button>
-            </a>
+              </Link>
+            </Button>
           </div>
         </div>
         <div className="flex items-center gap-x-4 md:hidden">
           <div className="flex items-center gap-x-8">
-            <a href="/login">
+            <Link href="/login">
               <p className="text-minor text-sm leading-7 md:text-sm">Entrar</p>
-            </a>
-            <a href="/register">
-              <Button size="sm">
+            </Link>
+            <Button size="sm">
+              <Link href="/register">
                 <p className="text-minor text-sm leading-7 md:text-sm">
                   Registar
                 </p>
-              </Button>
-            </a>
+              </Link>
+            </Button>
           </div>
         </div>
       </div>

@@ -20,14 +20,14 @@ export function Footer() {
           </div>
         </div>
         <div className="flex max-w-fit items-center gap-x-4">
-          <a href="/terms-of-service" className="pointer block w-fit flex-1">
+          <Link href="/terms-of-service" className="pointer block w-fit flex-1">
             <Typography variant="p" className="w-max">
               Termos de Serviço
             </Typography>
-          </a>
-          <a href="/privacy-policy" className="pointer block w-fit">
+          </Link>
+          <Link href="/privacy-policy" className="pointer block w-fit">
             <Typography variant="p">Política de Privacidade</Typography>
-          </a>
+          </Link>
           <a className="pointer block w-fit" href="mailto:founders@jarvas.com">
             <Typography variant="p">Contacte-nos</Typography>
           </a>
