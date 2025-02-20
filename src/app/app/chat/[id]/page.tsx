@@ -1,6 +1,7 @@
 import Chat from "@/components/chat";
+import { getMessages } from "@/db/queries";
 import { auth } from "@/lib/auth";
-import { Message } from "ai";
+import { convertToUIMessages } from "@/lib/utils";
 import { headers } from "next/headers";
 import { unauthorized } from "next/navigation";
 
@@ -16,8 +17,9 @@ export default async function ChatPage(props: {
   }
   const { id } = await props.params;
 
-  // TODO: Fetch from DB
-  const initialMessages: Message[] = [];
+  const initialMessages = await getMessages(id);
 
-  return <Chat id={id} initialMessages={initialMessages} />;
+  return (
+    <Chat id={id} initialMessages={convertToUIMessages(initialMessages)} />
+  );
 }

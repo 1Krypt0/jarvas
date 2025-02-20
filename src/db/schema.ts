@@ -1,4 +1,13 @@
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  json,
+  text,
+  timestamp,
+  boolean,
+  varchar,
+  vector,
+  index,
+} from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -49,3 +58,62 @@ export const verification = pgTable("verification", {
   createdAt: timestamp("created_at"),
   updatedAt: timestamp("updated_at"),
 });
+
+export const chat = pgTable("chat", {
+  id: text("id").primaryKey(),
+  title: text("title").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+});
+
+export const message = pgTable("message", {
+  id: text("id").primaryKey(),
+  content: json("content").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  role: varchar("role").notNull(),
+  conversationId: text("conversation_id").references(() => chat.id, {
+    onDelete: "cascade",
+    onUpdate: "cascade",
+  }),
+});
+
+export type Message = typeof message.$inferSelect;
+
+export const file = pgTable("file", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  content: text("content").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+});
+
+export const chunk = pgTable(
+  "chunk",
+  {
+    id: text("id").primaryKey(),
+    content: text("content").notNull(),
+    embedding: vector("embedding", { dimensions: 1536 }),
+    documentId: text("document_id").references(() => file.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  },
+  (table) => [
+    index("embedding_index").using(
+      "hnsw",
+      table.embedding.op("vector_cosine_ops"),
+    ),
+  ],
+);

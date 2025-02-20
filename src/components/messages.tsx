@@ -19,6 +19,9 @@ export default function Messages({
     chatRequestOptions?: ChatRequestOptions,
   ) => Promise<string | null | undefined>;
 }) {
+  console.log("Messages are");
+  console.log(messages);
+
   return (
     <div className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4">
       {messages.length === 0 && (

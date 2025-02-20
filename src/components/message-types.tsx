@@ -1,17 +1,18 @@
 import { ChatRequestOptions, Message } from "ai";
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { SparklesIcon } from "lucide-react";
 import { Markdown } from "./markdown";
 import cx from "classnames";
+import { MessageReasoning } from "./message-reasoning";
+import { PreviewAttachment } from "./preview-attachment";
 
 export const PreviewMessage = ({
-  chatId,
+  // chatId,
   message,
   isLoading,
-  setMessages,
-  reload,
+  // setMessages,
+  // reload,
 }: {
   chatId: string;
   message: Message;
@@ -41,23 +42,23 @@ export const PreviewMessage = ({
           )}
 
           <div className="flex flex-col gap-4 w-full">
-            {/* {message.experimental_attachments && ( */}
-            {/*   <div className="flex flex-row justify-end gap-2"> */}
-            {/*     {message.experimental_attachments.map((attachment) => ( */}
-            {/*       <PreviewAttachment */}
-            {/*         key={attachment.url} */}
-            {/*         attachment={attachment} */}
-            {/*       /> */}
-            {/*     ))} */}
-            {/*   </div> */}
-            {/* )} */}
+            {message.experimental_attachments && (
+              <div className="flex flex-row justify-end gap-2">
+                {message.experimental_attachments.map((attachment) => (
+                  <PreviewAttachment
+                    key={attachment.url}
+                    attachment={attachment}
+                  />
+                ))}
+              </div>
+            )}
 
-            {/* {message.reasoning && ( */}
-            {/*   <MessageReasoning */}
-            {/*     isLoading={isLoading} */}
-            {/*     reasoning={message.reasoning} */}
-            {/*   /> */}
-            {/* )} */}
+            {message.reasoning && (
+              <MessageReasoning
+                isLoading={isLoading}
+                reasoning={message.reasoning}
+              />
+            )}
 
             {(message.content || message.reasoning) && (
               <div className="flex flex-row gap-2 items-start">
