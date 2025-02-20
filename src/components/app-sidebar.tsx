@@ -10,11 +10,12 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Command } from "lucide-react";
-import Link from "next/link";
 import { NavConversations } from "./nav-conversations";
 import { NavDocuments } from "./nav-documents";
 import { NavSecondary } from "./nav-secondary";
 import { NavUser } from "./nav-user";
+import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 export interface Document {
   id: string;
@@ -42,13 +43,21 @@ export const AppSidebar = ({
     avatar: "/shadcn.jpg",
   };
 
+  const router = useRouter();
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link href="/app">
+              <Button
+                onClick={() => {
+                  router.push("/app");
+                  router.refresh();
+                }}
+                variant="ghost"
+              >
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <Command className="size-4" />
                 </div>
@@ -58,7 +67,7 @@ export const AppSidebar = ({
                     Start a new conversation
                   </span>
                 </div>
-              </Link>
+              </Button>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

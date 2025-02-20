@@ -1,10 +1,12 @@
 import Chat from "@/components/chat";
 import { auth } from "@/lib/auth";
+import { Message } from "ai";
 import { headers } from "next/headers";
 import { unauthorized } from "next/navigation";
-import { v4 as uuid } from "uuid";
 
-export default async function AppPage() {
+export default async function ChatPage(props: {
+  params: Promise<{ id: string }>;
+}) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -12,8 +14,10 @@ export default async function AppPage() {
   if (!session) {
     unauthorized();
   }
+  const { id } = await props.params;
 
-  const id = uuid();
+  // TODO: Fetch from DB
+  const initialMessages: Message[] = [];
 
-  return <Chat id={id} initialMessages={[]} />;
+  return <Chat id={id} initialMessages={initialMessages} />;
 }
