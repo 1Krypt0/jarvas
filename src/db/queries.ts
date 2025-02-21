@@ -7,7 +7,11 @@ export const getMessages = async (chatId: string) => {
 };
 
 export const getChats = async (userId: string) => {
-  return await db.select().from(chat).where(eq(chat.userId, userId));
+  return await db
+    .select()
+    .from(chat)
+    .where(eq(chat.userId, userId))
+    .orderBy(chat.createdAt);
 };
 
 export const getChatById = async (chatId: string) => {
@@ -28,4 +32,12 @@ export const saveChat = async (id: string, title: string, userId: string) => {
 
 export const saveMessages = async (messages: Message[]) => {
   await db.insert(message).values(messages);
+};
+
+export const deleteChat = async (chatId: string) => {
+  await db.delete(chat).where(eq(chat.id, chatId));
+};
+
+export const updateChatName = async (chatId: string, newName: string) => {
+  await db.update(chat).set({ title: newName }).where(eq(chat.id, chatId));
 };

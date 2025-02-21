@@ -1,14 +1,27 @@
 "use client";
 import { Ellipsis, MessageSquareText } from "lucide-react";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
+import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "./ui/sidebar";
 import { Chat } from "@/db/schema";
 import ChatLink from "./chat-link";
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 export const NavConversations = ({
   conversations,
@@ -17,34 +30,86 @@ export const NavConversations = ({
 }) => {
   const clippingLimit = 5;
 
-  return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>
-        <MessageSquareText className="mr-2 size-4" />
-        Conversations
-      </SidebarGroupLabel>
+  const router = useRouter();
+  const { id } = useParams();
 
-      <SidebarMenu>
-        {conversations.length === 0 ? (
-          <SidebarMenuItem>
-            <p className="h-8 pl-2 text-sm">Conversations will appear here</p>
-          </SidebarMenuItem>
-        ) : (
-          <>
-            {conversations.slice(0, clippingLimit).map((item) => {
-              return <ChatLink item={item} key={item.id} />;
-            })}
-            {conversations.length > clippingLimit && (
-              <SidebarMenuItem>
-                <SidebarMenuButton className="text-sidebar-foreground/70">
-                  <Ellipsis />
-                  <span>More</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            )}
-          </>
-        )}
-      </SidebarMenu>
-    </SidebarGroup>
+  const [deleteId, setDeleteId] = useState("");
+  const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const { setOpenMobile } = useSidebar();
+
+  const handleDelete = async () => {
+    const res = await fetch(`/api/chat?id=${deleteId}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) {
+      console.error("Error deleting chat");
+    }
+
+    setDeleteDialogOpen(false);
+
+    if (deleteId === id) {
+      router.push("/");
+    }
+
+    router.refresh();
+  };
+
+  return (
+    <>
+      <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+        <SidebarGroupLabel>
+          <MessageSquareText className="mr-2 size-4" />
+          Conversations
+        </SidebarGroupLabel>
+
+        <SidebarMenu>
+          {conversations.length === 0 ? (
+            <SidebarMenuItem>
+              <p className="h-8 pl-2 text-sm">Conversations will appear here</p>
+            </SidebarMenuItem>
+          ) : (
+            <>
+              {conversations.slice(0, clippingLimit).map((chat) => (
+                <ChatLink
+                  chat={chat}
+                  key={chat.id}
+                  isActive={chat.id === id}
+                  onDelete={() => {
+                    setDeleteId(chat.id);
+                    setDeleteDialogOpen(true);
+                  }}
+                  setOpenMobile={setOpenMobile}
+                />
+              ))}
+              {conversations.length > clippingLimit && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton className="text-sidebar-foreground/70">
+                    <Ellipsis />
+                    <span>More</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
+            </>
+          )}
+        </SidebarMenu>
+      </SidebarGroup>
+
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="sm:max-w-[425px]">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };

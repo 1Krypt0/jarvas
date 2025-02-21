@@ -1,4 +1,10 @@
-import { getChatById, saveChat, saveMessages } from "@/db/queries";
+import {
+  deleteChat,
+  getChatById,
+  saveChat,
+  saveMessages,
+  updateChatName,
+} from "@/db/queries";
 import { auth } from "@/lib/auth";
 import {
   getMostRecentUserMessage,
@@ -74,4 +80,59 @@ export async function POST(req: Request) {
   return result.toDataStreamResponse({
     sendReasoning: true,
   });
+}
+
+export async function PATCH(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const chatId = searchParams.get("id");
+  const { newName } = await req.json();
+
+  if (!chatId) {
+    return new Response("No chat found with that id", { status: 400 });
+  }
+
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session || !session.user || !session.user.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const chat = await getChatById(chatId);
+
+  if (chat && chat.userId !== session.user.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  await updateChatName(chatId, newName);
+
+  return new Response("Chat name updated", { status: 200 });
+}
+
+export async function DELETE(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const chatId = searchParams.get("id");
+
+  if (!chatId) {
+    return new Response("No chat found with that id", { status: 400 });
+  }
+
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session || !session.user || !session.user.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const chat = await getChatById(chatId);
+
+  if (chat && chat.userId !== session.user.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  await deleteChat(chatId);
+
+  return new Response("Chat deleted", { status: 200 });
 }
