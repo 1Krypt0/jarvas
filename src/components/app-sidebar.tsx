@@ -26,17 +26,17 @@ export interface Document {
 export const AppSidebar = ({
   conversations,
   documents,
+  user,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   conversations: Chat[];
   documents: Document[];
-}) => {
-  const user = {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/shadcn.jpg",
+  user: {
+    id: string;
+    email: string;
+    name: string;
   };
-
+}) => {
   const router = useRouter();
 
   return (

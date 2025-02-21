@@ -6,7 +6,7 @@ import * as schema from "@/db/schema";
 import { createAuthMiddleware } from "better-auth/plugins";
 import { APIError } from "better-auth/api";
 import { redis } from "./kv";
-import { StripeSubCache } from "./stripe";
+import { stripe, StripeSubCache } from "./stripe";
 import { eq } from "drizzle-orm";
 
 const stripePlugin = () => {
@@ -80,5 +80,41 @@ export const auth = betterAuth({
   plugins: [nextCookies(), stripePlugin()],
   emailAndPassword: {
     enabled: true,
+  },
+  user: {
+    deleteUser: {
+      enabled: true,
+      beforeDelete: async (user) => {
+        const stripeCustomerId = (await redis.get(
+          `stripe:user:${user.id}`,
+        )) as string;
+
+        const stripeStatus = (await redis.get(
+          `stripe:customer:${stripeCustomerId}`,
+        )) as StripeSubCache;
+
+        if (stripeStatus.status === "none") {
+          throw new APIError("BAD_REQUEST", {
+            message: "Subscription was already none",
+          });
+        }
+
+        const subId = stripeStatus.subscriptionId;
+
+        if (!subId) {
+          throw new APIError("BAD_REQUEST", {
+            message: "Subscription status malformed in Database",
+          });
+        }
+
+        const res = await stripe.subscriptions.cancel(subId);
+
+        if (res.status !== "canceled") {
+          throw new APIError("BAD_REQUEST", {
+            message: "Subscription was not cancelled",
+          });
+        }
+      },
+    },
   },
 });

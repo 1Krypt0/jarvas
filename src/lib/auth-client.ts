@@ -18,3 +18,5 @@ export const registerSchema = z
     message: "As passwords têm de condizer",
     path: ["passwordConfirmation"],
   });
+
+export type Session = typeof authClient.$Infer.Session;

@@ -19,15 +19,17 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
     return unauthorized();
   }
 
-  const userId = session?.user.id;
-
-  const conversations = await getChats(userId);
+  const conversations = await getChats(session.user.id);
 
   const documents: Document[] = [{ id: "abc", name: "Test" }];
 
   return (
     <SidebarProvider>
-      <AppSidebar documents={documents} conversations={conversations} />
+      <AppSidebar
+        documents={documents}
+        conversations={conversations}
+        user={session.user}
+      />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">
