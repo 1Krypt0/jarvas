@@ -16,16 +16,11 @@ import { NavSecondary } from "./nav-secondary";
 import { NavUser } from "./nav-user";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
+import { Chat } from "@/db/schema";
 
 export interface Document {
   id: string;
   name: string;
-}
-
-export interface Conversation {
-  id: string;
-  title: string;
-  createdAt: string;
 }
 
 export const AppSidebar = ({
@@ -33,10 +28,9 @@ export const AppSidebar = ({
   documents,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
-  conversations: Conversation[];
+  conversations: Chat[];
   documents: Document[];
 }) => {
-  "use client";
   const user = {
     name: "shadcn",
     email: "m@example.com",

@@ -71,12 +71,14 @@ export const chat = pgTable("chat", {
     }),
 });
 
+export type Chat = typeof chat.$inferSelect;
+
 export const message = pgTable("message", {
   id: text("id").primaryKey(),
   content: json("content").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   role: varchar("role").notNull(),
-  conversationId: text("conversation_id").references(() => chat.id, {
+  chatId: text("chat_id").references(() => chat.id, {
     onDelete: "cascade",
     onUpdate: "cascade",
   }),

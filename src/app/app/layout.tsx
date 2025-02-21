@@ -1,16 +1,30 @@
-import { AppSidebar, Conversation, Document } from "@/components/app-sidebar";
+import { AppSidebar, Document } from "@/components/app-sidebar";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { getChats } from "@/db/queries";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { unauthorized } from "next/navigation";
 import { ReactNode } from "react";
 
-export default function AppLayout({ children }: { children: ReactNode }) {
+export default async function AppLayout({ children }: { children: ReactNode }) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    return unauthorized();
+  }
+
+  const userId = session?.user.id;
+
+  const conversations = await getChats(userId);
+
   const documents: Document[] = [{ id: "abc", name: "Test" }];
-  const conversations: Conversation[] = [
-    { id: "abc", title: "Test", createdAt: "Today" },
-  ];
+
   return (
     <SidebarProvider>
       <AppSidebar documents={documents} conversations={conversations} />

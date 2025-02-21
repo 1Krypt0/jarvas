@@ -7,14 +7,16 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "./ui/sidebar";
-import { Conversation } from "./app-sidebar";
+import { Chat } from "@/db/schema";
+import ChatLink from "./chat-link";
 
 export const NavConversations = ({
   conversations,
 }: {
-  conversations: Conversation[];
+  conversations: Chat[];
 }) => {
   const clippingLimit = 5;
+
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>
@@ -30,8 +32,7 @@ export const NavConversations = ({
         ) : (
           <>
             {conversations.slice(0, clippingLimit).map((item) => {
-              <p>{item.title}</p>;
-              // <ChatLink /* {item} {changeChatNameForm} */ />
+              return <ChatLink item={item} key={item.id} />;
             })}
             {conversations.length > clippingLimit && (
               <SidebarMenuItem>
