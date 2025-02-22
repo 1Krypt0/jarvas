@@ -16,12 +16,7 @@ import { NavSecondary } from "./nav-secondary";
 import { NavUser } from "./nav-user";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import { Chat } from "@/db/schema";
-
-export interface Document {
-  id: string;
-  name: string;
-}
+import { Chat, Document } from "@/db/schema";
 
 export const AppSidebar = ({
   conversations,

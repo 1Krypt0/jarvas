@@ -98,6 +98,8 @@ export const file = pgTable("file", {
     }),
 });
 
+export type Document = typeof file.$inferSelect;
+
 export const chunk = pgTable(
   "chunk",
   {

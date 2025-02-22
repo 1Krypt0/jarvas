@@ -42,6 +42,19 @@ export const updateChatName = async (chatId: string, newName: string) => {
   await db.update(chat).set({ title: newName }).where(eq(chat.id, chatId));
 };
 
+export const getDocuments = async (userId: string) => {
+  return await db.select().from(file).where(eq(file.userId, userId));
+};
+
+export const getDocumentById = async (docId: string) => {
+  const res = await db.select().from(file).where(eq(file.id, docId));
+
+  if (res.length === 0) {
+    return null;
+  }
+  return res[0];
+};
+
 export const saveFile = async (
   id: string,
   name: string,
@@ -53,4 +66,12 @@ export const saveFile = async (
 
 export const saveChunks = async (chunks: Chunk[]) => {
   await db.insert(chunk).values(chunks);
+};
+
+export const updateFileName = async (fileId: string, newName: string) => {
+  await db.update(file).set({ name: newName }).where(eq(file.id, fileId));
+};
+
+export const deleteFile = async (fileId: string) => {
+  await db.delete(file).where(eq(file.id, fileId));
 };

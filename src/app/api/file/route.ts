@@ -3,7 +3,13 @@ import { headers } from "next/headers";
 import { v4 as uuid } from "uuid";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { saveChunks, saveFile } from "@/db/queries";
+import {
+  saveChunks,
+  saveFile,
+  getDocumentById,
+  updateFileName,
+  deleteFile,
+} from "@/db/queries";
 import { embedDocuments } from "@/lib/openai";
 import { Chunk } from "@/db/schema";
 import { trackSpending } from "@/lib/stripe";
@@ -76,3 +82,58 @@ const uploadFile = async (file: File, userId: string) => {
 
   await trackSpending(userId, "jarvas_file_uploads", "1");
 };
+
+export async function PATCH(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const fileId = searchParams.get("id");
+  const { newName } = await req.json();
+
+  if (!fileId) {
+    return new Response("No chat found with that id", { status: 400 });
+  }
+
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session || !session.user || !session.user.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const file = await getDocumentById(fileId);
+
+  if (file && file.userId !== session.user.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  await updateFileName(fileId, newName);
+
+  return new Response("Chat name updated", { status: 200 });
+}
+
+export async function DELETE(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const fileId = searchParams.get("id");
+
+  if (!fileId) {
+    return new Response("No chat found with that id", { status: 400 });
+  }
+
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session || !session.user || !session.user.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const file = await getDocumentById(fileId);
+
+  if (file && file.userId !== session.user.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  await deleteFile(fileId);
+
+  return new Response("Chat deleted", { status: 200 });
+}

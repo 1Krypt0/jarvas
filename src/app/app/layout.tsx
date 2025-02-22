@@ -1,10 +1,10 @@
-import { AppSidebar, Document } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { getChats } from "@/db/queries";
+import { getChats, getDocuments } from "@/db/queries";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { unauthorized } from "next/navigation";
@@ -21,7 +21,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
 
   const conversations = await getChats(session.user.id);
 
-  const documents: Document[] = [{ id: "abc", name: "Test" }];
+  const documents = await getDocuments(session.user.id);
 
   return (
     <SidebarProvider>
