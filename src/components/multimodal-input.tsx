@@ -12,9 +12,30 @@ import { useWindowSize, useLocalStorage } from "usehooks-ts";
 import { Textarea } from "./ui/textarea";
 import cx from "classnames";
 import { Button } from "./ui/button";
-import { ArrowUpIcon, LoaderIcon, PaperclipIcon } from "lucide-react";
+import { ArrowUpIcon, Loader2, LoaderIcon, PaperclipIcon } from "lucide-react";
 import { sanitizeUIMessages } from "@/lib/utils";
 import Image from "next/image";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "./ui/form";
+import { useForm } from "react-hook-form";
+import { Input } from "./ui/input";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 
 export default function MultimodalInput({
   chatId,
@@ -288,24 +309,97 @@ function PreviewAttachment({
 }
 
 function AttachmentsButton({
-  fileInputRef,
   isLoading,
 }: {
   fileInputRef: React.RefObject<HTMLInputElement | null>;
   isLoading: boolean;
 }) {
+  const router = useRouter();
+
+  const fileUploadSchema = z.object({
+    files: z.instanceof(FileList, { message: "Carregue um ficheiro aqui" }),
+  });
+
+  const form = useForm<z.infer<typeof fileUploadSchema>>({
+    resolver: zodResolver(fileUploadSchema),
+  });
+  const fileRef = form.register("files");
+
+  const onSubmit = async (values: z.infer<typeof fileUploadSchema>) => {
+    setLoading(true);
+
+    const formData = new FormData();
+
+    for (let i = 0; i < values.files.length; i++) {
+      formData.append("files", values.files[i]);
+    }
+
+    const res = await fetch("/api/file", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!res.ok) {
+      // TODO: Show error
+      console.error("Error uploading form");
+    }
+
+    router.refresh();
+    setLoading(false);
+    setIsOpen(false);
+  };
+
+  const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <Button
-      className="rounded-md rounded-bl-lg p-[7px] h-fit dark:border-zinc-700 hover:dark:bg-zinc-900 hover:bg-zinc-200"
-      onClick={(event) => {
-        event.preventDefault();
-        fileInputRef.current?.click();
-      }}
-      disabled={isLoading}
-      variant="ghost"
-    >
-      <PaperclipIcon size={14} />
-    </Button>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button
+          className="rounded-md rounded-bl-lg p-[7px] h-fit hover:dark:bg-primary hover:dark:text-accent "
+          variant="ghost"
+          disabled={isLoading}
+        >
+          <PaperclipIcon size={14} />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Upload Files</DialogTitle>
+        </DialogHeader>
+        <DialogDescription>
+          Submit your Files here. Click Upload when you are done.
+        </DialogDescription>
+
+        <Form {...form}>
+          <form
+            className="grid gap-4 py-4"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
+            <FormField
+              name="files"
+              control={form.control}
+              render={() => (
+                <FormItem>
+                  <FormLabel>Ficheiros</FormLabel>
+                  <FormControl>
+                    <Input type="file" required multiple {...fileRef} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" disabled={loading}>
+              {loading ? (
+                <Loader2 size={15} className="animate-spin" />
+              ) : (
+                "Upload Files"
+              )}
+            </Button>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }
 

@@ -104,6 +104,7 @@ export const chunk = pgTable(
     id: text("id").primaryKey(),
     content: text("content").notNull(),
     embedding: vector("embedding", { dimensions: 1536 }),
+    metadata: json("metadata").notNull(),
     documentId: text("document_id").references(() => file.id, {
       onDelete: "cascade",
       onUpdate: "cascade",
@@ -119,3 +120,5 @@ export const chunk = pgTable(
     ),
   ],
 );
+
+export type Chunk = typeof chunk.$inferSelect;

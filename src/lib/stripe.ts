@@ -60,5 +60,24 @@ export const syncStripeDataToKV = async (customerId: string) => {
 
   // Store the data in your KV
   await redis.set(`stripe:customer:${customerId}`, subData);
+
   return subData;
+};
+
+export const trackSpending = async (
+  userId: string,
+  eventName: string,
+  value: string,
+) => {
+  const stripeCustomerId = (await redis.get(`stripe:user:${userId}`)) as string;
+
+  if (stripeCustomerId) {
+    await stripe.billing.meterEvents.create({
+      event_name: eventName,
+      payload: {
+        value,
+        stripe_customer_id: stripeCustomerId,
+      },
+    });
+  }
 };
