@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import { auth } from "@/lib/auth";
 import { redis } from "@/lib/kv";
 import { stripe, stripeRedirectURL, syncStripeDataToKV } from "@/lib/stripe";
@@ -36,14 +37,14 @@ export async function GET() {
     customer: stripeCustomerId,
     line_items: [
       {
-        price: process.env.STRIPE_JARVAS_SUBSCRIPTION_ID,
+        price: env.STRIPE_JARVAS_SUBSCRIPTION_ID,
         quantity: 1,
       },
       {
-        price: process.env.STRIPE_FILES_SUBSCRIPTION_ID,
+        price: env.STRIPE_FILES_SUBSCRIPTION_ID,
       },
       {
-        price: process.env.STRIPE_CHAT_SUBSCRIPTION_ID,
+        price: env.STRIPE_CHAT_SUBSCRIPTION_ID,
       },
     ],
     mode: "subscription",

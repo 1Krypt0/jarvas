@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
+import { env } from "@/env";
 
 export default function Register() {
   const registerSchema = z
@@ -71,7 +72,7 @@ export default function Register() {
           const { id } = await res.json();
 
           const stripe = await loadStripe(
-            process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "",
+            env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
           );
           await stripe?.redirectToCheckout({ sessionId: id });
         },

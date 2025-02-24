@@ -1,12 +1,12 @@
 import Stripe from "stripe";
 import { redis } from "./kv";
+import { env } from "@/env";
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
+export const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
   apiVersion: "2025-01-27.acacia",
 });
 
-export const stripeRedirectURL =
-  process.env.STRIPE_REDIRECT_BASE_URL ?? "http://localhost:3000";
+export const stripeRedirectURL = env.STRIPE_REDIRECT_BASE_URL;
 
 export type StripeSubCache =
   | {
