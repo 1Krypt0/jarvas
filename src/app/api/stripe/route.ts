@@ -49,7 +49,7 @@ export async function GET() {
     ],
     mode: "subscription",
     success_url: `${stripeRedirectURL}/checkout`,
-    cancel_url: `${stripeRedirectURL}/register`,
+    cancel_url: `${stripeRedirectURL}/cancel`,
   });
 
   if (!checkout.id) {

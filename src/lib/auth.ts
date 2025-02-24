@@ -95,6 +95,12 @@ export const auth = betterAuth({
           `stripe:customer:${stripeCustomerId}`,
         )) as StripeSubCache;
 
+        // NOTE: If its not found, the user has not passed through checkout
+        if (!stripeStatus) {
+          await redis.del(`stripe:user:${user.id}`);
+          return;
+        }
+
         if (stripeStatus.status === "none") {
           throw new APIError("BAD_REQUEST", {
             message: "Subscription was already none",
@@ -116,6 +122,11 @@ export const auth = betterAuth({
             message: "Subscription was not cancelled",
           });
         }
+
+        await redis.del(
+          `stripe:user:${user.id}`,
+          `stripe:customer:${stripeCustomerId}`,
+        );
       },
     },
   },

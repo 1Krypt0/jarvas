@@ -57,7 +57,6 @@ export default function Register() {
       password: values.password,
       name: values.name,
       fetchOptions: {
-        onResponse: () => setLoading(false),
         onRequest: () => setLoading(true),
         onError: (ctx) => {
           // TODO: Display errors on a toast
@@ -74,6 +73,7 @@ export default function Register() {
           const stripe = await loadStripe(
             env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
           );
+          setLoading(false);
           await stripe?.redirectToCheckout({ sessionId: id });
         },
       },
