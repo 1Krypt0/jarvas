@@ -8,6 +8,7 @@ import { APIError } from "better-auth/api";
 import { redis } from "./kv";
 import { stripe, StripeSubCache } from "./stripe";
 import { eq } from "drizzle-orm";
+import { env } from "@/env";
 
 const stripePlugin = () => {
   return {
@@ -73,6 +74,7 @@ const stripePlugin = () => {
 };
 
 export const auth = betterAuth({
+  trustedOrigins: [env.NEXT_PUBLIC_BETTER_AUTH_URL],
   database: drizzleAdapter(db, {
     provider: "pg",
     schema,

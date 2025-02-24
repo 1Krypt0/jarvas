@@ -5,7 +5,6 @@ export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
     BETTER_AUTH_SECRET: z.string().min(1),
-    BETTER_AUTH_URL: z.string().url(),
     STRIPE_SECRET_KEY: z.string().min(1),
     STRIPE_JARVAS_SUBSCRIPTION_ID: z.string().min(1),
     STRIPE_FILES_SUBSCRIPTION_ID: z.string().min(1),
@@ -18,9 +17,11 @@ export const env = createEnv({
   },
   client: {
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1),
+    NEXT_PUBLIC_BETTER_AUTH_URL: z.string().url(),
   },
   experimental__runtimeEnv: {
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_BETTER_AUTH_URL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
   },
 });
