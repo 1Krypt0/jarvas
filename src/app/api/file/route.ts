@@ -58,7 +58,9 @@ const uploadFile = async (file: File, userId: string) => {
 
   const chunks = await splitter.splitDocuments(doc);
 
-  const embeddings = await embedDocuments(chunks);
+  const embeddings = await embedDocuments(
+    chunks.map((chunk) => chunk.pageContent),
+  );
 
   const vectors: Chunk[] = [];
   for (let i = 0; i < chunks.length; i++) {

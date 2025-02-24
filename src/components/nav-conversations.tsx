@@ -1,5 +1,5 @@
 "use client";
-import { Ellipsis, MessageSquareText } from "lucide-react";
+import { MessageSquareText, Minus, Plus } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,7 +28,12 @@ export const NavConversations = ({
 }: {
   conversations: Chat[];
 }) => {
+  const [showAll, setShowAll] = useState(false);
+
   const clippingLimit = 5;
+  const displayedItems = showAll
+    ? conversations
+    : conversations.slice(0, clippingLimit);
 
   const router = useRouter();
   const { id } = useParams();
@@ -71,7 +76,7 @@ export const NavConversations = ({
             </SidebarMenuItem>
           ) : (
             <>
-              {conversations.slice(0, clippingLimit).map((chat) => (
+              {displayedItems.map((chat) => (
                 <ChatLink
                   chat={chat}
                   key={chat.id}
@@ -85,9 +90,21 @@ export const NavConversations = ({
               ))}
               {conversations.length > clippingLimit && (
                 <SidebarMenuItem>
-                  <SidebarMenuButton className="text-sidebar-foreground/70">
-                    <Ellipsis />
-                    <span>More</span>
+                  <SidebarMenuButton
+                    className="text-sidebar-foreground/70"
+                    onClick={() => setShowAll(!showAll)}
+                  >
+                    {showAll ? (
+                      <>
+                        <Minus />
+                        <span>Show less</span>
+                      </>
+                    ) : (
+                      <>
+                        <Plus />
+                        <span>Show More</span>
+                      </>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}

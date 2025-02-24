@@ -6,15 +6,17 @@ import {
   updateChatName,
 } from "@/db/queries";
 import { auth } from "@/lib/auth";
+import { findRelevantContent } from "@/lib/rag";
 import { trackSpending } from "@/lib/stripe";
 import {
   getMostRecentUserMessage,
   sanitizeResponseMessages,
 } from "@/lib/utils";
 import { openai } from "@ai-sdk/openai";
-import { Message, smoothStream, streamText } from "ai";
+import { Message, smoothStream, streamText, tool } from "ai";
 import { headers } from "next/headers";
 import { v4 as uuid } from "uuid";
+import { z } from "zod";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -49,9 +51,24 @@ export async function POST(req: Request) {
   const result = streamText({
     model: openai("gpt-4o-mini"),
     messages,
-    system: "Your name is Jarvas, and you are an AI assistant for Atomic Labs.",
+    maxSteps: 3,
+    system: `Your name is Jarvas, and you are an AI assistant for Atomic Labs. 
+    Check your knowledge base if it is necessary to answer the question.
+    Only respond to questions using information from tool calls. Always cite your sources.
+    If no relevant information is found in the tool calls,
+    tell the user that you could not find any relevant information for his question`,
     experimental_transform: smoothStream({ chunking: "word" }),
     experimental_generateMessageId: uuid,
+    tools: {
+      getInformation: tool({
+        description:
+          "Gather information from your knowledge base to answer questions",
+        parameters: z.object({
+          query: z.string().describe("The users query"),
+        }),
+        execute: async ({ query }) => findRelevantContent(query),
+      }),
+    },
 
     onFinish: async ({ response, reasoning }) => {
       try {

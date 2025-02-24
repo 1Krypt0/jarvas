@@ -1,6 +1,6 @@
 "use client";
 
-import { Ellipsis, FileText } from "lucide-react";
+import { FileText, Minus, Plus } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,7 +25,12 @@ import { useState } from "react";
 import FileLink from "./file-link";
 
 export const NavDocuments = ({ documents }: { documents: Document[] }) => {
+  const [showAll, setShowAll] = useState(false);
+
   const clippingLimit = 5;
+  const displayedItems = showAll
+    ? documents
+    : documents.slice(0, clippingLimit);
 
   const router = useRouter();
 
@@ -62,7 +67,7 @@ export const NavDocuments = ({ documents }: { documents: Document[] }) => {
             </SidebarMenuItem>
           ) : (
             <>
-              {documents.slice(0, clippingLimit).map((file) => (
+              {displayedItems.map((file) => (
                 <FileLink
                   file={file}
                   key={file.id}
@@ -73,11 +78,24 @@ export const NavDocuments = ({ documents }: { documents: Document[] }) => {
                   setOpenMobile={setOpenMobile}
                 />
               ))}
+
               {documents.length > clippingLimit && (
                 <SidebarMenuItem>
-                  <SidebarMenuButton className="text-sidebar-foreground/70">
-                    <Ellipsis />
-                    <span>More</span>
+                  <SidebarMenuButton
+                    className="text-sidebar-foreground/70"
+                    onClick={() => setShowAll(!showAll)}
+                  >
+                    {showAll ? (
+                      <>
+                        <Minus />
+                        <span>Show less</span>
+                      </>
+                    ) : (
+                      <>
+                        <Plus />
+                        <span>Show More</span>
+                      </>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}

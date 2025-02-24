@@ -14,9 +14,8 @@ import { NavConversations } from "./nav-conversations";
 import { NavDocuments } from "./nav-documents";
 import { NavSecondary } from "./nav-secondary";
 import { NavUser } from "./nav-user";
-import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
 import { Chat, Document } from "@/db/schema";
+import Link from "next/link";
 
 export const AppSidebar = ({
   conversations,
@@ -32,21 +31,13 @@ export const AppSidebar = ({
     name: string;
   };
 }) => {
-  const router = useRouter();
-
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Button
-                onClick={() => {
-                  router.push("/app");
-                  router.refresh();
-                }}
-                variant="ghost"
-              >
+              <Link href="/app">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <Command className="size-4" />
                 </div>
@@ -56,7 +47,7 @@ export const AppSidebar = ({
                     Start a new conversation
                   </span>
                 </div>
-              </Button>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
