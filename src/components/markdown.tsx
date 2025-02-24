@@ -8,6 +8,7 @@ const components: Partial<Components> = {
   // @ts-expect-error Type parameters are incompatible but its fine
   code: CodeBlock,
   pre: ({ children }) => <>{children}</>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ol: ({ node, children, ...props }) => {
     return (
       <ol className="list-decimal list-outside ml-4" {...props}>
@@ -15,6 +16,7 @@ const components: Partial<Components> = {
       </ol>
     );
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   li: ({ node, children, ...props }) => {
     return (
       <li className="py-1" {...props}>
@@ -22,6 +24,7 @@ const components: Partial<Components> = {
       </li>
     );
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ul: ({ node, children, ...props }) => {
     return (
       <ul className="list-decimal list-outside ml-4" {...props}>
@@ -29,6 +32,7 @@ const components: Partial<Components> = {
       </ul>
     );
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   strong: ({ node, children, ...props }) => {
     return (
       <span className="font-semibold" {...props}>
@@ -36,6 +40,7 @@ const components: Partial<Components> = {
       </span>
     );
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   a: ({ node, children, ...props }) => {
     return (
       // @ts-expect-error link will never be undefined
@@ -49,6 +54,7 @@ const components: Partial<Components> = {
       </Link>
     );
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   h1: ({ node, children, ...props }) => {
     return (
       <h1 className="text-3xl font-semibold mt-6 mb-2" {...props}>
@@ -56,6 +62,7 @@ const components: Partial<Components> = {
       </h1>
     );
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   h2: ({ node, children, ...props }) => {
     return (
       <h2 className="text-2xl font-semibold mt-6 mb-2" {...props}>
@@ -63,6 +70,7 @@ const components: Partial<Components> = {
       </h2>
     );
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   h3: ({ node, children, ...props }) => {
     return (
       <h3 className="text-xl font-semibold mt-6 mb-2" {...props}>
@@ -70,6 +78,7 @@ const components: Partial<Components> = {
       </h3>
     );
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   h4: ({ node, children, ...props }) => {
     return (
       <h4 className="text-lg font-semibold mt-6 mb-2" {...props}>
@@ -77,6 +86,7 @@ const components: Partial<Components> = {
       </h4>
     );
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   h5: ({ node, children, ...props }) => {
     return (
       <h5 className="text-base font-semibold mt-6 mb-2" {...props}>
@@ -84,6 +94,7 @@ const components: Partial<Components> = {
       </h5>
     );
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   h6: ({ node, children, ...props }) => {
     return (
       <h6 className="text-sm font-semibold mt-6 mb-2" {...props}>

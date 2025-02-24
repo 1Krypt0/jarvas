@@ -10,6 +10,7 @@ interface CodeBlockProps {
 }
 
 export function CodeBlock({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   node,
   inline,
   className,
