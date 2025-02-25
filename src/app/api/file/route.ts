@@ -12,7 +12,7 @@ import {
 } from "@/db/queries";
 import { embedDocuments } from "@/lib/openai";
 import { Chunk } from "@/db/schema";
-import { trackSpending } from "@/lib/stripe";
+import { hasUserPaid, trackSpending } from "@/lib/stripe";
 
 export async function POST(req: Request) {
   const session = await auth.api.getSession({
@@ -20,6 +20,12 @@ export async function POST(req: Request) {
   });
 
   if (!session || !session.user || !session.user.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const hasPaid = await hasUserPaid(session.user.id);
+
+  if (!hasPaid) {
     return new Response("Unauthorized", { status: 401 });
   }
 
@@ -91,7 +97,7 @@ export async function PATCH(req: Request) {
   const { newName } = await req.json();
 
   if (!fileId) {
-    return new Response("No chat found with that id", { status: 400 });
+    return new Response("No file found with that id", { status: 400 });
   }
 
   const session = await auth.api.getSession({
@@ -108,9 +114,15 @@ export async function PATCH(req: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
+  const hasPaid = await hasUserPaid(session.user.id);
+
+  if (!hasPaid) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
   await updateFileName(fileId, newName);
 
-  return new Response("Chat name updated", { status: 200 });
+  return new Response("File name updated", { status: 200 });
 }
 
 export async function DELETE(req: Request) {
@@ -118,7 +130,7 @@ export async function DELETE(req: Request) {
   const fileId = searchParams.get("id");
 
   if (!fileId) {
-    return new Response("No chat found with that id", { status: 400 });
+    return new Response("No file found with that id", { status: 400 });
   }
 
   const session = await auth.api.getSession({
@@ -135,7 +147,13 @@ export async function DELETE(req: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
+  const hasPaid = await hasUserPaid(session.user.id);
+
+  if (!hasPaid) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
   await deleteFile(fileId);
 
-  return new Response("Chat deleted", { status: 200 });
+  return new Response("File deleted", { status: 200 });
 }

@@ -7,7 +7,7 @@ import {
 } from "@/db/queries";
 import { auth } from "@/lib/auth";
 import { findRelevantContent } from "@/lib/rag";
-import { trackSpending } from "@/lib/stripe";
+import { hasUserPaid, trackSpending } from "@/lib/stripe";
 import {
   getMostRecentUserMessage,
   sanitizeResponseMessages,
@@ -30,6 +30,12 @@ export async function POST(req: Request) {
   });
 
   if (!session || !session.user || !session.user.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const hasPaid = await hasUserPaid(session.user.id);
+
+  if (!hasPaid) {
     return new Response("Unauthorized", { status: 401 });
   }
 
@@ -124,6 +130,12 @@ export async function PATCH(req: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
+  const hasPaid = await hasUserPaid(session.user.id);
+
+  if (!hasPaid) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
   await updateChatName(chatId, newName);
 
   return new Response("Chat name updated", { status: 200 });
@@ -148,6 +160,12 @@ export async function DELETE(req: Request) {
   const chat = await getChatById(chatId);
 
   if (chat && chat.userId !== session.user.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const hasPaid = await hasUserPaid(session.user.id);
+
+  if (!hasPaid) {
     return new Response("Unauthorized", { status: 401 });
   }
 
