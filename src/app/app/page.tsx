@@ -29,5 +29,5 @@ export default async function AppPage() {
     );
   }
 
-  return <Chat id={id} hasPaid={hasPaid} initialMessages={[]} />;
+  return <Chat id={id} initialMessages={[]} />;
 }

@@ -317,7 +317,7 @@ function AttachmentsButton({
   const router = useRouter();
 
   const fileUploadSchema = z.object({
-    files: z.instanceof(FileList, { message: "Carregue um ficheiro aqui" }),
+    files: z.unknown({ message: "Carregue um ficheiro aqui" }),
   });
 
   const form = useForm<z.infer<typeof fileUploadSchema>>({
@@ -327,11 +327,12 @@ function AttachmentsButton({
 
   const onSubmit = async (values: z.infer<typeof fileUploadSchema>) => {
     setLoading(true);
+    const files = values.files as FileList;
 
     const formData = new FormData();
 
-    for (let i = 0; i < values.files.length; i++) {
-      formData.append("files", values.files[i]);
+    for (let i = 0; i < files.length; i++) {
+      formData.append("files", files[i]);
     }
 
     const res = await fetch("/api/file", {

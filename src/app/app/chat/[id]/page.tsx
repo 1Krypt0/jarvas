@@ -35,10 +35,6 @@ export default async function ChatPage(props: {
   const initialMessages = await getMessages(id);
 
   return (
-    <Chat
-      id={id}
-      initialMessages={convertToUIMessages(initialMessages)}
-      hasPaid={hasPaid}
-    />
+    <Chat id={id} initialMessages={convertToUIMessages(initialMessages)} />
   );
 }
