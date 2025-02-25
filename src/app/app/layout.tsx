@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/sidebar";
 import { getChats, getDocuments } from "@/db/queries";
 import { auth } from "@/lib/auth";
+import { hasUserPaid } from "@/lib/stripe";
 import { headers } from "next/headers";
 import { unauthorized } from "next/navigation";
 import { ReactNode } from "react";
@@ -19,6 +20,8 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
     return unauthorized();
   }
 
+  const hasPaid = await hasUserPaid(session.user.id);
+
   const conversations = await getChats(session.user.id);
 
   const documents = await getDocuments(session.user.id);
@@ -29,6 +32,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
         documents={documents}
         conversations={conversations}
         user={session.user}
+        hasPaid={hasPaid}
       />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">

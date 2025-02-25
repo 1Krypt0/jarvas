@@ -21,6 +21,7 @@ export const AppSidebar = ({
   conversations,
   documents,
   user,
+  hasPaid,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   conversations: Chat[];
@@ -30,13 +31,14 @@ export const AppSidebar = ({
     email: string;
     name: string;
   };
+  hasPaid: boolean;
 }) => {
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
+            <SidebarMenuButton size="lg" asChild disabled={hasPaid}>
               <Link href="/app">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <Command className="size-4" />
@@ -58,7 +60,7 @@ export const AppSidebar = ({
         <NavSecondary />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser user={user} hasPaid={hasPaid} />
       </SidebarFooter>
     </Sidebar>
   );
