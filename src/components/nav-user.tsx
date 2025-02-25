@@ -20,18 +20,34 @@ import {
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { loadStripe } from "@stripe/stripe-js";
+import { env } from "@/env";
 
 export function NavUser({
   user,
+  hasPaid,
 }: {
   user: {
     id: string;
     name: string;
     email: string;
   };
+  hasPaid: boolean;
 }) {
   const { isMobile } = useSidebar();
   const router = useRouter();
+
+  const handleBilling = async () => {
+    const res = await fetch("/api/stripe");
+    if (!res.ok) {
+      // TODO: Show error
+      return;
+    }
+    const { id } = await res.json();
+
+    const stripe = await loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+    await stripe?.redirectToCheckout({ sessionId: id });
+  };
 
   return (
     <SidebarMenu>
@@ -84,14 +100,27 @@ export function NavUser({
                 Account
               </DropdownMenuItem>
               <DropdownMenuItem
-                onSelect={() =>
-                  router.push(
-                    "https://billing.stripe.com/p/login/test_6oEaGV2yKd0o14Q6oo",
-                  )
-                }
+                onSelect={() => {
+                  if (hasPaid) {
+                    router.push(
+                      "https://billing.stripe.com/p/login/test_6oEaGV2yKd0o14Q6oo",
+                    );
+                  } else {
+                    handleBilling();
+                  }
+                }}
               >
-                <CreditCard />
-                Billing
+                {hasPaid ? (
+                  <>
+                    <CreditCard />
+                    Manage Billing
+                  </>
+                ) : (
+                  <>
+                    <CreditCard />
+                    Set Up Billing
+                  </>
+                )}
               </DropdownMenuItem>
               {/* <DropdownMenuItem> */}
               {/*   <Bell /> */}

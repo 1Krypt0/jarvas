@@ -36,10 +36,33 @@ import { CreditCard, Edit, Loader2, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+import { env } from "@/env";
 
-export default function UserCard({ session }: { session: Session }) {
+export default function UserCard({
+  session,
+  hasPaid,
+}: {
+  session: Session;
+  hasPaid: boolean;
+}) {
   const router = useRouter();
   const [isSignOut, setIsSignOut] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleBilling = async () => {
+    setLoading(true);
+    const res = await fetch("/api/stripe");
+    if (!res.ok) {
+      // TODO: Show error
+      return;
+    }
+    const { id } = await res.json();
+
+    const stripe = await loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+    setLoading(false);
+    await stripe?.redirectToCheckout({ sessionId: id });
+  };
 
   return (
     <Card>
@@ -64,12 +87,31 @@ export default function UserCard({ session }: { session: Session }) {
           <div className="flex flex-col gap-2">
             <EditUserDialog name={session.user.name} />
 
-            <Button size="sm" className="gap-2" variant="secondary" asChild>
-              <Link href="https://billing.stripe.com/p/login/test_6oEaGV2yKd0o14Q6oo">
-                <CreditCard />
-                Billing
-              </Link>
-            </Button>
+            {hasPaid ? (
+              <Button size="sm" className="gap-2" variant="secondary" asChild>
+                <Link href="https://billing.stripe.com/p/login/test_6oEaGV2yKd0o14Q6oo">
+                  <CreditCard />
+                  Manage Billing
+                </Link>
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                className="gap-2"
+                variant="secondary"
+                onClick={handleBilling}
+                disabled={loading}
+              >
+                {loading ? (
+                  <Loader2 size={15} className="animate-spin" />
+                ) : (
+                  <>
+                    <CreditCard />
+                    Set Up Billing
+                  </>
+                )}
+              </Button>
+            )}
           </div>
         </div>
       </CardContent>

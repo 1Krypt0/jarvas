@@ -16,7 +16,10 @@ export default async function CheckoutSuccessPage() {
   const userId = session.user.id;
   const stripeCustomerId = (await redis.get(`stripe:user:${userId}`)) as string;
 
-  await syncStripeDataToKV(stripeCustomerId);
+  // NOTE: Only sync stuff if user has set up billing, otherwise no need
+  if (stripeCustomerId) {
+    await syncStripeDataToKV(stripeCustomerId);
+  }
 
   return redirect("/app");
 }

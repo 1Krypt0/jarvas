@@ -11,14 +11,5 @@ export default async function CheckoutSuccessPage() {
     unauthorized();
   }
 
-  const res = await auth.api.deleteUser({
-    body: { callbackURL: "/register" },
-    headers: await headers(),
-  });
-
-  if (!res.success) {
-    console.error("Error deleting user:", res.message);
-  }
-
-  return redirect("/register");
+  return redirect("/dashboard");
 }
