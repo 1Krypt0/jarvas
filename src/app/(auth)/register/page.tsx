@@ -23,10 +23,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
-import { env } from "@/env";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
+  const router = useRouter();
   const registerSchema = z
     .object({
       name: z.string(),
@@ -63,19 +63,7 @@ export default function Register() {
           console.log("Errors found");
           console.log(ctx);
         },
-        onSuccess: async () => {
-          const res = await fetch("/api/stripe");
-          if (!res.ok) {
-            return;
-          }
-          const { id } = await res.json();
-
-          const stripe = await loadStripe(
-            env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
-          );
-          setLoading(false);
-          await stripe?.redirectToCheckout({ sessionId: id });
-        },
+        onSuccess: () => router.push("/app"),
       },
     });
   };

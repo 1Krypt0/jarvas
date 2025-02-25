@@ -64,6 +64,20 @@ export const syncStripeDataToKV = async (customerId: string) => {
   return subData;
 };
 
+export const hasUserPaid = async (userId: string) => {
+  const stripeCustomerId = (await redis.get(`stripe:user:${userId}`)) as string;
+
+  if (!stripeCustomerId) return false;
+
+  const stripeStatus = (await redis.get(
+    `stripe:customer:${stripeCustomerId}`,
+  )) as StripeSubCache;
+
+  if (!stripeStatus) return false;
+
+  return stripeStatus.status === "active";
+};
+
 export const trackSpending = async (
   userId: string,
   eventName: string,
