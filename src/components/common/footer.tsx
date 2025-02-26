@@ -28,10 +28,7 @@ export function Footer() {
           <Link href="/privacy-policy" className="pointer block w-fit">
             <Typography variant="p">Política de Privacidade</Typography>
           </Link>
-          <a
-            className="pointer block w-fit"
-            href="mailto:founders@askjarvas.com"
-          >
+          <a className="pointer block w-fit" href="mailto:askjarvas@gmail.com">
             <Typography variant="p">Contacte-nos</Typography>
           </a>
         </div>

@@ -40,8 +40,10 @@ export default function FileLink({
 
     if (!res.ok) {
       toast.error(
-        "Ocorreu um erro ao atualizar o nome. Por favor tente de novo.",
+        "Ocorreu um erro ao atualizar o documento. Por favor tente de novo.",
       );
+    } else {
+      toast.success("Documento atualizado com sucesso!");
     }
 
     router.refresh();

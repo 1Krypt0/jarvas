@@ -46,9 +46,10 @@ export default function ChatLink({
 
     if (!res.ok) {
       toast.error(
-        "Ocorreu um erro ao atualizar o nome. Por favor tente de novo.",
+        "Ocorreu um erro ao atualizar a conversa. Por favor tente de novo.",
       );
-      return;
+    } else {
+      toast.success("Conversa atualizada com sucesso!");
     }
 
     router.refresh();

@@ -163,12 +163,12 @@ export default function MultimodalInput({
       }
 
       toast.error(
-        "Ocorreu um erro ao processar o ficheiro. Por favor, tente novamente.",
+        "Ocorreu um erro ao processar o documento. Por favor, tente novamente.",
       );
     } catch (error) {
       console.error(error);
       toast.error(
-        "Ocorreu um erro ao processar o ficheiro. Por favor, tente novamente.",
+        "Ocorreu um erro ao processar o documento. Por favor, tente novamente.",
       );
     }
   };
@@ -194,7 +194,7 @@ export default function MultimodalInput({
         console.error(error);
 
         toast.error(
-          "Ocorreu um erro ao processar o ficheiro. Por favor, tente novamente.",
+          "Ocorreu um erro ao processar o documento. Por favor, tente novamente.",
         );
       } finally {
         setUploadQueue([]);
@@ -326,7 +326,7 @@ function AttachmentsButton({
   const router = useRouter();
 
   const fileUploadSchema = z.object({
-    files: z.unknown({ message: "Carregue um ficheiro aqui" }),
+    files: z.unknown({ message: "Carregue um documento aqui" }),
   });
 
   const form = useForm<z.infer<typeof fileUploadSchema>>({
@@ -351,10 +351,10 @@ function AttachmentsButton({
 
     if (!res.ok) {
       toast.error(
-        "Ocorreu um erro ao processar o ficheiro. Por favor, tente novamente.",
+        "Ocorreu um erro ao processar o documento. Por favor, tente novamente.",
       );
     } else {
-      toast.success("Ficheiro processado com sucesso!");
+      toast.success("Documento processado com sucesso!");
     }
 
     router.refresh();
@@ -378,10 +378,10 @@ function AttachmentsButton({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Carregue Ficheiros</DialogTitle>
+          <DialogTitle>Carregue Documentos</DialogTitle>
         </DialogHeader>
         <DialogDescription>
-          Carregue os seus Ficheiros aqui. Click em Upload quando estiver
+          Carregue os seus Documentos aqui. Click em Upload quando estiver
           pronto.
         </DialogDescription>
 
@@ -395,7 +395,7 @@ function AttachmentsButton({
               control={form.control}
               render={() => (
                 <FormItem>
-                  <FormLabel>Ficheiros</FormLabel>
+                  <FormLabel>Documentos</FormLabel>
                   <FormControl>
                     <Input type="file" required multiple {...fileRef} />
                   </FormControl>
@@ -407,7 +407,7 @@ function AttachmentsButton({
               {loading ? (
                 <Loader2 size={15} className="animate-spin" />
               ) : (
-                "Carregue Ficheiros"
+                "Carregue Documentos"
               )}
             </Button>
           </form>

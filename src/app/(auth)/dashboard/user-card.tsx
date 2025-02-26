@@ -231,7 +231,7 @@ function DeleteUserDialog() {
           <AlertDialogTitle>Tem a certeza absoluta?</AlertDialogTitle>
           <AlertDialogDescription>
             Esta ação não pode ser desfeita. Isto irá permanentemente apagar a
-            sua conta, a sua subscrição, e remover todos os seus ficheiros e
+            sua conta, a sua subscrição, e remover todos os seus documentos e
             conversas do nosso servidor.
           </AlertDialogDescription>
         </AlertDialogHeader>

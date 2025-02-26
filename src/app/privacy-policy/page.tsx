@@ -295,10 +295,10 @@ export default function Page() {
           <li>
             By email:{" "}
             <a
-              href="mailto: myemail@gmail.com"
+              href="mailto: askjarvas@gmail.com"
               className="text-blue-600 hover:underline"
             >
-              myemail@gmail.com
+              askjarvas@gmail.com
             </a>
           </li>
         </ul>

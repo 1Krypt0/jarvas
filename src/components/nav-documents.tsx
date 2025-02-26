@@ -69,7 +69,7 @@ export const NavDocuments = ({ documents }: { documents: Document[] }) => {
           {documents.length === 0 ? (
             <SidebarMenuItem>
               <p className="h-8 pl-2 text-sm">
-                Carregue um Ficheiro para começar
+                Os seus Documentos vão aparecer aqui
               </p>
             </SidebarMenuItem>
           ) : (

@@ -15,7 +15,7 @@ export const NavSecondary = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="sm">
-              <Link href="mailto:support@askjarvas.com">
+              <Link href="mailto:askjarvas@gmail.com">
                 <LifeBuoy size={24} />
                 <span>Apoio</span>
               </Link>
@@ -23,7 +23,7 @@ export const NavSecondary = () => {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="sm">
-              <Link href="mailto:founders@askjarvas.com">
+              <Link href="mailto:askjarvas@gmail.com">
                 <Send />
                 <span>Feedback</span>
               </Link>
