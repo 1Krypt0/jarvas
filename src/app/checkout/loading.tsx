@@ -15,11 +15,11 @@ export default function Loading() {
     <div className="flex min-h-screen items-center justify-center">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle>Success!</CardTitle>
+          <CardTitle>Funcionou!</CardTitle>
           <CardDescription>
-            Your subscription was aquired successfully! You should now be
-            redirected automatically. If that does not happen, please click here
-            to proceed to the application.
+            A sua subscrição foi adquirida com sucesso! Vai agora ser
+            automaticamente redirecionado para a aplicação. Se isso não
+            acontecer, por favor clica aqui.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -29,7 +29,7 @@ export default function Loading() {
                 redirect("/app");
               }}
             >
-              Access Jarvas
+              Aceder ao Jarvas
             </Button>
           </div>
         </CardContent>

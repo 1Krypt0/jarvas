@@ -78,7 +78,7 @@ export default function FileLink({
         <DropdownMenuTrigger asChild>
           <SidebarMenuAction showOnHover>
             <Ellipsis />
-            <span className="sr-only">More</span>
+            <span className="sr-only">Mais</span>
           </SidebarMenuAction>
         </DropdownMenuTrigger>
 
@@ -89,11 +89,11 @@ export default function FileLink({
         >
           <DropdownMenuItem onSelect={() => setIsEditing(true)}>
             <Pencil className="text-muted-foreground" />
-            <span>Rename</span>
+            <span>Mudar o Nome</span>
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => onDelete(file.id)}>
             <Trash2 className="text-muted-foreground" />
-            <span>Delete</span>
+            <span>Apagar</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

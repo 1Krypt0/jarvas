@@ -75,13 +75,13 @@ export default async function Home() {
             <Button size="lg" asChild>
               <Link href="/register">Aderir Agora</Link>
             </Button>
-            {/* TODO: Add video explaining how to use it */}
-            <Image
-              alt="Jarvas hero"
-              src="/hero1.png"
-              width={1024}
-              height={632}
-            />
+            {/* {/* TODO: Add video explaining how to use it */}
+            {/* <Image */}
+            {/*   alt="Jarvas hero" */}
+            {/*   src="/hero1.png" */}
+            {/*   width={1024} */}
+            {/*   height={632} */}
+            {/* /> */}
           </section>
 
           <section className="flex flex-col items-center gap-12">

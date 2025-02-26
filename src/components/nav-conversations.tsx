@@ -66,13 +66,15 @@ export const NavConversations = ({
       <SidebarGroup className="group-data-[collapsible=icon]:hidden">
         <SidebarGroupLabel>
           <MessageSquareText className="mr-2 size-4" />
-          Conversations
+          Conversas
         </SidebarGroupLabel>
 
         <SidebarMenu>
           {conversations.length === 0 ? (
             <SidebarMenuItem>
-              <p className="h-8 pl-2 text-sm">Conversations will appear here</p>
+              <p className="h-8 pl-2 text-sm">
+                As suas Conversas vão aparecer aqui
+              </p>
             </SidebarMenuItem>
           ) : (
             <>
@@ -97,12 +99,12 @@ export const NavConversations = ({
                     {showAll ? (
                       <>
                         <Minus />
-                        <span>Show less</span>
+                        <span>Mostrar Menos</span>
                       </>
                     ) : (
                       <>
                         <Plus />
-                        <span>Show More</span>
+                        <span>Mostrar Mais</span>
                       </>
                     )}
                   </SidebarMenuButton>
@@ -116,14 +118,14 @@ export const NavConversations = ({
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent className="sm:max-w-[425px]">
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Tem a certeza?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone
+              Esta ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Apagar</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

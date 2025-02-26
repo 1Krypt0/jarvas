@@ -23,7 +23,7 @@ export default async function AppPage() {
     return (
       <div className="flex justify-center items-center min-w-0 h-full bg-background">
         <Typography variant="h1" className="mx-auto mb-28">
-          Set up Billing to Get Started!
+          Configura a Subscrição e Começa a Usar!
         </Typography>
       </div>
     );

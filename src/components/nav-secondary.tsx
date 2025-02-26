@@ -15,15 +15,15 @@ export const NavSecondary = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="sm">
-              <a href="#">
+              <Link href="mailto:support@askjarvas.com">
                 <LifeBuoy size={24} />
-                <span>Support</span>
-              </a>
+                <span>Apoio</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="sm">
-              <Link href="#">
+              <Link href="mailto:founders@askjarvas.com">
                 <Send />
                 <span>Feedback</span>
               </Link>

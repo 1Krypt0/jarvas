@@ -97,7 +97,7 @@ export function NavUser({
                 }}
               >
                 <User />
-                Account
+                Conta
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => {
@@ -113,12 +113,12 @@ export function NavUser({
                 {hasPaid ? (
                   <>
                     <CreditCard />
-                    Manage Billing
+                    Gerir Subscrição
                   </>
                 ) : (
                   <>
                     <CreditCard />
-                    Set Up Billing
+                    Configurar Subscrição
                   </>
                 )}
               </DropdownMenuItem>
@@ -140,7 +140,7 @@ export function NavUser({
               }
             >
               <LogOut />
-              Log out
+              Terminar Sessão
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

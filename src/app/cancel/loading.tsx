@@ -15,11 +15,11 @@ export default function Loading() {
     <div className="flex min-h-screen items-center justify-center">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle>Something happenned!</CardTitle>
+          <CardTitle>Uh Oh! Algo se passou!</CardTitle>
           <CardDescription>
-            Your subscription was cancelled or some error occurred. You will now
-            be automatically redirected to the register page. If any error
-            persists, please contact us.
+            A tua subscrição foi cancelada ou algum erro ocorreu. Vais agora ser
+            automaticamente redirecionado para a tua página. Se não fores
+            automaticamente redirecionado, clica aqui.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -29,7 +29,7 @@ export default function Loading() {
                 redirect("/register");
               }}
             >
-              Redirect Manually
+              Redirecionar Manualment
             </Button>
           </div>
         </CardContent>

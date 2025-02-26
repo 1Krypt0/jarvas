@@ -171,7 +171,7 @@ export default function Register() {
                       <FormLabel>Confirme a sua Password</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Escreva a sua Password aqui"
+                          placeholder="Escreva a Password novamente"
                           type="password"
                           required
                           {...field}

@@ -228,7 +228,7 @@ export default function MultimodalInput({
 
       <Textarea
         ref={textareaRef}
-        placeholder="Send a message..."
+        placeholder="Envie uma mensagem..."
         value={input}
         onChange={handleInput}
         className={cx(
@@ -366,10 +366,11 @@ function AttachmentsButton({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Upload Files</DialogTitle>
+          <DialogTitle>Carregue Ficheiros</DialogTitle>
         </DialogHeader>
         <DialogDescription>
-          Submit your Files here. Click Upload when you are done.
+          Carregue os seus Ficheiros aqui. Click em Upload quando estiver
+          pronto.
         </DialogDescription>
 
         <Form {...form}>
@@ -394,7 +395,7 @@ function AttachmentsButton({
               {loading ? (
                 <Loader2 size={15} className="animate-spin" />
               ) : (
-                "Upload Files"
+                "Carregue Ficheiros"
               )}
             </Button>
           </form>

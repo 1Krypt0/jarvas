@@ -67,7 +67,7 @@ export default function UserCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>User</CardTitle>
+        <CardTitle>Utilizador</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-8 grid-cols-1">
         <div className="flex items-center justify-between">
@@ -91,7 +91,7 @@ export default function UserCard({
               <Button size="sm" className="gap-2" variant="secondary" asChild>
                 <Link href="https://billing.stripe.com/p/login/test_6oEaGV2yKd0o14Q6oo">
                   <CreditCard />
-                  Manage Billing
+                  Gerir Subscrição
                 </Link>
               </Button>
             ) : (
@@ -107,7 +107,7 @@ export default function UserCard({
                 ) : (
                   <>
                     <CreditCard />
-                    Set Up Billing
+                    Configurar Subscrição
                   </>
                 )}
               </Button>
@@ -140,7 +140,7 @@ export default function UserCard({
             ) : (
               <div className="flex items-center gap-2">
                 <LogOut size={16} />
-                Sign Out
+                Terminar Sessão
               </div>
             )}
           </span>
@@ -162,16 +162,16 @@ function EditUserDialog({ name }: { name: string }) {
       <DialogTrigger asChild>
         <Button size="sm" className="gap-2" variant="secondary">
           <Edit size={13} />
-          Edit User
+          Editar Utilizador
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] w-11/12">
         <DialogHeader>
-          <DialogTitle>Edit User</DialogTitle>
-          <DialogDescription>Edit user information</DialogDescription>
+          <DialogTitle>Editar Informação</DialogTitle>
+          <DialogDescription>Editar Informação do Utilizador</DialogDescription>
         </DialogHeader>
         <div className="grid gap-2">
-          <Label htmlFor="name">Full Name</Label>
+          <Label htmlFor="name">Nome</Label>
           <Input
             id="name"
             type="name"
@@ -209,7 +209,7 @@ function EditUserDialog({ name }: { name: string }) {
             {isLoading ? (
               <Loader2 size={15} className="animate-spin" />
             ) : (
-              "Update"
+              "Atualizar"
             )}
           </Button>
         </DialogFooter>
@@ -225,19 +225,19 @@ function DeleteUserDialog() {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">Delete Account</Button>
+        <Button variant="destructive">Apagar Conta</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Tem a certeza absoluta?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account, subscription data, and remove all your files and
-            conversations from our servers.
+            Esta ação não pode ser desfeita. Isto irá permanentemente apagar a
+            sua conta, a sua subscrição, e remover todos os seus ficheiros e
+            conversas do nosso servidor.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
           <AlertDialogAction
             disabled={isLoading}
             onClick={async () => {
@@ -252,7 +252,7 @@ function DeleteUserDialog() {
             {isLoading ? (
               <Loader2 size={15} className="animate-spin" />
             ) : (
-              "Delete"
+              "Apagar Conta"
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

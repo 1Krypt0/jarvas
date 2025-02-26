@@ -58,12 +58,14 @@ export const NavDocuments = ({ documents }: { documents: Document[] }) => {
       <SidebarGroup className="group-data-[collapsible=icon]:hidden">
         <SidebarGroupLabel>
           <FileText className="mr-2 size-4" />
-          Documents
+          Documentos
         </SidebarGroupLabel>
         <SidebarMenu>
           {documents.length === 0 ? (
             <SidebarMenuItem>
-              <p className="h-8 pl-2 text-sm">Upload a file to get started</p>
+              <p className="h-8 pl-2 text-sm">
+                Carregue um Ficheiro para começar
+              </p>
             </SidebarMenuItem>
           ) : (
             <>
@@ -88,12 +90,12 @@ export const NavDocuments = ({ documents }: { documents: Document[] }) => {
                     {showAll ? (
                       <>
                         <Minus />
-                        <span>Show less</span>
+                        <span>Mostrar Menos</span>
                       </>
                     ) : (
                       <>
                         <Plus />
-                        <span>Show More</span>
+                        <span>Mostrar Mais</span>
                       </>
                     )}
                   </SidebarMenuButton>
@@ -107,14 +109,14 @@ export const NavDocuments = ({ documents }: { documents: Document[] }) => {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent className="sm:max-w-[425px]">
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Tem a certeza?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone
+              Esta ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Apagar</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
