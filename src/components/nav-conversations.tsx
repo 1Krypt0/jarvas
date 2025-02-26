@@ -12,7 +12,6 @@ import {
 } from "./ui/alert-dialog";
 import {
   SidebarGroup,
-  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
@@ -76,6 +75,13 @@ export const NavConversations = () => {
           <MessageSquareText className="mr-2 size-4" />
           Conversas
         </SidebarGroupLabel>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <p className="h-8 pl-2 text-sm">
+              As suas Conversas vão aparecer aqui
+            </p>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarGroup>
     );
   }
