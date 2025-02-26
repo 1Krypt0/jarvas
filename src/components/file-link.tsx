@@ -15,6 +15,7 @@ import { Ellipsis, Pencil, Trash2 } from "lucide-react";
 import { Input } from "./ui/input";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function FileLink({
   file,
@@ -38,7 +39,9 @@ export default function FileLink({
     });
 
     if (!res.ok) {
-      console.error("Error updating file name");
+      toast.error(
+        "Ocorreu um erro ao atualizar o nome. Por favor tente de novo.",
+      );
     }
 
     router.refresh();

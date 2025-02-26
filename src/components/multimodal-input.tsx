@@ -36,6 +36,7 @@ import { Input } from "./ui/input";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function MultimodalInput({
   chatId,
@@ -160,12 +161,15 @@ export default function MultimodalInput({
           contentType: contentType,
         };
       }
-      const { error } = await response.json();
-      console.log(error);
-      // toast.error(error);
+
+      toast.error(
+        "Ocorreu um erro ao processar o ficheiro. Por favor, tente novamente.",
+      );
     } catch (error) {
-      console.log(error);
-      // toast.error("Failed to upload file, please try again!");
+      console.error(error);
+      toast.error(
+        "Ocorreu um erro ao processar o ficheiro. Por favor, tente novamente.",
+      );
     }
   };
 
@@ -187,7 +191,11 @@ export default function MultimodalInput({
           ...successfullyUploadedAttachments,
         ]);
       } catch (error) {
-        console.error("Error uploading files!", error);
+        console.error(error);
+
+        toast.error(
+          "Ocorreu um erro ao processar o ficheiro. Por favor, tente novamente.",
+        );
       } finally {
         setUploadQueue([]);
       }
@@ -242,8 +250,9 @@ export default function MultimodalInput({
             event.preventDefault();
 
             if (isLoading) {
-              // toast.error("Please wait for the model to finish its response!");
-              console.log("Please wait dumby dumb");
+              toast.warning(
+                "Por favor aguarde que o modelo termine de gerar a resposta!",
+              );
             } else {
               submitForm();
             }
@@ -341,8 +350,11 @@ function AttachmentsButton({
     });
 
     if (!res.ok) {
-      // TODO: Show error
-      console.error("Error uploading form");
+      toast.error(
+        "Ocorreu um erro ao processar o ficheiro. Por favor, tente novamente.",
+      );
+    } else {
+      toast.success("Ficheiro processado com sucesso!");
     }
 
     router.refresh();

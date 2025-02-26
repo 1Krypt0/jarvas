@@ -23,6 +23,7 @@ import { Document } from "@/db/schema";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import FileLink from "./file-link";
+import { toast } from "sonner";
 
 export const NavDocuments = ({ documents }: { documents: Document[] }) => {
   const [showAll, setShowAll] = useState(false);
@@ -45,7 +46,11 @@ export const NavDocuments = ({ documents }: { documents: Document[] }) => {
     });
 
     if (!res.ok) {
-      console.error("Error deleting file");
+      toast.error(
+        "Ocorreu um erro ao remover o documento. Por favor tente de novo.",
+      );
+    } else {
+      toast.success("Documento apagado com sucesso!");
     }
 
     setDeleteDialogOpen(false);

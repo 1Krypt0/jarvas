@@ -22,6 +22,7 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { env } from "@/env";
+import { toast } from "sonner";
 
 export function NavUser({
   user,
@@ -40,7 +41,9 @@ export function NavUser({
   const handleBilling = async () => {
     const res = await fetch("/api/stripe");
     if (!res.ok) {
-      // TODO: Show error
+      toast.error(
+        "Ocorreu um erro ao processar a subscrição. Por favor tente de novo. Se o problema persistir, por favor contacte-nos.",
+      );
       return;
     }
     const { id } = await res.json();
@@ -130,9 +133,7 @@ export function NavUser({
               onSelect={() =>
                 authClient.signOut({
                   fetchOptions: {
-                    onSuccess: () => {
-                      router.push("/");
-                    },
+                    onSuccess: () => router.push("/"),
                   },
                 })
               }

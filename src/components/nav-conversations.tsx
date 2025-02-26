@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import useSWR from "swr";
 import { fetcher } from "@/lib/utils";
+import { toast } from "sonner";
 
 export const NavConversations = () => {
   const [showAll, setShowAll] = useState(false);
@@ -58,7 +59,11 @@ export const NavConversations = () => {
     });
 
     if (!res.ok) {
-      console.error("Error deleting chat");
+      toast.error(
+        "Ocorreu um erro ao remover a conversa. Por favor tente de novo.",
+      );
+    } else {
+      toast.success("Conversa apagada com sucesso!");
     }
 
     setDeleteDialogOpen(false);

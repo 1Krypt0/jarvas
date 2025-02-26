@@ -16,6 +16,7 @@ import Link from "next/link";
 import { Input } from "./ui/input";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function ChatLink({
   chat,
@@ -41,11 +42,14 @@ export default function ChatLink({
       body: JSON.stringify({ newName: tempText }),
     });
 
-    if (!res.ok) {
-      console.error("Error updating chat name");
-    }
-
     setIsEditing(false);
+
+    if (!res.ok) {
+      toast.error(
+        "Ocorreu um erro ao atualizar o nome. Por favor tente de novo.",
+      );
+      return;
+    }
 
     router.refresh();
   };

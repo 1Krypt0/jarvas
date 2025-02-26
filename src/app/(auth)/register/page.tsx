@@ -58,8 +58,6 @@ export default function Register() {
         onRequest: () => setLoading(true),
         onSuccess: () => router.push("/app"),
         onError: (ctx) => {
-          console.error("Error");
-          console.log(ctx.error);
           if (ctx.error.message === "User already exists") {
             form.setError("email", {
               message: "Já existe uma conta com esse e-mail",

@@ -38,6 +38,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { env } from "@/env";
+import { toast } from "sonner";
 
 export default function UserCard({
   session,
@@ -54,7 +55,9 @@ export default function UserCard({
     setLoading(true);
     const res = await fetch("/api/stripe");
     if (!res.ok) {
-      // TODO: Show error
+      toast.error(
+        "Ocorreu um erro ao processar a subscrição. Por favor tente de novo. Se o problema persistir, por favor contacte-nos.",
+      );
       return;
     }
     const { id } = await res.json();
@@ -125,9 +128,7 @@ export default function UserCard({
             setIsSignOut(true);
             await authClient.signOut({
               fetchOptions: {
-                onSuccess() {
-                  router.push("/");
-                },
+                onSuccess: () => router.push("/"),
               },
             });
             setIsSignOut(false);
@@ -191,12 +192,10 @@ function EditUserDialog({ name }: { name: string }) {
                 name: newName ? newName : undefined,
                 fetchOptions: {
                   onSuccess: () => {
-                    //toast.success("User updated successfully");
+                    toast.success("Informação atualizada com sucesso!");
                   },
-                  onError: (error) => {
-                    console.error("Error");
-                    console.error(error);
-                    //toast.error("Error updating user")
+                  onError: () => {
+                    toast.error("Ocorreu um erro ao atualizar a informação!");
                   },
                 },
               });
