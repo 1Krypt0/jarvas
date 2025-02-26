@@ -102,9 +102,7 @@ export function NavUser({
               <DropdownMenuItem
                 onSelect={() => {
                   if (hasPaid) {
-                    router.push(
-                      "https://billing.stripe.com/p/login/test_6oEaGV2yKd0o14Q6oo",
-                    );
+                    router.push(env.NEXT_PUBLIC_STRIPE_BILLING_LINK);
                   } else {
                     handleBilling();
                   }
