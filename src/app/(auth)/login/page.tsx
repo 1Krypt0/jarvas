@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const loginSchema = z.object({
@@ -33,6 +34,7 @@ export default function Login() {
   });
 
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     await authClient.signIn.email({
@@ -42,9 +44,13 @@ export default function Login() {
       fetchOptions: {
         onResponse: () => setLoading(false),
         onRequest: () => setLoading(true),
+        onSuccess: () => router.push("/app"),
         onError: () => {
-          form.setError("email", { message: "Nome ou password inválidos." });
-          form.setError("password", { message: "Nome ou password inválidos." });
+          form.setError("email", { message: "Email ou password inválidos." });
+          form.setError("password", {
+            message: "Email ou password inválidos.",
+          });
+          setLoading(false);
         },
       },
     });

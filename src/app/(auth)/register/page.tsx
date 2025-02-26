@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
   const registerSchema = z
@@ -43,6 +44,9 @@ export default function Register() {
     },
   });
 
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
     await authClient.signUp.email({
       email: values.email,
@@ -50,22 +54,22 @@ export default function Register() {
       name: values.name,
       callbackURL: "/app",
       fetchOptions: {
-        onRetry: (ctx) => {
-          console.log("Retry");
-          console.log(ctx.response);
-        },
+        onResponse: () => setLoading(false),
         onRequest: () => setLoading(true),
+        onSuccess: () => router.push("/app"),
         onError: (ctx) => {
           console.error("Error");
           console.log(ctx.error);
-          form.setError("email", { message: "Nome ou password inválidos." });
-          form.setError("password", { message: "Nome ou password inválidos." });
+          if (ctx.error.message === "User already exists") {
+            form.setError("email", {
+              message: "Já existe uma conta com esse e-mail",
+            });
+          }
+          setLoading(false);
         },
       },
     });
   };
-
-  const [loading, setLoading] = useState(false);
 
   return (
     <div className="flex w-full items-center justify-center px-4">
