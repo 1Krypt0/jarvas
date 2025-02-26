@@ -14,6 +14,7 @@ export const env = createEnv({
     UPSTASH_REDIS_URL: z.string().min(1),
     UPSTASH_REDIS_TOKEN: z.string().min(1),
     OPENAI_API_KEY: z.string().min(1),
+    PLAUSIBLE_DOMAIN: z.string().url(),
   },
   client: {
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1),

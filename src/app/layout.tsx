@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 import PlausibleProvider from "next-plausible";
+import { env } from "@/env";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +20,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className="antialiased">
-      <PlausibleProvider domain="askjarvas.com">
+      <PlausibleProvider
+        domain="askjarvas.com"
+        customDomain={env.PLAUSIBLE_DOMAIN}
+        selfHosted={true}
+      >
         <body className={inter.className}>
           <ThemeProvider
             attribute="class"
