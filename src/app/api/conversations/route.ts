@@ -9,13 +9,13 @@ export async function GET() {
   });
 
   if (!session || !session.user || !session.user.id) {
-    return new Response("Unauthorized", { status: 401 });
+    return Response.json([]);
   }
 
   const hasPaid = await hasUserPaid(session.user.id);
 
   if (!hasPaid) {
-    return new Response("Unauthorized", { status: 401 });
+    return Response.json([]);
   }
 
   const conversations = await getChats(session.user.id);
