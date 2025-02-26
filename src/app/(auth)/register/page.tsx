@@ -17,14 +17,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function Register() {
-  const router = useRouter();
   const registerSchema = z
     .object({
-      name: z.string(),
-      email: z.string().email(),
+      name: z.string().nonempty({ message: "Nome não pode estar vazio" }),
+      email: z.string().email({ message: "Email inválido" }),
       password: z
         .string()
         .min(8, { message: "A password precisa de pelo menos 8 dígitos" }),
@@ -50,14 +48,19 @@ export default function Register() {
       email: values.email,
       password: values.password,
       name: values.name,
+      callbackURL: "/app",
       fetchOptions: {
+        onRetry: (ctx) => {
+          console.log("Retry");
+          console.log(ctx.response);
+        },
         onRequest: () => setLoading(true),
         onError: (ctx) => {
-          // TODO: Display errors on a toast
-          console.log("Errors found");
-          console.log(ctx);
+          console.error("Error");
+          console.log(ctx.error);
+          form.setError("email", { message: "Nome ou password inválidos." });
+          form.setError("password", { message: "Nome ou password inválidos." });
         },
-        onSuccess: () => router.push("/app"),
       },
     });
   };

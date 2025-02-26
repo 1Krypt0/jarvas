@@ -43,10 +43,8 @@ export default function Login() {
         onResponse: () => setLoading(false),
         onRequest: () => setLoading(true),
         onError: () => {
-          // TODO: Display errors
-        },
-        onSuccess: () => {
-          // TODO: Check Stripe Status
+          form.setError("email", { message: "Nome ou password inválidos." });
+          form.setError("password", { message: "Nome ou password inválidos." });
         },
       },
     });
