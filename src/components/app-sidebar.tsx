@@ -14,17 +14,15 @@ import { NavConversations } from "./nav-conversations";
 import { NavDocuments } from "./nav-documents";
 import { NavSecondary } from "./nav-secondary";
 import { NavUser } from "./nav-user";
-import { Chat, Document } from "@/db/schema";
+import { Document } from "@/db/schema";
 import Link from "next/link";
 
 export const AppSidebar = ({
-  conversations,
   documents,
   user,
   hasPaid,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
-  conversations: Chat[];
   documents: Document[];
   user: {
     id: string;
@@ -55,7 +53,7 @@ export const AppSidebar = ({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavConversations conversations={conversations} />
+        <NavConversations />
         <NavDocuments documents={documents} />
         <NavSecondary />
       </SidebarContent>

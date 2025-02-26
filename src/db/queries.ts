@@ -12,7 +12,7 @@ export const getChats = async (userId: string) => {
     .select()
     .from(chat)
     .where(eq(chat.userId, userId))
-    .orderBy(chat.createdAt);
+    .orderBy(desc(chat.createdAt));
 };
 
 export const getChatById = async (chatId: string) => {

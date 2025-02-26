@@ -12,6 +12,7 @@ import {
 } from "./ui/alert-dialog";
 import {
   SidebarGroup,
+  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
@@ -20,20 +21,29 @@ import {
 } from "./ui/sidebar";
 import { Chat } from "@/db/schema";
 import ChatLink from "./chat-link";
-import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import useSWR from "swr";
+import { fetcher } from "@/lib/utils";
 
-export const NavConversations = ({
-  conversations,
-}: {
-  conversations: Chat[];
-}) => {
+export const NavConversations = () => {
   const [showAll, setShowAll] = useState(false);
 
+  const pathname = usePathname();
+
+  const {
+    data: conversations,
+    isLoading,
+    mutate,
+  } = useSWR<Array<Chat>>("/api/conversations", fetcher, {
+    fallbackData: [],
+  });
+
+  useEffect(() => {
+    mutate();
+  }, [pathname, mutate]);
+
   const clippingLimit = 5;
-  const displayedItems = showAll
-    ? conversations
-    : conversations.slice(0, clippingLimit);
 
   const router = useRouter();
   const { id } = useParams();
@@ -57,9 +67,37 @@ export const NavConversations = ({
     if (deleteId === id) {
       router.push("/");
     }
-
-    router.refresh();
   };
+
+  if (isLoading) {
+    return (
+      <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+        <SidebarGroupLabel>
+          <MessageSquareText className="mr-2 size-4" />
+          Conversas
+        </SidebarGroupLabel>
+        <SidebarGroupContent>
+          <div className="flex flex-col">
+            {[44, 32, 28, 64, 52].map((item) => (
+              <div
+                key={item}
+                className="rounded-md h-8 flex gap-2 px-2 items-center"
+              >
+                <div
+                  className="h-4 rounded-md flex-1 max-w-[--skeleton-width] bg-sidebar-accent-foreground/10"
+                  style={
+                    {
+                      "--skeleton-width": `${item}%`,
+                    } as React.CSSProperties
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        </SidebarGroupContent>
+      </SidebarGroup>
+    );
+  }
 
   return (
     <>
@@ -70,48 +108,58 @@ export const NavConversations = ({
         </SidebarGroupLabel>
 
         <SidebarMenu>
-          {conversations.length === 0 ? (
-            <SidebarMenuItem>
-              <p className="h-8 pl-2 text-sm">
-                As suas Conversas vão aparecer aqui
-              </p>
-            </SidebarMenuItem>
-          ) : (
-            <>
-              {displayedItems.map((chat) => (
-                <ChatLink
-                  chat={chat}
-                  key={chat.id}
-                  isActive={chat.id === id}
-                  onDelete={() => {
-                    setDeleteId(chat.id);
-                    setDeleteDialogOpen(true);
-                  }}
-                  setOpenMobile={setOpenMobile}
-                />
-              ))}
-              {conversations.length > clippingLimit && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    className="text-sidebar-foreground/70"
-                    onClick={() => setShowAll(!showAll)}
-                  >
-                    {showAll ? (
-                      <>
-                        <Minus />
-                        <span>Mostrar Menos</span>
-                      </>
-                    ) : (
-                      <>
-                        <Plus />
-                        <span>Mostrar Mais</span>
-                      </>
-                    )}
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-            </>
-          )}
+          {conversations &&
+            (() => {
+              const displayedItems = showAll
+                ? conversations
+                : conversations.slice(0, clippingLimit);
+              return (
+                <>
+                  {conversations.length === 0 ? (
+                    <SidebarMenuItem>
+                      <p className="h-8 pl-2 text-sm">
+                        As suas Conversas vão aparecer aqui
+                      </p>
+                    </SidebarMenuItem>
+                  ) : (
+                    <>
+                      {displayedItems.map((chat) => (
+                        <ChatLink
+                          chat={chat}
+                          key={chat.id}
+                          isActive={chat.id === id}
+                          onDelete={() => {
+                            setDeleteId(chat.id);
+                            setDeleteDialogOpen(true);
+                          }}
+                          setOpenMobile={setOpenMobile}
+                        />
+                      ))}
+                      {conversations.length > clippingLimit && (
+                        <SidebarMenuItem>
+                          <SidebarMenuButton
+                            className="text-sidebar-foreground/70"
+                            onClick={() => setShowAll(!showAll)}
+                          >
+                            {showAll ? (
+                              <>
+                                <Minus />
+                                <span>Mostrar Menos</span>
+                              </>
+                            ) : (
+                              <>
+                                <Plus />
+                                <span>Mostrar Mais</span>
+                              </>
+                            )}
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      )}
+                    </>
+                  )}
+                </>
+              );
+            })()}
         </SidebarMenu>
       </SidebarGroup>
 
