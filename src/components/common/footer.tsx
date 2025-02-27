@@ -4,18 +4,12 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="flex w-full items-center justify-center border-t">
-      <div className="flex w-full max-w-[1280px] place-content-center px-4 md:px-8">
+    <footer className="flex w-full items-center justify-center border-t ">
+      <div className="flex w-full max-w-[1280px] place-content-center px-4 py-4 md:px-8">
         <div className="hidden flex-1 gap-x-11 md:flex">
           <div className="md:flex-0 min-w-fit flex-1">
             <Link href="/" className="pointer flex items-center">
-              <Image
-                src="/jarvas.png"
-                alt="Logo"
-                width={150}
-                height={100}
-                style={{ width: "auto", height: "auto" }}
-              />
+              <Image src="/logo.svg" alt="Logo" width={150} height={100} />
             </Link>
           </div>
         </div>

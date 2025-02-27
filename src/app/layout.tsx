@@ -12,6 +12,33 @@ export const metadata: Metadata = {
   title: "Jarvas - O assistente pessoal da sua empresa",
   description:
     "Use a informação da sua empresa como um ativo com o qual pode falar",
+  referrer: "origin-when-cross-origin",
+  authors: [{ name: "Tiago Rodrigues", url: "https://tiagopbrodrigues.com" }],
+  creator: "Tiago Rodrigues",
+  keywords: ["Jarvas", "AI", "RAG", "Chatbot", "Portugês"],
+  openGraph: {
+    type: "website",
+    title: "Jarvas - O assistente pessoal da sua empresa",
+    siteName: "Ask Jarvas",
+    url: "https://askjarvas.com",
+    description:
+      "Use a informação da sua empresa como um ativo com o qual pode falar",
+    locale: "pt_PT",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  manifest: "https://askjarvas.com/manifest.json",
 };
 
 export default function RootLayout({

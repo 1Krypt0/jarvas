@@ -1,11 +1,29 @@
 import Chat from "@/components/chat";
 import Typography from "@/components/ui/typography";
-import { getMessages } from "@/db/queries";
+import { getChatById, getMessages } from "@/db/queries";
 import { auth } from "@/lib/auth";
 import { hasUserPaid } from "@/lib/stripe";
 import { convertToUIMessages } from "@/lib/utils";
+import { Metadata } from "next";
 import { headers } from "next/headers";
 import { unauthorized } from "next/navigation";
+
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // read route params
+  const id = (await params).id;
+
+  // fetch data
+  const chat = await getChatById(id);
+
+  return {
+    title: chat?.title ?? "Not found",
+  };
+}
 
 export default async function ChatPage(props: {
   params: Promise<{ id: string }>;

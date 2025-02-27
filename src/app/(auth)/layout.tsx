@@ -12,11 +12,10 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             <Link href="/" className="pointer flex items-center">
               <Image
                 priority
-                src="/jarvas.png"
+                src="/logo.svg"
                 alt="Logo"
                 width={150}
                 height={100}
-                style={{ width: "auto", height: "auto" }}
               />
             </Link>
           </div>

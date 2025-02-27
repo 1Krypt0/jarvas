@@ -8,13 +8,7 @@ export function Header() {
       <div className="flex w-full max-w-[1280px] items-center py-4 gap-x-8 px-4 md:px-8">
         <div className="md:flex-0 min-w-fit flex-1">
           <Link href="/" className="pointer flex items-center">
-            <Image
-              src="/jarvas.png"
-              alt="Logo"
-              width={150}
-              height={100}
-              style={{ width: "auto", height: "auto" }}
-            />
+            <Image src="/logo.svg" alt="Logo" width={150} height={100} />
           </Link>
         </div>
         <div className="hidden items-center md:flex">
