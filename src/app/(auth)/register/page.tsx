@@ -17,7 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Register() {
   const registerSchema = z
@@ -45,7 +46,6 @@ export default function Register() {
   });
 
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const plan = useSearchParams().get("plan") ?? "";
 
   let callbackURL = "/app";
@@ -67,7 +67,14 @@ export default function Register() {
       fetchOptions: {
         onResponse: () => setLoading(false),
         onRequest: () => setLoading(true),
-        onSuccess: () => router.push(callbackURL),
+        onSuccess: () => {
+          toast.success(
+            "A sua conta foi registada com sucesso e um email de verificação foi enviado! Por favor, verifique a sua caixa de correio.",
+            {
+              duration: 8000,
+            },
+          );
+        },
         onError: (ctx) => {
           if (ctx.error.message === "User already exists") {
             form.setError("email", {

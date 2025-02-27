@@ -40,16 +40,21 @@ export default function Login() {
     await authClient.signIn.email({
       email: values.email,
       password: values.password,
-      callbackURL: "/app",
       fetchOptions: {
         onResponse: () => setLoading(false),
         onRequest: () => setLoading(true),
         onSuccess: () => router.push("/app"),
-        onError: () => {
-          form.setError("email", { message: "Email ou password inválidos." });
-          form.setError("password", {
-            message: "Email ou password inválidos.",
-          });
+        onError: (ctx) => {
+          if (ctx.error.status === 403) {
+            form.setError("email", {
+              message: "Por favor, verifique o seu email antes de fazer login.",
+            });
+          } else {
+            form.setError("email", { message: "Email ou password inválidos." });
+            form.setError("password", {
+              message: "Email ou password inválidos.",
+            });
+          }
           setLoading(false);
         },
       },

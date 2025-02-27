@@ -7,6 +7,7 @@ import { APIError } from "better-auth/api";
 import { redis } from "./kv";
 import { stripe, StripeSubCache } from "./stripe";
 import { env } from "@/env";
+import { resend, from, createEmailTemplate } from "./email";
 
 export const auth = betterAuth({
   trustedOrigins: [env.NEXT_PUBLIC_BETTER_AUTH_URL],
@@ -17,6 +18,19 @@ export const auth = betterAuth({
   plugins: [nextCookies()],
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
+  },
+  emailVerification: {
+    autoSignInAfterVerification: true,
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ url, user }) => {
+      await resend.emails.send({
+        from,
+        to: user.email,
+        subject: "Verify your email address",
+        html: createEmailTemplate(url),
+      });
+    },
   },
   databaseHooks: {
     user: {
