@@ -74,7 +74,8 @@ export async function POST(req: Request) {
         parameters: z.object({
           query: z.string().describe("A pergunta do utilizador"),
         }),
-        execute: async ({ query }) => findRelevantContent(query),
+        execute: async ({ query }) =>
+          findRelevantContent(query, session.user.id),
       }),
     },
 

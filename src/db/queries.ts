@@ -1,4 +1,4 @@
-import { cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
+import { cosineDistance, desc, eq, gt, sql, and } from "drizzle-orm";
 import { db } from ".";
 import { message, chat, type Message, file, chunk, Chunk } from "./schema";
 import { EmbeddingModelV1Embedding } from "@ai-sdk/provider";
@@ -79,6 +79,7 @@ export const deleteFile = async (fileId: string) => {
 
 export const findSimilarDocs = async (
   queryEmbedding: EmbeddingModelV1Embedding,
+  userId: string,
 ) => {
   const similarity = sql<number>`1 - (${cosineDistance(chunk.embedding, queryEmbedding)})`;
 
@@ -89,7 +90,7 @@ export const findSimilarDocs = async (
       documentId: chunk.documentId,
     })
     .from(chunk)
-    .where(gt(similarity, 0.5))
+    .where(and(eq(chunk.userId, userId), gt(similarity, 0.5)))
     .orderBy((t) => desc(t.similarity))
     .limit(5);
 };
