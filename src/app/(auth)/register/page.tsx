@@ -78,7 +78,7 @@ export default function Register() {
         onError: (ctx) => {
           if (ctx.error.message === "User already exists") {
             form.setError("email", {
-              message: "Já existe uma conta com esse e-mail",
+              message: "Já existe uma conta com esse email",
             });
           }
           setLoading(false);

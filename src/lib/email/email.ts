@@ -3,7 +3,13 @@ import { Resend } from "resend";
 
 export const from = "noreply@askjarvas.com";
 export const resend = new Resend(env.RESEND_API_KEY);
-export const createEmailTemplate = (url: string) => `<!DOCTYPE html>
+export const createEmailTemplate = (
+  title: string,
+  description: string,
+  footer: string,
+  url: string,
+  urlText: string,
+) => `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -23,13 +29,11 @@ export const createEmailTemplate = (url: string) => `<!DOCTYPE html>
             <table style="width: 100%; background: white; border-radius: 12px; padding: 40px; box-shadow: 0 2px 16px rgba(0,0,0,0.1);">
                 <tr>
                     <td>
-                        <h2 style="color: #4A1A0D; margin-top: 0;">Verifica a tua Conta!</h2>
-                        <p style="color: #666; line-height: 1.6;">Olá! Por favor confirma o teu email para ativares a tua conta no Jarvas. Isto ajuda-nos a manter a tua conta segura.</p>
-                        
-                        <!-- Verification Code -->
+                        <h2 style="color: #4A1A0D; margin-top: 0;">${title}</h2>
+                        <p style="color: #666; line-height: 1.6;">${description}</p>
                         <div style="padding: 16px; border-radius: 8px; margin: 24px 0; text-align: center;">
                         <a href="${url}" style="background-color: #4A1A0D; color: white; padding: 16px 32px; border-radius: 8px; text-decoration: none; display: inline-block; margin: 16px 0; font-weight: 500;">
-                            Verificar Endereço
+                           ${urlText}
                         </a>
                         </div>
 
@@ -41,7 +45,7 @@ export const createEmailTemplate = (url: string) => `<!DOCTYPE html>
             <table style="width: 100%; margin-top: 24px;">
                 <tr>
                     <td style="text-align: center; color: #999; font-size: 14px;">
-                        <p style="margin: 8px 0;">Precisa de ajuda? Contacte a nossa <a href="askjarvas@gmail.com" style="color: #4A1A0D; text-decoration: none;">equipa de apoio.</a></p>
+                        <p style="margin: 8px 0;">${footer}</p>
                     </td>
                 </tr>
             </table>

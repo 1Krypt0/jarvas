@@ -7,7 +7,7 @@ import { APIError } from "better-auth/api";
 import { redis } from "./kv";
 import { stripe, StripeSubCache } from "./stripe";
 import { env } from "@/env";
-import { resend, from, createEmailTemplate } from "./email";
+import { resend, from, createEmailTemplate } from "./email/email";
 
 export const auth = betterAuth({
   trustedOrigins: [env.NEXT_PUBLIC_BETTER_AUTH_URL],
@@ -19,6 +19,20 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+    sendResetPassword: async ({ url, user }) => {
+      await resend.emails.send({
+        from,
+        to: user.email,
+        subject: "Reset your password",
+        html: createEmailTemplate(
+          "Repõe a tua password!",
+          "Recebemos um pedido para repor a password da tua conta. Se não fez este pedido, pode ignorar este e-mail sem problemas.",
+          `Se não fez um pedido de reposição de password, por favor ignore este e-mail. Precisa de ajuda? Contacte a nossa <a href="askjarvas@gmail.com" style="color: #4A1A0D; text-decoration: none;">equipa de apoio.</a>`,
+          url,
+          "Repor a Password",
+        ),
+      });
+    },
   },
   emailVerification: {
     autoSignInAfterVerification: true,
@@ -28,7 +42,13 @@ export const auth = betterAuth({
         from,
         to: user.email,
         subject: "Verify your email address",
-        html: createEmailTemplate(url),
+        html: createEmailTemplate(
+          "Verifica a tua Conta!",
+          "Olá! Por favor confirma o teu email para ativares a tua conta no Jarvas. Isto ajuda-nos a manter a tua conta segura.",
+          `Precisa de ajuda? Contacte a nossa <a href="askjarvas@gmail.com" style="color: #4A1A0D; text-decoration: none;">equipa de apoio.</a>`,
+          url,
+          "Verificar Endereço",
+        ),
       });
     },
   },
