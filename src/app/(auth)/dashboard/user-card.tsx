@@ -260,10 +260,16 @@ function ChangePasswordDialog() {
     setLoading(false);
 
     if (res.error) {
+      if (res.error.code === "CREDENTIAL_ACCOUNT_NOT_FOUND") {
+        toast.warning(
+          "A sua conta foi criada com a Google e, portanto, não tem uma password associada.",
+        );
+      } else {
+        toast.error(
+          "Ocorreu um erro ao atualizar a password. Por favor, tente de novo.",
+        );
+      }
       console.error("Error:", res.error);
-      toast.error(
-        "Ocorreu um erro ao atualizar a password. Por favor, tente de novo.",
-      );
     } else {
       setOpen(false);
       toast.success("Password atualizada com sucesso!");

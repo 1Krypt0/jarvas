@@ -16,6 +16,12 @@ export const auth = betterAuth({
     schema,
   }),
   plugins: [nextCookies()],
+  socialProviders: {
+    google: {
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    },
+  },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
