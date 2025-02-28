@@ -6,9 +6,10 @@ import { Markdown } from "./markdown";
 import cx from "classnames";
 import { MessageReasoning } from "./message-reasoning";
 import { PreviewAttachment } from "./preview-attachment";
+import MessageActions from "./message-actions";
 
 export const PreviewMessage = ({
-  // chatId,
+  chatId,
   message,
   isLoading,
   // setMessages,
@@ -24,6 +25,7 @@ export const PreviewMessage = ({
     chatRequestOptions?: ChatRequestOptions,
   ) => Promise<string | null | undefined>;
 }) => {
+  const reasoning = message.parts?.find((part) => part.type === "reasoning");
   return (
     <AnimatePresence>
       <motion.div
@@ -53,14 +55,14 @@ export const PreviewMessage = ({
               </div>
             )}
 
-            {message.reasoning && (
+            {reasoning && (
               <MessageReasoning
                 isLoading={isLoading}
-                reasoning={message.reasoning}
+                reasoning={reasoning.reasoning}
               />
             )}
 
-            {(message.content || message.reasoning) && (
+            {(message.content || reasoning?.reasoning) && (
               <div className="flex flex-row gap-2 items-start">
                 <div
                   className={cn("flex flex-col gap-4", {
@@ -73,15 +75,12 @@ export const PreviewMessage = ({
               </div>
             )}
 
-            {/* {!isReadonly && ( */}
-            {/*   <MessageActions */}
-            {/*     key={`action-${message.id}`} */}
-            {/*     chatId={chatId} */}
-            {/*     message={message} */}
-            {/*     vote={vote} */}
-            {/*     isLoading={isLoading} */}
-            {/*   /> */}
-            {/* )} */}
+            <MessageActions
+              key={`action-${message.id}`}
+              chatId={chatId}
+              message={message}
+              isLoading={isLoading}
+            />
           </div>
         </div>
       </motion.div>
