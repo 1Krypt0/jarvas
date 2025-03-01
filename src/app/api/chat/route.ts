@@ -12,7 +12,7 @@ import {
   getMostRecentUserMessage,
   sanitizeResponseMessages,
 } from "@/lib/utils";
-import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
 import { Message, smoothStream, streamText, tool } from "ai";
 import { headers } from "next/headers";
 import { v4 as uuid } from "uuid";
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
   await saveMessages([{ ...userMessage, createdAt: new Date(), chatId: id }]);
 
   const result = streamText({
-    model: openai("gpt-4o"),
+    model: google("gemini-2.0-flash-001"),
     messages,
     maxSteps: 3,
     system: `O teu nome é Jarvas, e tu és um assistente de AI na Atomic Labs. 
@@ -77,6 +77,11 @@ export async function POST(req: Request) {
         execute: async ({ query }) =>
           findRelevantContent(query, session.user.id),
       }),
+    },
+
+    onError: ({ error }) => {
+      console.error("Got an error while processing the response");
+      console.error(error);
     },
 
     onFinish: async ({ response, reasoning }) => {

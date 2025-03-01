@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ai-sdk/google": "^1.1.17",
     "@ai-sdk/openai": "^1.1.13",
     "@hookform/resolvers": "^4.1.0",
     "@langchain/community": "^0.3.32",
