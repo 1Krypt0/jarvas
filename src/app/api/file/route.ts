@@ -13,6 +13,7 @@ import {
 import { embedDocuments } from "@/lib/openai";
 import { Chunk } from "@/db/schema";
 import { hasUserPaid, trackSpending } from "@/lib/stripe";
+import { FREE_PAGE_LIMIT } from "@/lib/constants";
 
 export async function POST(req: Request) {
   const session = await auth.api.getSession({
@@ -38,6 +39,26 @@ export async function POST(req: Request) {
     }
   }
 
+  if (session.user.plan === "free") {
+    let totalPages = 0;
+    for (let i = 0; i < files.length; i++) {
+      const loader = new PDFLoader(files[i], {
+        splitPages: false,
+      });
+
+      const doc = await loader.load();
+
+      totalPages += doc[0].metadata.pdf.totalPages;
+    }
+
+    if (session.user.pagesUsed + totalPages >= FREE_PAGE_LIMIT) {
+      return new Response(
+        "Upload limit has been reached. Cannot upload this many pages",
+        { status: 401, statusText: "Limit hit" },
+      );
+    }
+  }
+
   for (let i = 0; i < files.length; i++) {
     await uploadFile(files[i], session.user.id);
   }
@@ -55,7 +76,9 @@ const uploadFile = async (file: File, userId: string) => {
 
   const doc = await loader.load();
 
-  await saveFile(documentId, fileName, doc[0].pageContent, userId);
+  const pages = doc[0].metadata.pdf.totalPages;
+
+  await saveFile(documentId, fileName, doc[0].pageContent, pages, userId);
 
   const splitter = new RecursiveCharacterTextSplitter({
     chunkSize: 1000,
@@ -88,6 +111,7 @@ const uploadFile = async (file: File, userId: string) => {
 
   await saveChunks(vectors);
 
+  // TODO: Update this
   await trackSpending(userId, "jarvas_file_uploads", "1");
 };
 

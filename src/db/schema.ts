@@ -7,7 +7,16 @@ import {
   varchar,
   vector,
   index,
+  integer,
+  pgEnum,
 } from "drizzle-orm/pg-core";
+
+export const planEnum = pgEnum("plan", [
+  "free",
+  "starter",
+  "pro",
+  "enterprise",
+]);
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -17,6 +26,9 @@ export const user = pgTable("user", {
   image: text("image"),
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
+  plan: planEnum().default("free").notNull(),
+  pagesUsed: integer("pages_used").notNull().default(0),
+  messagesUsed: integer("messages_used").notNull().default(0),
 });
 
 export const session = pgTable("session", {
@@ -90,6 +102,7 @@ export const file = pgTable("file", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   content: text("content").notNull(),
+  pages: integer("pages").notNull(),
   userId: text("user_id")
     .notNull()
     .references(() => user.id, {

@@ -67,13 +67,12 @@ export const syncStripeDataToKV = async (customerId: string) => {
 export const hasUserPaid = async (userId: string) => {
   const stripeCustomerId = (await redis.get(`stripe:user:${userId}`)) as string;
 
-  if (!stripeCustomerId) return false;
-
   const stripeStatus = (await redis.get(
     `stripe:customer:${stripeCustomerId}`,
   )) as StripeSubCache;
 
-  if (!stripeStatus) return false;
+  // NOTE: If the user is on the free tier, it means it should be restricted on page number, not payment status
+  if (!stripeStatus) return true;
 
   return stripeStatus.status === "active";
 };

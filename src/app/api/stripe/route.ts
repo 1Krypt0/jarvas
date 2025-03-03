@@ -17,21 +17,8 @@ export async function GET() {
   }
 
   const userId = session.user.id;
-  const userEmail = session.user.email;
 
-  let stripeCustomerId = (await redis.get(`stripe:user:${userId}`)) as string;
-
-  if (!stripeCustomerId) {
-    const newCustomer = await stripe.customers.create({
-      email: userEmail,
-      metadata: {
-        userId: userId,
-      },
-    });
-
-    await redis.set(`stripe:user:${userId}`, newCustomer.id);
-    stripeCustomerId = newCustomer.id;
-  }
+  const stripeCustomerId = (await redis.get(`stripe:user:${userId}`)) as string;
 
   const checkout = await stripe.checkout.sessions.create({
     customer: stripeCustomerId,
