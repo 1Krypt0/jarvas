@@ -2,24 +2,13 @@ import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";
 import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/typography";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import { ArrowUpDown, Check, Info, Timer, Workflow } from "lucide-react";
+import { ArrowUpDown, Timer, Workflow } from "lucide-react";
 import Link from "next/link";
 import { Feature } from "./feature";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import PricingCard from "@/components/pricing-card";
 
 export default async function Home() {
   const session = await auth.api.getSession({
@@ -29,6 +18,77 @@ export default async function Home() {
   if (session) {
     redirect("/app");
   }
+
+  const pricingTiers = [
+    {
+      id: "free",
+      name: "Free",
+      description: "Perfeito para experimentar e começar",
+      price: 0,
+      features: [
+        { description: "100 páginas" },
+        { description: "30 mensagens" },
+      ],
+      cta: "Use gratuitamente",
+      isPopular: false,
+    },
+    {
+      id: "starter",
+      name: "Starter",
+      description: "Para equipas e projetos de menor dimensão",
+      price: 25,
+      features: [
+        {
+          description: "10,000 páginas",
+          additional: "Páginas adicionais: 0.02€ cada",
+        },
+        {
+          description: "2,500 mensagens",
+          additional: "Mensagens adicionais: 0.05€ cada",
+        },
+      ],
+      cta: "Subscreva",
+      isPopular: false,
+    },
+    {
+      id: "pro",
+      name: "Pro",
+      description: "O ideal para a sua empresa em crescimento",
+      price: 49,
+      features: [
+        {
+          description: "25,000 páginas",
+          additional: "Páginas adicionais: 0.01€ cada",
+        },
+        {
+          description: "7,500 mensagens",
+          additional: "Mensagens adicionais: 0.02€ cada",
+        },
+      ],
+      cta: "Subscreva",
+      isPopular: true,
+    },
+    {
+      id: "enterprise",
+      name: "Enterprise",
+      description: "Para equipas grandes, com uso avançado",
+      price: 199,
+      features: [
+        {
+          description: "100,000 páginas",
+          additional: "Páginas adicionais: 0.005€ cada",
+        },
+        {
+          description: "Mensagens ilimitadas",
+        },
+        {
+          description: "Apoio dedicado",
+        },
+      ],
+      cta: "Subscreva Agora",
+      isPopular: false,
+    },
+  ];
 
   const features = [
     {
@@ -45,7 +105,7 @@ export default async function Home() {
     },
     {
       icon: Workflow,
-      headline: "Use intuitivamente",
+      headline: "Useintuitivamente",
       description:
         "O Jarvas faz uso de uma interface já comum a todos os que já interagiram com Inteligência Artificial. Não vai ter problemas em adaptar-se a esta nova ferramenta.",
     },
@@ -102,70 +162,48 @@ export default async function Home() {
           </section>
 
           <section
-            id="pricing"
+            id="Pricing"
             className="flex min-w-full flex-col items-center gap-8"
           >
-            <Typography className="max-w-2xl" variant="h1">
-              Preço simples e direto
-            </Typography>
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <Typography className="max-w-2xl" variant="h1">
+                  Preço simples e direto
+                </Typography>
+                <p className="max-w-[700px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  Um preço simples e transparente que se adapta às suas
+                  necessidades. Todos os planos incluem todas as
+                  funcionalidades.
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 gap-6 mt-12 md:grid-cols-2 lg:grid-cols-4">
+              {pricingTiers.map((tier) => (
+                <PricingCard
+                  key={tier.name}
+                  id={tier.id}
+                  name={tier.name}
+                  description={tier.description}
+                  price={tier.price}
+                  features={tier.features}
+                  cta={tier.cta}
+                  isPopular={tier.isPopular}
+                />
+              ))}
+            </div>
 
-            <Card className="w-72">
-              <CardHeader className="text-start">
-                <div className="text-center">
-                  <span className="text-5xl font-bold">49€</span>
-                  <span className="text-gray-500 dark:text-gray-400">/mês</span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ul className="mt-6 space-y-3">
-                  <li className="flex items-center justify-between">
-                    <span className="flex items-center">
-                      <Check className="mr-2 h-4 w-4 text-primary" />
-                      10 Documentos
-                    </span>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Info className="h-4 w-4 text-gray-400" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Documentos adicionais: 0.10€ cada</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span className="flex items-center">
-                      <Check className="mr-2 h-4 w-4 text-primary" />
-                      100 Mensagens
-                    </span>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Info className="h-4 w-4 text-gray-400" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Mensagens adicionais: 0.05€ cada</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-primary" />
-                    Apoio 24/7
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-primary" />
-                    Atualizações regulares
-                  </li>
-                </ul>
-              </CardContent>
-              <CardFooter>
-                <Button className="w-full">
-                  <Link href="/register">Começar Agora</Link>
-                </Button>
-              </CardFooter>
-            </Card>
+            <div className="mt-12 text-center">
+              <p className="text-muted-foreground">
+                Precisa de um plano diferente?{" "}
+                <a
+                  href="mailto:askjarvas@gmail.com"
+                  className="text-primary hover:underline"
+                >
+                  Contacte-nos
+                </a>{" "}
+                diretamente.
+              </p>
+            </div>
           </section>
         </main>
       </div>

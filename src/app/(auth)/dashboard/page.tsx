@@ -14,6 +14,8 @@ import {
   STARTER_MSG_LIMIT,
   STARTER_PAGE_LIMIT,
 } from "@/lib/constants";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 export default async function Dashboard() {
   const session = await auth.api.getSession({
@@ -50,6 +52,12 @@ export default async function Dashboard() {
   return (
     <div className="flex w-full mt-20 justify-center px-4">
       <div className="flex flex-col gap-6 mx-auto max-w-lg w-full">
+        <header>
+          <Link href="/app" className="flex gap-2">
+            <ArrowLeft size={24} />
+            <span>Voltar</span>
+          </Link>
+        </header>
         <UserCard session={session} hasPaid={hasPaid} />
         <UsageDisplay
           pageUploads={{ used: pagesUsed, limit: limits.pageUploads }}

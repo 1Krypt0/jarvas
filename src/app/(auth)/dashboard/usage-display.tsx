@@ -33,7 +33,7 @@ export default function UsageDisplay({
     <TooltipProvider>
       <Card>
         <CardHeader>
-          <CardTitle>Utilização</CardTitle>
+          <CardTitle className="text-xl">Utilização</CardTitle>
           <CardDescription>
             A sua utilização atual e os limites da sua conta.
           </CardDescription>

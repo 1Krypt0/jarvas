@@ -2,7 +2,7 @@
 
 import { ChevronsUpDown, CreditCard, LogOut, User } from "lucide-react";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +32,7 @@ export function NavUser({
     id: string;
     name: string;
     email: string;
+    image: string | null;
   };
   hasPaid: boolean;
 }) {
@@ -62,6 +63,7 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
+                <AvatarImage src={user.image || "#"} alt="Avatar" />
                 <AvatarFallback className="rounded-lg">
                   {user.name.at(0)?.toUpperCase()}
                 </AvatarFallback>
@@ -82,6 +84,7 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
+                  <AvatarImage src={user.image || "#"} alt="Avatar" />
                   <AvatarFallback className="rounded-lg">
                     {user.name.at(0)?.toUpperCase()}
                   </AvatarFallback>

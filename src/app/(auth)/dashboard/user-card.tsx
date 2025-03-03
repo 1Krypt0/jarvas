@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -70,12 +70,13 @@ export default function UserCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Utilizador</CardTitle>
+        <CardTitle className="text-xl">Perfil</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-8 grid-cols-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Avatar className="hidden h-9 w-9 sm:flex ">
+              <AvatarImage src={session.user.image || "#"} alt="Avatar" />
               <AvatarFallback>
                 {session?.user.name.at(0)?.toUpperCase()}
               </AvatarFallback>
