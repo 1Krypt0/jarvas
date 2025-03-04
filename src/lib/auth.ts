@@ -18,17 +18,49 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user) => {
+          const stripeCustomer = await stripe.customers.create({
+            email: user.email,
+            metadata: {
+              userId: user.id,
+            },
+          });
+
+          await redis.set(`stripe:user:${user.id}`, stripeCustomer.id);
+        },
+      },
+    },
+  },
   user: {
+    additionalFields: {
+      plan: {
+        type: "string",
+        defaultValue: "free",
+        input: false,
+        returned: true,
+      },
+      pagesUsed: {
+        type: "number",
+        defaultValue: 0,
+        input: false,
+        returned: true,
+      },
+      messagesUsed: {
+        type: "number",
+        defaultValue: 0,
+        input: false,
+        returned: true,
+      },
+    },
     deleteUser: {
       enabled: true,
       beforeDelete: async (user) => {
         const stripeCustomerId = (await redis.get(
           `stripe:user:${user.id}`,
         )) as string;
-
-        if (!stripeCustomerId) {
-          return;
-        }
 
         const stripeStatus = (await redis.get(
           `stripe:customer:${stripeCustomerId}`,

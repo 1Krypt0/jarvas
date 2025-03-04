@@ -20,7 +20,6 @@ import Link from "next/link";
 export const AppSidebar = ({
   documents,
   user,
-  hasPaid,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   documents: Document[];
@@ -28,15 +27,15 @@ export const AppSidebar = ({
     id: string;
     email: string;
     name: string;
+    image?: string | null | undefined;
   };
-  hasPaid: boolean;
 }) => {
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild disabled={hasPaid}>
+            <SidebarMenuButton size="lg" asChild>
               <Link href="/app">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <Command className="size-4" />
@@ -58,7 +57,7 @@ export const AppSidebar = ({
         <NavSecondary />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} hasPaid={hasPaid} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   );

@@ -1,6 +1,14 @@
 import { cosineDistance, desc, eq, gt, sql, and } from "drizzle-orm";
 import { db } from ".";
-import { message, chat, type Message, file, chunk, Chunk } from "./schema";
+import {
+  message,
+  chat,
+  type Message,
+  file,
+  chunk,
+  Chunk,
+  user,
+} from "./schema";
 import { EmbeddingModelV1Embedding } from "@ai-sdk/provider";
 
 export const getMessages = async (chatId: string) => {
@@ -35,6 +43,14 @@ export const saveMessages = async (messages: Message[]) => {
   await db.insert(message).values(messages);
 };
 
+export const saveUserMessage = async (userMessage: Message, userId: string) => {
+  await db.insert(message).values(userMessage);
+  await db
+    .update(user)
+    .set({ messagesUsed: sql`${user.messagesUsed} + 1` })
+    .where(eq(user.id, userId));
+};
+
 export const deleteChat = async (chatId: string) => {
   await db.delete(chat).where(eq(chat.id, chatId));
 };
@@ -60,9 +76,15 @@ export const saveFile = async (
   id: string,
   name: string,
   content: string,
+  pages: number,
   userId: string,
 ) => {
-  await db.insert(file).values({ id, name, content, userId });
+  await db.insert(file).values({ id, name, content, pages, userId });
+
+  await db
+    .update(user)
+    .set({ pagesUsed: sql`${user.pagesUsed} + ${pages}` })
+    .where(eq(user.id, userId));
 };
 
 export const saveChunks = async (chunks: Chunk[]) => {
@@ -74,7 +96,15 @@ export const updateFileName = async (fileId: string, newName: string) => {
 };
 
 export const deleteFile = async (fileId: string) => {
-  await db.delete(file).where(eq(file.id, fileId));
+  const [deletedFile] = await db
+    .delete(file)
+    .where(eq(file.id, fileId))
+    .returning();
+
+  await db
+    .update(user)
+    .set({ pagesUsed: sql`${user.pagesUsed} - ${deletedFile.pages}` })
+    .where(eq(user.id, deletedFile.userId));
 };
 
 export const findSimilarDocs = async (
@@ -93,4 +123,11 @@ export const findSimilarDocs = async (
     .where(and(eq(chunk.userId, userId), gt(similarity, 0.5)))
     .orderBy((t) => desc(t.similarity))
     .limit(5);
+};
+
+export const updateUserPlan = async (
+  userId: string,
+  newPlan: "free" | "starter" | "pro" | "enterprise",
+) => {
+  await db.update(user).set({ plan: newPlan }).where(eq(user.id, userId));
 };

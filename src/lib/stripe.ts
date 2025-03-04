@@ -67,13 +67,12 @@ export const syncStripeDataToKV = async (customerId: string) => {
 export const hasUserPaid = async (userId: string) => {
   const stripeCustomerId = (await redis.get(`stripe:user:${userId}`)) as string;
 
-  if (!stripeCustomerId) return false;
-
   const stripeStatus = (await redis.get(
     `stripe:customer:${stripeCustomerId}`,
   )) as StripeSubCache;
 
-  if (!stripeStatus) return false;
+  // NOTE: If the user is on the free tier, it means it should be restricted on page number, not payment status
+  if (!stripeStatus) return true;
 
   return stripeStatus.status === "active";
 };
@@ -93,5 +92,36 @@ export const trackSpending = async (
         stripe_customer_id: stripeCustomerId,
       },
     });
+  }
+};
+
+export const getStripeSubscriptionId = (
+  planId: string,
+): {
+  subId: string;
+  pageId: string;
+  msgId: string;
+} => {
+  switch (planId) {
+    case "starter":
+      return {
+        subId: env.STRIPE_STARTER_SUBSCRIPTION_ID,
+        pageId: env.STRIPE_STARTER_PAGE_ID,
+        msgId: env.STRIPE_STARTER_MSG_ID,
+      };
+    case "pro":
+      return {
+        subId: env.STRIPE_PRO_SUBSCRIPTION_ID,
+        pageId: env.STRIPE_PRO_PAGE_ID,
+        msgId: env.STRIPE_PRO_MSG_ID,
+      };
+    case "enterprise":
+      return {
+        subId: env.STRIPE_ENTERPRISE_SUBSCRIPTION_ID,
+        pageId: env.STRIPE_ENTERPRISE_PAGE_ID,
+        msgId: env.STRIPE_ENTERPRISE_MSG_ID,
+      };
+    default:
+      return { subId: "", pageId: "", msgId: "" };
   }
 };

@@ -6,6 +6,7 @@ import Messages from "./messages";
 import MultiModalInput from "./multimodal-input";
 import { Attachment, Message } from "ai";
 import { v4 as uuid } from "uuid";
+import { toast } from "sonner";
 
 export default function Chat({
   id,
@@ -30,6 +31,20 @@ export default function Chat({
     generateId: uuid,
     experimental_throttle: 100,
     sendExtraMessageFields: true,
+    onError: (error) => {
+      if (
+        error.message ===
+        "Message limit has been reached. Please upgrade to another plan"
+      ) {
+        toast.error(
+          "Infelizmente, atingiu o limite de mensagens do plano gratuito para este mês.",
+        );
+      } else {
+        toast.error(
+          "Ocorreu um erro ao processar a mensagem. Por favor, tente novamente.",
+        );
+      }
+    },
   });
 
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);

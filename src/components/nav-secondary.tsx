@@ -6,7 +6,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "./ui/sidebar";
-import Link from "next/link";
 
 export const NavSecondary = () => {
   return (
@@ -15,18 +14,18 @@ export const NavSecondary = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="sm">
-              <Link href="mailto:askjarvas@gmail.com">
+              <a href="mailto:askjarvas@gmail.com">
                 <LifeBuoy size={24} />
                 <span>Apoio</span>
-              </Link>
+              </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="sm">
-              <Link href="mailto:askjarvas@gmail.com">
+              <a href="mailto:askjarvas@gmail.com">
                 <Send />
                 <span>Feedback</span>
-              </Link>
+              </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

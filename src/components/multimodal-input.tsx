@@ -350,9 +350,15 @@ function AttachmentsButton({
     });
 
     if (!res.ok) {
-      toast.error(
-        "Ocorreu um erro ao processar o documento. Por favor, tente novamente.",
-      );
+      if (res.statusText === "Limit hit") {
+        toast.error(
+          "Infelizmente, os documentos que está a tentar carregar excedem o limite do plano gratuito.",
+        );
+      } else {
+        toast.error(
+          "Ocorreu um erro ao processar o documento. Por favor, tente novamente.",
+        );
+      }
     } else {
       toast.success("Documento processado com sucesso!");
     }

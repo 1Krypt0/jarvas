@@ -3,16 +3,18 @@ import {
   getChatById,
   saveChat,
   saveMessages,
+  saveUserMessage,
   updateChatName,
 } from "@/db/queries";
 import { auth } from "@/lib/auth";
+import { FREE_MSG_LIMIT } from "@/lib/constants";
 import { findRelevantContent } from "@/lib/rag";
 import { hasUserPaid, trackSpending } from "@/lib/stripe";
 import {
   getMostRecentUserMessage,
   sanitizeResponseMessages,
 } from "@/lib/utils";
-import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
 import { Message, smoothStream, streamText, tool } from "ai";
 import { headers } from "next/headers";
 import { v4 as uuid } from "uuid";
@@ -39,6 +41,16 @@ export async function POST(req: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
+  if (
+    session.user.plan === "free" &&
+    session.user.messagesUsed === FREE_MSG_LIMIT
+  ) {
+    return new Response(
+      "Message limit has been reached. Please upgrade to another plan",
+      { status: 401, statusText: "Limit hit" },
+    );
+  }
+
   const userMessage = getMostRecentUserMessage(messages);
 
   if (!userMessage) {
@@ -52,10 +64,13 @@ export async function POST(req: Request) {
     await saveChat(id, title, session.user.id);
   }
 
-  await saveMessages([{ ...userMessage, createdAt: new Date(), chatId: id }]);
+  await saveUserMessage(
+    { ...userMessage, createdAt: new Date(), chatId: id },
+    session.user.id,
+  );
 
   const result = streamText({
-    model: openai("gpt-4o"),
+    model: google("gemini-2.0-flash-001"),
     messages,
     maxSteps: 3,
     system: `O teu nome é Jarvas, e tu és um assistente de AI na Atomic Labs. 
@@ -79,6 +94,11 @@ export async function POST(req: Request) {
       }),
     },
 
+    onError: ({ error }) => {
+      console.error("Got an error while processing the response");
+      console.error(error);
+    },
+
     onFinish: async ({ response, reasoning }) => {
       try {
         const sanitizedResponseMessages = sanitizeResponseMessages({
@@ -97,6 +117,8 @@ export async function POST(req: Request) {
             };
           }),
         );
+
+        // TODO: Update this
         await trackSpending(session.user.id, "jarvas_chat_messages", "1");
       } catch (error) {
         console.error("Failed to save chat");
