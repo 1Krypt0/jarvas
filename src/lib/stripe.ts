@@ -3,7 +3,7 @@ import { redis } from "./kv";
 import { env } from "@/env";
 
 export const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-  apiVersion: "2025-01-27.acacia",
+  apiVersion: "2025-02-24.acacia",
 });
 
 export const stripeRedirectURL = env.STRIPE_REDIRECT_BASE_URL;

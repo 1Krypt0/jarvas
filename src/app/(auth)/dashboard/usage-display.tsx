@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/tooltip";
 import { AlertCircle, FileText, MessageSquareText } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
 
 export default function UsageDisplay({
   pageUploads,

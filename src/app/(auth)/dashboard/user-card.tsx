@@ -32,8 +32,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient, type Session } from "@/lib/auth-client";
-import { CreditCard, Edit, Key, Loader2, LogOut } from "lucide-react";
-import Link from "next/link";
+import { Edit, Key, Loader2, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
