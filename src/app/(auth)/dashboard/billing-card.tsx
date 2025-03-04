@@ -119,7 +119,7 @@ export default function BillingCard({
         <div className="pt-4">
           {hasPaid && currentPlan.id !== "free" && (
             <Button size="sm" className="gap-2" variant="secondary" asChild>
-              <Link href="https://billing.stripe.com/p/login/test_6oEaGV2yKd0o14Q6oo">
+              <Link href={env.NEXT_PUBLIC_STRIPE_BILLING_LINK}>
                 <CreditCard />
                 Gerir Subscrição
               </Link>

@@ -37,13 +37,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function UserCard({
-  session,
-  hasPaid,
-}: {
-  session: Session;
-  hasPaid: boolean;
-}) {
+export default function UserCard({ session }: { session: Session }) {
   const router = useRouter();
   const [isSignOut, setIsSignOut] = useState<boolean>(false);
 

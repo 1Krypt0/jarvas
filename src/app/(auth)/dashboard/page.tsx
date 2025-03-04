@@ -59,8 +59,8 @@ export default async function Dashboard() {
             <span>Voltar</span>
           </Link>
         </header>
-        <UserCard session={session} hasPaid={hasPaid} />
-        <BillingCard session={session} />
+        <UserCard session={session} />
+        <BillingCard session={session} hasPaid={hasPaid} />
         <UsageDisplay
           pageUploads={{ used: pagesUsed, limit: limits.pageUploads }}
           messages={{ used: messages, limit: limits.messages }}

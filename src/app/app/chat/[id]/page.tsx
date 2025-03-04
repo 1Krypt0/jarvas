@@ -14,10 +14,8 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  // read route params
   const id = (await params).id;
 
-  // fetch data
   const chat = await getChatById(id);
 
   return {
