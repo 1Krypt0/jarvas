@@ -118,7 +118,6 @@ export async function POST(req: Request) {
           }),
         );
 
-        // TODO: Update this
         await trackSpending(session.user.id, "jarvas_chat_messages", "1");
       } catch (error) {
         console.error("Failed to save chat");

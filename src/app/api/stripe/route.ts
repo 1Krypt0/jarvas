@@ -56,7 +56,6 @@ export async function GET(req: Request) {
     );
   }
 
-  // NOTE: User was on free tier and is upgrading to a paid one
   if (!currentSubscriptionStatus) {
     const checkoutId = await createSubscription(
       stripeCustomerId,

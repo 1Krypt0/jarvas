@@ -71,7 +71,6 @@ export const hasUserPaid = async (userId: string) => {
     `stripe:customer:${stripeCustomerId}`,
   )) as StripeSubCache;
 
-  // NOTE: If the user is on the free tier, it means it should be restricted on page number, not payment status
   if (!stripeStatus) return true;
 
   return stripeStatus.status === "active";

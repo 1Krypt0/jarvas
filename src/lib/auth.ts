@@ -106,7 +106,6 @@ export const auth = betterAuth({
           `stripe:customer:${stripeCustomerId}`,
         )) as StripeSubCache;
 
-        // NOTE: If its not found, the user has not passed through checkout
         if (!stripeStatus) {
           await redis.del(`stripe:user:${user.id}`);
           return;

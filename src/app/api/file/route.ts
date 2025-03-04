@@ -76,7 +76,7 @@ const uploadFile = async (file: File, userId: string) => {
 
   const doc = await loader.load();
 
-  const pages = doc[0].metadata.pdf.totalPages;
+  const pages = doc[0].metadata.pdf.totalPages as number;
 
   await saveFile(documentId, fileName, doc[0].pageContent, pages, userId);
 
@@ -111,8 +111,7 @@ const uploadFile = async (file: File, userId: string) => {
 
   await saveChunks(vectors);
 
-  // TODO: Update this
-  await trackSpending(userId, "jarvas_file_uploads", "1");
+  await trackSpending(userId, "jarvas_file_uploads", pages.toString());
 };
 
 export async function PATCH(req: Request) {
