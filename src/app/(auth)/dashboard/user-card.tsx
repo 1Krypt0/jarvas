@@ -32,12 +32,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient, type Session } from "@/lib/auth-client";
-import { CreditCard, Edit, Loader2, LogOut } from "lucide-react";
-import Link from "next/link";
+import { Edit, Loader2, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
-import { env } from "@/env";
 import { toast } from "sonner";
 
 export default function UserCard({
@@ -49,23 +46,6 @@ export default function UserCard({
 }) {
   const router = useRouter();
   const [isSignOut, setIsSignOut] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const handleBilling = async () => {
-    setLoading(true);
-    const res = await fetch("/api/stripe");
-    if (!res.ok) {
-      toast.error(
-        "Ocorreu um erro ao processar a subscrição. Por favor tente de novo. Se o problema persistir, por favor contacte-nos.",
-      );
-      return;
-    }
-    const { id } = await res.json();
-
-    const stripe = await loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-    setLoading(false);
-    await stripe?.redirectToCheckout({ sessionId: id });
-  };
 
   return (
     <Card>
@@ -90,32 +70,6 @@ export default function UserCard({
           </div>
           <div className="flex flex-col gap-2">
             <EditUserDialog name={session.user.name} />
-
-            {hasPaid ? (
-              <Button size="sm" className="gap-2" variant="secondary" asChild>
-                <Link href="https://billing.stripe.com/p/login/test_6oEaGV2yKd0o14Q6oo">
-                  <CreditCard />
-                  Gerir Subscrição
-                </Link>
-              </Button>
-            ) : (
-              <Button
-                size="sm"
-                className="gap-2"
-                variant="secondary"
-                onClick={handleBilling}
-                disabled={loading}
-              >
-                {loading ? (
-                  <Loader2 size={15} className="animate-spin" />
-                ) : (
-                  <>
-                    <CreditCard />
-                    Configurar Subscrição
-                  </>
-                )}
-              </Button>
-            )}
           </div>
         </div>
       </CardContent>

@@ -1,0 +1,207 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { env } from "@/env";
+import { Session } from "@/lib/auth-client";
+import { pricingTiers } from "@/lib/constants";
+import { loadStripe } from "@stripe/stripe-js";
+import { Check, ChevronRight, CreditCard, Info, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+
+export default function BillingCard({
+  session,
+  hasPaid,
+}: {
+  session: Session;
+  hasPaid: boolean;
+}) {
+  const currentPlan = pricingTiers.find(
+    (tier) => tier.id === session.user.plan,
+  ) ?? { id: "", name: "", price: 0, features: [] };
+
+  const [loading, setLoading] = useState<Record<string, boolean>>({});
+  const router = useRouter();
+
+  const handleBilling = async (newPlanId: string) => {
+    setLoading((prev) => ({ ...prev, [newPlanId]: true }));
+
+    const res = await fetch(`/api/stripe?plan=${newPlanId}`);
+
+    if (!res.ok) {
+      switch (res.statusText) {
+        case "Unresolved Subscription":
+          toast.error(
+            "O seu estado de subscrição atual não o permite trocar de plano.",
+          );
+          break;
+        default:
+          toast.error(
+            "Ocorreu um erro ao processar a subscrição. Por favor tente de novo. Se o problema persistir, por favor contacte-nos.",
+          );
+          break;
+      }
+
+      setLoading((prev) => ({ ...prev, [newPlanId]: false }));
+      return;
+    }
+
+    const { id } = await res.json();
+
+    if (id) {
+      const stripe = await loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+      setLoading((prev) => ({ ...prev, [newPlanId]: false }));
+      await stripe?.redirectToCheckout({ sessionId: id });
+    } else {
+      setLoading((prev) => ({ ...prev, [newPlanId]: false }));
+      toast.success("O seu plano foi atualizado com sucesso!");
+    }
+
+    router.refresh();
+  };
+
+  return (
+    <Card id="billing">
+      <CardHeader>
+        <CardTitle className="text-xl">Plano</CardTitle>
+        <CardDescription>
+          O seu plano atual é o {currentPlan?.name}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <p className="text-5xl font-bold">
+              {currentPlan?.price}€
+              <span className="text-sm font-normal text-muted-foreground">
+                /mês
+              </span>
+            </p>
+          </div>
+          <div>
+            <ul className="space-y-2 grid grid-cols-2 pt-4">
+              {currentPlan?.features.map((feature) => (
+                <li className="flex items-center" key={feature.description}>
+                  <Check className="mr-2 h-4 w-4 text-primary" />
+                  <span>{feature.description}</span>
+                </li>
+              ))}
+
+              <li className="flex items-center">
+                <Check className="mr-2 h-4 w-4 text-primary" />
+                <span>Apoio 24/7</span>
+              </li>
+              <li className="flex items-center">
+                <Check className="mr-2 h-4 w-4 text-primary" />
+                <span>Atualizações regulares</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="pt-4">
+          {hasPaid && currentPlan.id !== "free" && (
+            <Button size="sm" className="gap-2" variant="secondary" asChild>
+              <Link href="https://billing.stripe.com/p/login/test_6oEaGV2yKd0o14Q6oo">
+                <CreditCard />
+                Gerir Subscrição
+              </Link>
+            </Button>
+          )}
+        </div>
+
+        <Separator className="my-8" />
+        <h3 className="text-xl font-bold mb-4">Mudança de Plano</h3>
+        <h5 className="text-sm text-muted-foreground">
+          Sente que o plano atual não é suficiente? Que é demasiado para as suas
+          necessidades? Veja as nossa restantes ofertas aqui.
+        </h5>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 pt-8">
+          {pricingTiers
+            .filter((plan) => plan.id !== currentPlan.id)
+            .map((plan) => (
+              <Card key={plan.id} className="flex flex-col">
+                <CardHeader>
+                  <CardTitle className="text-xl">{plan.name}</CardTitle>
+                  <CardDescription>
+                    {currentPlan?.price < plan.price
+                      ? `Faça upgrada para o ${plan.name} e desbloqueie novos limites`
+                      : `Reduza para o plano ${plan.name}`}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <p className="text-3xl font-bold mb-4">
+                    {plan.price}€
+                    <span className="text-sm font-normal text-muted-foreground">
+                      /mês
+                    </span>
+                  </p>
+                  <ul className="space-y-2">
+                    {plan.features.map((feature) => (
+                      <li
+                        key={feature.description}
+                        className="flex text-start items-center justify-between"
+                      >
+                        <div className="flex text-start items-center">
+                          <Check className="mr-2 h-4 w-4 text-primary" />
+                          <span>{feature.description}</span>
+                        </div>
+
+                        {feature.additional && (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Info className="h-4 w-4 text-gray-400" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{feature.additional}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+                <CardFooter>
+                  <Button
+                    className="w-full"
+                    onClick={() => handleBilling(plan.id)}
+                    disabled={loading[plan.id]}
+                  >
+                    {loading[plan.id] ? (
+                      <Loader2 size={15} className="animate-spin" />
+                    ) : (
+                      <>
+                        Mude para o {plan.name}
+                        <ChevronRight className="ml-2 h-4 w-4" />
+                      </>
+                    )}
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+        </div>
+      </CardContent>
+
+      <CardFooter className="gap-2 justify-between items-center"></CardFooter>
+    </Card>
+  );
+}

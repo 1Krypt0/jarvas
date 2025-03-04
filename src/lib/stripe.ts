@@ -94,3 +94,34 @@ export const trackSpending = async (
     });
   }
 };
+
+export const getStripeSubscriptionId = (
+  planId: string,
+): {
+  subId: string;
+  pageId: string;
+  msgId: string;
+} => {
+  switch (planId) {
+    case "starter":
+      return {
+        subId: env.STRIPE_STARTER_SUBSCRIPTION_ID,
+        pageId: env.STRIPE_STARTER_PAGE_ID,
+        msgId: env.STRIPE_STARTER_MSG_ID,
+      };
+    case "pro":
+      return {
+        subId: env.STRIPE_PRO_SUBSCRIPTION_ID,
+        pageId: env.STRIPE_PRO_PAGE_ID,
+        msgId: env.STRIPE_PRO_MSG_ID,
+      };
+    case "enterprise":
+      return {
+        subId: env.STRIPE_ENTERPRISE_SUBSCRIPTION_ID,
+        pageId: env.STRIPE_ENTERPRISE_PAGE_ID,
+        msgId: env.STRIPE_ENTERPRISE_MSG_ID,
+      };
+    default:
+      return { subId: "", pageId: "", msgId: "" };
+  }
+};

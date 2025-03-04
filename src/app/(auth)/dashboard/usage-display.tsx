@@ -84,7 +84,6 @@ export default function UsageDisplay({
                 <div className="flex items-center gap-2">
                   <MessageSquareText className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm font-medium">Mensagens</span>
-                  <Badge variant="outline">Este mês</Badge>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="text-sm font-medium">{messages.used}</span>

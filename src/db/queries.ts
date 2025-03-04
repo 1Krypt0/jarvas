@@ -10,16 +10,6 @@ import {
   user,
 } from "./schema";
 import { EmbeddingModelV1Embedding } from "@ai-sdk/provider";
-import {
-  ENTERPRISE_MSG_LIMIT,
-  ENTERPRISE_PAGE_LIMIT,
-  FREE_MSG_LIMIT,
-  FREE_PAGE_LIMIT,
-  PRO_MSG_LIMIT,
-  PRO_PAGE_LIMIT,
-  STARTER_MSG_LIMIT,
-  STARTER_PAGE_LIMIT,
-} from "@/lib/constants";
 
 export const getMessages = async (chatId: string) => {
   return await db.select().from(message).where(eq(message.chatId, chatId));
@@ -133,4 +123,11 @@ export const findSimilarDocs = async (
     .where(and(eq(chunk.userId, userId), gt(similarity, 0.5)))
     .orderBy((t) => desc(t.similarity))
     .limit(5);
+};
+
+export const updateUserPlan = async (
+  userId: string,
+  newPlan: "free" | "starter" | "pro" | "enterprise",
+) => {
+  await db.update(user).set({ plan: newPlan }).where(eq(user.id, userId));
 };

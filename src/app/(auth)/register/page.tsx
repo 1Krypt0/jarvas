@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function Register() {
   const registerSchema = z
@@ -46,17 +46,28 @@ export default function Register() {
 
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const plan = useSearchParams().get("plan") ?? "";
+
+  let callbackURL = "/app";
+
+  switch (plan) {
+    case "starter":
+    case "pro":
+    case "enterprise":
+      callbackURL = "/dashboard#billing";
+      break;
+  }
 
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
     await authClient.signUp.email({
       email: values.email,
       password: values.password,
       name: values.name,
-      callbackURL: "/app",
+      callbackURL,
       fetchOptions: {
         onResponse: () => setLoading(false),
         onRequest: () => setLoading(true),
-        onSuccess: () => router.push("/app"),
+        onSuccess: () => router.push(callbackURL),
         onError: (ctx) => {
           if (ctx.error.message === "User already exists") {
             form.setError("email", {

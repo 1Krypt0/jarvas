@@ -21,7 +21,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
       </div>
-      <div className="mx-auto flex h-full w-full max-w-[1280px] flex-1 justify-center">
+      <div className="mx-auto my-20 flex h-full w-full max-w-[1280px] flex-1 justify-center">
         {children}
       </div>
 

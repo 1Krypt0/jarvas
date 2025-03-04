@@ -16,6 +16,7 @@ import {
 } from "@/lib/constants";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import BillingCard from "./billing-card";
 
 export default async function Dashboard() {
   const session = await auth.api.getSession({
@@ -50,8 +51,8 @@ export default async function Dashboard() {
   const messages = session.user.messagesUsed;
 
   return (
-    <div className="flex w-full mt-20 justify-center px-4">
-      <div className="flex flex-col gap-6 mx-auto max-w-lg w-full">
+    <div className="flex w-full my-8 justify-center px-4">
+      <div className="flex flex-col gap-6 mx-auto max-w-4xl w-full">
         <header>
           <Link href="/app" className="flex gap-2">
             <ArrowLeft size={24} />
@@ -59,6 +60,7 @@ export default async function Dashboard() {
           </Link>
         </header>
         <UserCard session={session} hasPaid={hasPaid} />
+        <BillingCard session={session} />
         <UsageDisplay
           pageUploads={{ used: pagesUsed, limit: limits.pageUploads }}
           messages={{ used: messages, limit: limits.messages }}

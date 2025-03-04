@@ -22,14 +22,12 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
-          console.log("Creating new customer");
           const stripeCustomer = await stripe.customers.create({
             email: user.email,
             metadata: {
               userId: user.id,
             },
           });
-          console.log("Setting customer in redis");
 
           await redis.set(`stripe:user:${user.id}`, stripeCustomer.id);
         },

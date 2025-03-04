@@ -26,9 +26,9 @@ export const user = pgTable("user", {
   image: text("image"),
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
-  plan: planEnum().default("free").notNull(),
-  pagesUsed: integer("pages_used").notNull().default(0),
-  messagesUsed: integer("messages_used").notNull().default(0),
+  plan: text("plan"),
+  pagesUsed: integer("pages_used"),
+  messagesUsed: integer("messages_used"),
 });
 
 export const session = pgTable("session", {

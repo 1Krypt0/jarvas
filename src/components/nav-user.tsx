@@ -20,38 +20,19 @@ import {
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { loadStripe } from "@stripe/stripe-js";
-import { env } from "@/env";
-import { toast } from "sonner";
 
 export function NavUser({
   user,
-  hasPaid,
 }: {
   user: {
     id: string;
     name: string;
     email: string;
-    image: string | null;
+    image?: string | null | undefined;
   };
-  hasPaid: boolean;
 }) {
   const { isMobile } = useSidebar();
   const router = useRouter();
-
-  const handleBilling = async () => {
-    const res = await fetch("/api/stripe");
-    if (!res.ok) {
-      toast.error(
-        "Ocorreu um erro ao processar a subscrição. Por favor tente de novo. Se o problema persistir, por favor contacte-nos.",
-      );
-      return;
-    }
-    const { id } = await res.json();
-
-    const stripe = await loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-    await stripe?.redirectToCheckout({ sessionId: id });
-  };
 
   return (
     <SidebarMenu>
@@ -107,24 +88,11 @@ export function NavUser({
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => {
-                  if (hasPaid) {
-                    router.push(env.NEXT_PUBLIC_STRIPE_BILLING_LINK);
-                  } else {
-                    handleBilling();
-                  }
+                  router.push("/dashboard#billing");
                 }}
               >
-                {hasPaid ? (
-                  <>
-                    <CreditCard />
-                    Gerir Subscrição
-                  </>
-                ) : (
-                  <>
-                    <CreditCard />
-                    Configurar Subscrição
-                  </>
-                )}
+                <CreditCard />
+                Configurar Subscrição
               </DropdownMenuItem>
               {/* <DropdownMenuItem> */}
               {/*   <Bell /> */}
