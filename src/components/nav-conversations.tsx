@@ -71,6 +71,8 @@ export const NavConversations = () => {
     if (deleteId === id) {
       router.push("/");
     }
+
+    router.refresh();
   };
 
   if (isLoading) {
