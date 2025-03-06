@@ -7,7 +7,8 @@ import {
   updateChatName,
 } from "@/db/queries";
 import { auth } from "@/lib/auth";
-import { FREE_MSG_LIMIT } from "@/lib/constants";
+import { FREE_MSG_LIMIT, getLimits, WARN_USER_LIMIT } from "@/lib/constants";
+import { warnUserLimit } from "@/lib/email/email";
 import { findRelevantContent } from "@/lib/rag";
 import { hasUserPaid, trackSpending } from "@/lib/stripe";
 import {
@@ -134,6 +135,18 @@ export async function POST(req: Request) {
 
         if (session.user.plan !== "free") {
           await trackSpending(session.user.id, "jarvas_chat_messages", "1");
+
+          const limits = getLimits(session.user.plan);
+          const pastUsage = session.user.messagesUsed / limits.messages;
+          const newUsage = (session.user.messagesUsed + 1) / limits.messages;
+
+          if (newUsage >= WARN_USER_LIMIT && pastUsage < WARN_USER_LIMIT) {
+            await warnUserLimit(
+              session.user.email,
+              "message",
+              Math.round(newUsage * 100),
+            );
+          }
         }
       } catch (error) {
         console.error("Failed to save chat");

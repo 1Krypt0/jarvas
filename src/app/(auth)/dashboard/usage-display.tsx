@@ -24,7 +24,7 @@ export default function UsageDisplay({
   messages,
 }: {
   pageUploads: { used: number; limit: number };
-  messages: { used: number; limit: number | null };
+  messages: { used: number; limit: number };
 }) {
   const [isHovering, setIsHovering] = useState<string | null>(null);
 

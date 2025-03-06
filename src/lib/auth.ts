@@ -29,7 +29,7 @@ export const auth = betterAuth({
       await resend.emails.send({
         from,
         to: user.email,
-        subject: "Reset your password",
+        subject: "Reponha a sua password",
         html: createEmailTemplate(
           "Repõe a tua password!",
           "Recebemos um pedido para repor a password da tua conta. Se não fez este pedido, pode ignorar este e-mail sem problemas.",
@@ -47,7 +47,7 @@ export const auth = betterAuth({
       await resend.emails.send({
         from,
         to: user.email,
-        subject: "Verify your email address",
+        subject: "Verifique o seu email",
         html: createEmailTemplate(
           "Verifica a tua Conta!",
           "Olá! Por favor confirma o teu email para ativares a tua conta no Jarvas. Isto ajuda-nos a manter a tua conta segura.",

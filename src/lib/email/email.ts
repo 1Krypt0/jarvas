@@ -3,18 +3,18 @@ import { Resend } from "resend";
 
 export const from = "noreply@askjarvas.com";
 export const resend = new Resend(env.RESEND_API_KEY);
+
 export const createEmailTemplate = (
   title: string,
   description: string,
   footer: string,
-  url: string,
-  urlText: string,
+  url?: string,
+  urlText?: string,
 ) => `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>Jarvas Account Verification</title>
 </head>
 <body style="background-color: #FFE5E0; margin: 0; padding: 20px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;">
     <center style="width: 100%;">
@@ -31,11 +31,16 @@ export const createEmailTemplate = (
                     <td>
                         <h2 style="color: #4A1A0D; margin-top: 0;">${title}</h2>
                         <p style="color: #666; line-height: 1.6;">${description}</p>
-                        <div style="padding: 16px; border-radius: 8px; margin: 24px 0; text-align: center;">
-                        <a href="${url}" style="background-color: #4A1A0D; color: white; padding: 16px 32px; border-radius: 8px; text-decoration: none; display: inline-block; margin: 16px 0; font-weight: 500;">
+
+                        ${
+                          url
+                            ? `<div style="padding: 16px; border-radius: 8px; margin: 24px 0; text-align: center;">
+                            <a href="${url}" style="background-color: #4A1A0D; color: white; padding: 16px 32px; border-radius: 8px; text-decoration: none; display: inline-block; margin: 16px 0; font-weight: 500;">
                            ${urlText}
                         </a>
-                        </div>
+                        </div>`
+                            : ""
+                        }
 
                     </td>
                 </tr>
@@ -53,3 +58,21 @@ export const createEmailTemplate = (
     </center>
 </body>
 </html>`;
+
+export const warnUserLimit = async (
+  email: string,
+  type: "page" | "message",
+  amount: number,
+) => {
+  const resource = type === "page" ? "Páginas" : "Mensagens";
+  await resend.emails.send({
+    from,
+    to: email,
+    subject: `Atingiu ${amount}% do seu limite de utilização de ${resource}`,
+    html: createEmailTemplate(
+      "Está prestes a atingir o limite!",
+      `Reparamos que atingiu ${amount}% do seu limite de ${resource} para este mês. Estamos a enviar este e-mail para o relembrar que, atingindo os 100%, qualquer uso extra irá incorrer custos adicionais.`,
+      `Precisa de ajuda? Contacte a nossa <a href="askjarvas@gmail.com" style="color: #4A1A0D; text-decoration: none;">equipa de apoio.</a>`,
+    ),
+  });
+};

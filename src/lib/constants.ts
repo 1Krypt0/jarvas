@@ -12,6 +12,26 @@ export const PRO_PAGE_LIMIT = 25000;
 export const ENTERPRISE_PAGE_LIMIT = 100000;
 export const ENTERPRISE_MSG_LIMIT = Number.MAX_SAFE_INTEGER;
 
+export const WARN_USER_LIMIT = 0.9;
+
+export const getLimits = (plan: string) => {
+  switch (plan) {
+    case "free":
+      return { pageUploads: FREE_PAGE_LIMIT, messages: FREE_MSG_LIMIT };
+    case "starter":
+      return { pageUploads: STARTER_PAGE_LIMIT, messages: STARTER_MSG_LIMIT };
+    case "pro":
+      return { pageUploads: PRO_PAGE_LIMIT, messages: PRO_MSG_LIMIT };
+    case "enterprise":
+      return {
+        pageUploads: ENTERPRISE_PAGE_LIMIT,
+        messages: Number.MAX_SAFE_INTEGER,
+      };
+    default:
+      return { pageUploads: FREE_PAGE_LIMIT, messages: FREE_MSG_LIMIT };
+  }
+};
+
 export type PricingTierDisplay = {
   id: string;
   name: string;
