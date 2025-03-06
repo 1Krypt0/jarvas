@@ -60,13 +60,21 @@ export async function POST(req: Request) {
   }
 
   for (let i = 0; i < files.length; i++) {
-    await uploadFile(files[i], session.user.id);
+    await uploadFile(
+      files[i],
+      session.user.id,
+      session.user.plan as "free" | "starter" | "pro" | "enterprise",
+    );
   }
 
   return new Response("File uploaded", { status: 200 });
 }
 
-const uploadFile = async (file: File, userId: string) => {
+const uploadFile = async (
+  file: File,
+  userId: string,
+  plan: "free" | "starter" | "pro" | "enterprise",
+) => {
   const documentId = uuid();
   const fileName = file.name.split(".")[0];
 
@@ -111,7 +119,9 @@ const uploadFile = async (file: File, userId: string) => {
 
   await saveChunks(vectors);
 
-  await trackSpending(userId, "jarvas_file_uploads", pages.toString());
+  if (plan !== "free") {
+    await trackSpending(userId, "jarvas_file_uploads", pages.toString());
+  }
 };
 
 export async function PATCH(req: Request) {

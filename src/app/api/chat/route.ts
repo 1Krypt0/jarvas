@@ -132,7 +132,9 @@ export async function POST(req: Request) {
           }),
         );
 
-        await trackSpending(session.user.id, "jarvas_chat_messages", "1");
+        if (session.user.plan !== "free") {
+          await trackSpending(session.user.id, "jarvas_chat_messages", "1");
+        }
       } catch (error) {
         console.error("Failed to save chat");
         console.error(error);
