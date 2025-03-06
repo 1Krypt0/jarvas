@@ -72,7 +72,7 @@ export const warnUserLimit = async (
     html: createEmailTemplate(
       "Está prestes a atingir o limite!",
       `Reparamos que atingiu ${amount}% do seu limite de ${resource} para este mês. Estamos a enviar este e-mail para o relembrar que, atingindo os 100%, qualquer uso extra irá incorrer custos adicionais.`,
-      `Precisa de ajuda? Contacte a nossa <a href="askjarvas@gmail.com" style="color: #4A1A0D; text-decoration: none;">equipa de apoio.</a>`,
+      `Precisa de ajuda? Contacte a nossa <a href="mailto:askjarvas@gmail.com" style="color: #4A1A0D; text-decoration: none;">equipa de apoio.</a>`,
     ),
   });
 };
