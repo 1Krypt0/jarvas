@@ -68,7 +68,7 @@ export async function POST(req: Request) {
   if (session.user.plan !== "free") {
     await trackSpending(
       session.user.id,
-      "jarvas_file_uploads",
+      "jarvas_page_uploads",
       totalPages.toString(),
     );
 
