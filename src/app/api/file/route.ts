@@ -13,7 +13,8 @@ import {
 import { embedDocuments } from "@/lib/openai";
 import { Chunk } from "@/db/schema";
 import { hasUserPaid, trackSpending } from "@/lib/stripe";
-import { FREE_PAGE_LIMIT } from "@/lib/constants";
+import { FREE_PAGE_LIMIT, getLimits, WARN_USER_LIMIT } from "@/lib/constants";
+import { warnUserLimit } from "@/lib/email/email";
 
 export async function POST(req: Request) {
   const session = await auth.api.getSession({
@@ -39,42 +40,55 @@ export async function POST(req: Request) {
     }
   }
 
-  if (session.user.plan === "free") {
-    let totalPages = 0;
-    for (let i = 0; i < files.length; i++) {
-      const loader = new PDFLoader(files[i], {
-        splitPages: false,
-      });
+  let totalPages = 0;
+  for (let i = 0; i < files.length; i++) {
+    const loader = new PDFLoader(files[i], {
+      splitPages: false,
+    });
 
-      const doc = await loader.load();
+    const doc = await loader.load();
 
-      totalPages += doc[0].metadata.pdf.totalPages;
-    }
+    totalPages += doc[0].metadata.pdf.totalPages;
+  }
 
-    if (session.user.pagesUsed + totalPages >= FREE_PAGE_LIMIT) {
-      return new Response(
-        "Upload limit has been reached. Cannot upload this many pages",
-        { status: 401, statusText: "Limit hit" },
-      );
-    }
+  if (
+    session.user.plan === "free" &&
+    session.user.pagesUsed + totalPages >= FREE_PAGE_LIMIT
+  ) {
+    return new Response(
+      "Upload limit has been reached. Cannot upload this many pages",
+      { status: 401, statusText: "Limit hit" },
+    );
   }
 
   for (let i = 0; i < files.length; i++) {
-    await uploadFile(
-      files[i],
+    await uploadFile(files[i], session.user.id);
+  }
+
+  if (session.user.plan !== "free") {
+    await trackSpending(
       session.user.id,
-      session.user.plan as "free" | "starter" | "pro" | "enterprise",
+      "jarvas_page_uploads",
+      totalPages.toString(),
     );
+
+    const limits = getLimits(session.user.plan);
+    const pastUsage = session.user.pagesUsed / limits.pageUploads;
+    const newUsage = (session.user.pagesUsed + totalPages) / limits.pageUploads;
+
+    if (newUsage >= WARN_USER_LIMIT && pastUsage < WARN_USER_LIMIT) {
+      await warnUserLimit(
+        session.user.email,
+        "page",
+        Math.round(newUsage * 100),
+      );
+    }
   }
 
   return new Response("File uploaded", { status: 200 });
 }
 
-const uploadFile = async (
-  file: File,
-  userId: string,
-  plan: "free" | "starter" | "pro" | "enterprise",
-) => {
+const uploadFile = async (file: File, userId: string) => {
   const documentId = uuid();
   const fileName = file.name.split(".")[0];
 
@@ -118,10 +132,6 @@ const uploadFile = async (
   }
 
   await saveChunks(vectors);
-
-  if (plan !== "free") {
-    await trackSpending(userId, "jarvas_file_uploads", pages.toString());
-  }
 };
 
 export async function PATCH(req: Request) {

@@ -29,11 +29,11 @@ export const auth = betterAuth({
       await resend.emails.send({
         from,
         to: user.email,
-        subject: "Reset your password",
+        subject: "Reponha a sua password",
         html: createEmailTemplate(
           "Repõe a tua password!",
           "Recebemos um pedido para repor a password da tua conta. Se não fez este pedido, pode ignorar este e-mail sem problemas.",
-          `Se não fez um pedido de reposição de password, por favor ignore este e-mail. Precisa de ajuda? Contacte a nossa <a href="askjarvas@gmail.com" style="color: #4A1A0D; text-decoration: none;">equipa de apoio.</a>`,
+          `Se não fez um pedido de reposição de password, por favor ignore este e-mail. Precisa de ajuda? Contacte a nossa <a href="mailto:askjarvas@gmail.com" style="color: #4A1A0D; text-decoration: none;">equipa de apoio.</a>`,
           url,
           "Repor a Password",
         ),
@@ -47,11 +47,11 @@ export const auth = betterAuth({
       await resend.emails.send({
         from,
         to: user.email,
-        subject: "Verify your email address",
+        subject: "Verifique o seu email",
         html: createEmailTemplate(
           "Verifica a tua Conta!",
           "Olá! Por favor confirma o teu email para ativares a tua conta no Jarvas. Isto ajuda-nos a manter a tua conta segura.",
-          `Precisa de ajuda? Contacte a nossa <a href="askjarvas@gmail.com" style="color: #4A1A0D; text-decoration: none;">equipa de apoio.</a>`,
+          `Precisa de ajuda? Contacte a nossa <a href="mailto:askjarvas@gmail.com" style="color: #4A1A0D; text-decoration: none;">equipa de apoio.</a>`,
           url,
           "Verificar Endereço",
         ),

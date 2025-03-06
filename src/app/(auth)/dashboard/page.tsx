@@ -4,16 +4,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { unauthorized } from "next/navigation";
 import { hasUserPaid } from "@/lib/stripe";
-import { Session } from "@/lib/auth-client";
-import {
-  ENTERPRISE_PAGE_LIMIT,
-  FREE_MSG_LIMIT,
-  FREE_PAGE_LIMIT,
-  PRO_MSG_LIMIT,
-  PRO_PAGE_LIMIT,
-  STARTER_MSG_LIMIT,
-  STARTER_PAGE_LIMIT,
-} from "@/lib/constants";
+import { getLimits } from "@/lib/constants";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import BillingCard from "./billing-card";
@@ -29,24 +20,7 @@ export default async function Dashboard() {
 
   const hasPaid = await hasUserPaid(session.user.id);
 
-  const getLimits = (
-    session: Session,
-  ): { pageUploads: number; messages: number | null } => {
-    switch (session.user.plan) {
-      case "free":
-        return { pageUploads: FREE_PAGE_LIMIT, messages: FREE_MSG_LIMIT };
-      case "starter":
-        return { pageUploads: STARTER_PAGE_LIMIT, messages: STARTER_MSG_LIMIT };
-      case "pro":
-        return { pageUploads: PRO_PAGE_LIMIT, messages: PRO_MSG_LIMIT };
-      case "enterprise":
-        return { pageUploads: ENTERPRISE_PAGE_LIMIT, messages: null };
-      default:
-        return { pageUploads: FREE_PAGE_LIMIT, messages: FREE_MSG_LIMIT };
-    }
-  };
-
-  const limits = getLimits(session);
+  const limits = getLimits(session.user.plan);
   const pagesUsed = session.user.pagesUsed;
   const messages = session.user.messagesUsed;
 
