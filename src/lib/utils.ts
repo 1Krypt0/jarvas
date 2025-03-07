@@ -1,4 +1,9 @@
-import { CoreAssistantMessage, CoreToolMessage, Message } from "ai";
+import {
+  CoreAssistantMessage,
+  CoreToolMessage,
+  Message,
+  ToolInvocation,
+} from "ai";
 import { Message as DBMessage } from "@/db/schema";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -29,12 +34,46 @@ export const fetcher = async (url: string) => {
   return res.json();
 };
 
+function addToolMessageToChat({
+  toolMessage,
+  messages,
+}: {
+  toolMessage: CoreToolMessage;
+  messages: Array<Message>;
+}): Array<Message> {
+  return messages.map((message) => {
+    if (message.toolInvocations) {
+      return {
+        ...message,
+        toolInvocations: message.toolInvocations.map((toolInvocation) => {
+          const toolResult = toolMessage.content.find(
+            (tool) => tool.toolCallId === toolInvocation.toolCallId,
+          );
+
+          if (toolResult) {
+            return {
+              ...toolInvocation,
+              state: "result",
+              result: toolResult.result,
+            };
+          }
+
+          return toolInvocation;
+        }),
+      };
+    }
+
+    return message;
+  });
+}
+
 export function convertToUIMessages(
   messages: Array<DBMessage>,
 ): Array<Message> {
   return messages.reduce((chatMessages: Array<Message>, message) => {
     let textContent = "";
     let reasoning: string | undefined = undefined;
+    const toolInvocations: Array<ToolInvocation> = [];
 
     if (typeof message.content === "string") {
       textContent = message.content;
@@ -42,10 +81,24 @@ export function convertToUIMessages(
       for (const content of message.content) {
         if (content.type === "text") {
           textContent += content.text;
+        } else if (content.type === "tool-call") {
+          toolInvocations.push({
+            state: "call",
+            toolCallId: content.toolCallId,
+            toolName: content.toolName,
+            args: content.args,
+          });
         } else if (content.type === "reasoning") {
           reasoning = content.reasoning;
         }
       }
+    }
+
+    if (message.role === "tool") {
+      return addToolMessageToChat({
+        toolMessage: message as CoreToolMessage,
+        messages: chatMessages,
+      });
     }
 
     chatMessages.push({
@@ -53,6 +106,7 @@ export function convertToUIMessages(
       role: message.role as Message["role"],
       content: textContent,
       reasoning,
+      toolInvocations,
     });
 
     return chatMessages;
@@ -61,19 +115,23 @@ export function convertToUIMessages(
 
 export function sanitizeUIMessages(messages: Array<Message>): Array<Message> {
   const messagesBySanitizedToolInvocations = messages.map((message) => {
+    const invocations = message.parts
+      ?.filter((part) => part.type === "tool-invocation")
+      .map((invocation) => invocation.toolInvocation);
+
     if (message.role !== "assistant") return message;
 
-    if (!message.toolInvocations) return message;
+    if (!invocations) return message;
 
     const toolResultIds: Array<string> = [];
 
-    for (const toolInvocation of message.toolInvocations) {
+    for (const toolInvocation of invocations) {
       if (toolInvocation.state === "result") {
         toolResultIds.push(toolInvocation.toolCallId);
       }
     }
 
-    const sanitizedToolInvocations = message.toolInvocations.filter(
+    const sanitizedToolInvocations = invocations.filter(
       (toolInvocation) =>
         toolInvocation.state === "result" ||
         toolResultIds.includes(toolInvocation.toolCallId),
@@ -85,11 +143,14 @@ export function sanitizeUIMessages(messages: Array<Message>): Array<Message> {
     };
   });
 
-  return messagesBySanitizedToolInvocations.filter(
-    (message) =>
-      message.content.length > 0 ||
-      (message.toolInvocations && message.toolInvocations.length > 0),
-  );
+  return messagesBySanitizedToolInvocations.filter((message) => {
+    const invocations = message.parts?.filter(
+      (part) => part.type === "tool-invocation",
+    );
+    return (
+      message.content.length > 0 || (invocations && invocations.length > 0)
+    );
+  });
 }
 
 export function getMostRecentUserMessage(messages: Message[]) {

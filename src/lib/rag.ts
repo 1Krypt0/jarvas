@@ -1,4 +1,4 @@
-import { findSimilarDocs } from "@/db/queries";
+import { findSimilarDocs, getDocumentById } from "@/db/queries";
 import { embedQuery } from "./openai";
 
 export const findRelevantContent = async (query: string, userId: string) => {
@@ -6,12 +6,26 @@ export const findRelevantContent = async (query: string, userId: string) => {
 
   const similarChunks = await findSimilarDocs(queryEmbedding, userId);
 
+  const uniqueDocIds = [
+    ...new Set(similarChunks.map((chunk) => chunk.documentId ?? "")),
+  ];
+
+  const documentTitlesMap: Record<string, string> = Object.fromEntries(
+    await Promise.all(
+      uniqueDocIds.map(async (docId) => {
+        const doc = await getDocumentById(docId);
+        return [docId, doc?.name];
+      }),
+    ),
+  );
+
   return similarChunks.map((chunk) => {
     return {
       content: chunk.content,
       metadata: {
         similarity: chunk.similarity,
         documentId: chunk.documentId,
+        documentName: documentTitlesMap[chunk.documentId ?? ""],
       },
     };
   });

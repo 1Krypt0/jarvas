@@ -26,6 +26,27 @@ export const PreviewMessage = ({
   ) => Promise<string | null | undefined>;
 }) => {
   const reasoning = message.parts?.find((part) => part.type === "reasoning");
+  const toolInvocations = message.parts?.filter(
+    (part) => part.type === "tool-invocation",
+  );
+
+  const uniqueSources = toolInvocations?.reduce(
+    (sources: Set<string>, result) => {
+      if (
+        result.toolInvocation.toolName === "getInformation" &&
+        result.toolInvocation.state === "result"
+      ) {
+        const chunks = result.toolInvocation.result;
+        for (const chunk of chunks) {
+          sources.add(chunk.metadata.documentName);
+        }
+      }
+
+      return sources;
+    },
+    new Set([]),
+  );
+
   return (
     <AnimatePresence>
       <motion.div
@@ -53,6 +74,10 @@ export const PreviewMessage = ({
                   />
                 ))}
               </div>
+            )}
+
+            {uniqueSources && uniqueSources.size > 0 && (
+              <Sources sources={[...uniqueSources]} />
             )}
 
             {reasoning && (
@@ -85,6 +110,19 @@ export const PreviewMessage = ({
         </div>
       </motion.div>
     </AnimatePresence>
+  );
+};
+
+const Sources = ({ sources }: { sources: string[] }) => {
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="font-bold">Fontes consultadas:</p>
+      <ul>
+        {sources.map((source, index) => (
+          <Markdown key={index}>{`- ${source}`}</Markdown>
+        ))}
+      </ul>
+    </div>
   );
 };
 

@@ -27,7 +27,7 @@ const components: Partial<Components> = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ul: ({ node, children, ...props }) => {
     return (
-      <ul className="list-decimal list-outside ml-4" {...props}>
+      <ul className="list-disc list-outside ml-4" {...props}>
         {children}
       </ul>
     );
