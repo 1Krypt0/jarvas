@@ -2,6 +2,7 @@ import { findSimilarDocs, getDocumentById } from "@/db/queries";
 import { embedQuery } from "./openai";
 
 export const findRelevantContent = async (query: string, userId: string) => {
+  console.log(`Searched for information using query: ${query}`);
   const queryEmbedding = await embedQuery(query);
 
   const similarChunks = await findSimilarDocs(queryEmbedding, userId);
