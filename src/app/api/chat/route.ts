@@ -84,7 +84,7 @@ export async function POST(req: Request) {
   const result = streamText({
     model: google("gemini-2.0-flash-001"),
     messages: convertToCoreMessages(messages),
-    maxSteps: 3,
+    maxSteps: 20,
     system: systemPrompt,
     experimental_transform: smoothStream({ chunking: "word" }),
     experimental_telemetry: {
@@ -99,9 +99,13 @@ export async function POST(req: Request) {
     tools: {
       getInformation: tool({
         description:
-          "Encontra informação da tua base de dados para responder a perguntas",
+          "Retrieve information from an external knowledge base with potentially useful documentation that can aid in responding",
         parameters: z.object({
-          query: z.string().describe("A pergunta do utilizador"),
+          query: z
+            .string()
+            .describe(
+              "The query that which will be matched against the knowledge base for similar documents",
+            ),
         }),
         execute: async ({ query }) =>
           findRelevantContent(query, session.user.id),

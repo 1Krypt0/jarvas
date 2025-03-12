@@ -53,7 +53,7 @@ export default function Chat({
     <div className="flex flex-col min-w-0 h-full bg-background">
       <Messages
         chatId={id}
-        isLoading={status === "submitted" || status === "streaming"}
+        isLoading={status === "streaming"}
         messages={messages}
         setMessages={setMessages}
         reload={reload}

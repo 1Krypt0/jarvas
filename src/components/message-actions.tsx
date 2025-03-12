@@ -20,13 +20,8 @@ export default function MessageActions({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, copyToClipboard] = useCopyToClipboard();
 
-  const toolInvocations = message.parts?.filter(
-    (part) => part.type === "tool-invocation",
-  );
-
   if (isLoading) return null;
   if (message.role === "user") return null;
-  if (toolInvocations && toolInvocations.length > 0) return null;
 
   return (
     <TooltipProvider delayDuration={0}>
