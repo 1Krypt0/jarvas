@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "Jarvas - O assistente pessoal da sua empresa",
     siteName: "Ask Jarvas",
-    url: "https://askjarvas.com",
+    url: "https://app.askjarvas.com",
     description:
       "Use a informação da sua empresa como um ativo com o qual pode falar",
     locale: "pt_PT",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  manifest: "https://askjarvas.com/manifest.json",
+  manifest: "https://app.askjarvas.com/manifest.json",
 };
 
 export default function RootLayout({
@@ -49,7 +49,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="antialiased">
       <PlausibleProvider
-        domain="askjarvas.com"
+        domain="app.askjarvas.com"
         customDomain={env.PLAUSIBLE_DOMAIN}
         selfHosted={true}
       >

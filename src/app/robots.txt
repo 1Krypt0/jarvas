@@ -12,4 +12,4 @@ Disallow: /admin
 Disallow: /settings
 
 # Optional: Link to your sitemap
-Sitemap: https://askjarvas.com/sitemap.xml
+Sitemap: https://app.askjarvas.com/sitemap.xml
