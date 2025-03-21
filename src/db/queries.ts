@@ -9,6 +9,7 @@ import {
   Chunk,
   user,
 } from "./schema";
+import { EmbeddingModelV1Embedding } from "@ai-sdk/provider";
 
 export const getMessages = async (chatId: string) => {
   return await db.select().from(message).where(eq(message.chatId, chatId));
@@ -107,7 +108,7 @@ export const deleteFile = async (fileId: string) => {
 };
 
 export const findSimilarDocs = async (
-  queryEmbedding: string,
+  queryEmbedding: EmbeddingModelV1Embedding,
   userId: string,
 ) => {
   const similarity = sql<number>`1 - (${cosineDistance(chunk.embedding, queryEmbedding)})`;
