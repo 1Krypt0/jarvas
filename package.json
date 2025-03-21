@@ -17,6 +17,7 @@
     "@langchain/core": "^0.3.40",
     "@mdx-js/loader": "^3.1.0",
     "@mdx-js/react": "^3.1.0",
+    "@neondatabase/serverless": "^0.10.4",
     "@next/mdx": "^15.2.0",
     "@opentelemetry/api-logs": "^0.57.2",
     "@opentelemetry/instrumentation": "^0.57.2",
