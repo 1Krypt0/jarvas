@@ -7,7 +7,7 @@ import {
 import { getDocuments } from "@/db/queries";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { unauthorized } from "next/navigation";
+import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
@@ -16,7 +16,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   });
 
   if (!session) {
-    return unauthorized();
+    redirect("/login");
   }
 
   const documents = await getDocuments(session.user.id);

@@ -7,7 +7,7 @@ export default async function Register({
 }) {
   const plan = (await searchParams)["plan"] ?? "";
 
-  let callbackURL = "/app";
+  let callbackURL = "/";
 
   switch (plan) {
     case "starter":

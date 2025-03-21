@@ -26,7 +26,7 @@ export default function Loading() {
           <div className="flex flex-col">
             <Button
               onClick={() => {
-                redirect("/app");
+                redirect("/");
               }}
             >
               Aceder ao Jarvas

@@ -98,7 +98,7 @@ export default function RegisterForm({ callbackURL }: { callbackURL: string }) {
                 onClick={async () => {
                   await authClient.signIn.social({
                     provider: "google",
-                    callbackURL: "/app",
+                    callbackURL: "/",
                   });
                 }}
               >
@@ -237,14 +237,16 @@ export default function RegisterForm({ callbackURL }: { callbackURL: string }) {
       <div className="text-balance text-center text-xs text-muted-foreground">
         Ao registar-se na plataforma, está a concordar com os nossos{" "}
         <Link
-          href="/terms-of-service"
+          target="_blank"
+          href="https://askjarvas.com/terms-of-service"
           className="hover:text-primary underline underline-offset-4"
         >
           Termos de Serviço
         </Link>{" "}
         e a nossa{" "}
         <Link
-          href="/privacy-policy"
+          target="_blank"
+          href="https://askjarvas.com/privacy-policy"
           className="hover:text-primary underline underline-offset-4"
         >
           Política de Privacidade

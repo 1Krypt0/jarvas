@@ -104,7 +104,7 @@ export function NavUser({
               onSelect={() =>
                 authClient.signOut({
                   fetchOptions: {
-                    onSuccess: () => router.push("/"),
+                    onSuccess: () => router.push("/login"),
                   },
                 })
               }

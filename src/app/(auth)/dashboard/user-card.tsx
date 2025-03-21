@@ -90,7 +90,7 @@ export default function UserCard({ session }: { session: Session }) {
             setIsSignOut(true);
             await authClient.signOut({
               fetchOptions: {
-                onSuccess: () => router.push("/"),
+                onSuccess: () => router.push("/login"),
               },
             });
             setIsSignOut(false);

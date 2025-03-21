@@ -34,5 +34,5 @@ export default async function CheckoutSuccessPage({
     await updateUserPlan(session.user.id, newPlanId);
   }
 
-  return redirect("/app");
+  return redirect("/");
 }

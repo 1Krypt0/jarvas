@@ -82,7 +82,7 @@ export default function ChatLink({
     <SidebarMenuItem>
       <SidebarMenuButton asChild isActive={isActive}>
         <Link
-          href={`/app/chat/${chat.id}`}
+          href={`/chat/${chat.id}`}
           title={chat.title}
           onClick={() => setOpenMobile(false)}
         >

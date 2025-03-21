@@ -28,7 +28,7 @@ export default async function Dashboard() {
     <div className="flex w-full my-8 justify-center px-4">
       <div className="flex flex-col gap-6 mx-auto max-w-4xl w-full">
         <header>
-          <Link href="/app" className="flex gap-2">
+          <Link href="/" className="flex gap-2">
             <ArrowLeft size={24} />
             <span>Voltar</span>
           </Link>

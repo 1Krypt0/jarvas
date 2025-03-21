@@ -3,7 +3,7 @@ import Typography from "@/components/ui/typography";
 import { auth } from "@/lib/auth";
 import { hasUserPaid } from "@/lib/stripe";
 import { headers } from "next/headers";
-import { unauthorized } from "next/navigation";
+import { redirect } from "next/navigation";
 import { v4 as uuid } from "uuid";
 
 export default async function AppPage() {
@@ -12,7 +12,7 @@ export default async function AppPage() {
   });
 
   if (!session) {
-    unauthorized();
+    redirect("/login");
   }
 
   const hasPaid = await hasUserPaid(session.user.id);
