@@ -42,7 +42,7 @@ export function AutoResizeTextarea({
         resizeTextarea();
       }}
       className={cn(
-        "border-input focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed rounded-md px-3 py-2 resize-none min-h-4 max-h-80",
+        "border-input focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed rounded-md px-3 py-2 resize-none min-h-4 max-h-80",
         className,
       )}
     />

@@ -146,7 +146,7 @@ export default function BillingCard({
                       : `Reduza para o plano ${plan.name}`}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="flex-grow">
+                <CardContent className="grow">
                   <p className="text-3xl font-bold mb-4">
                     {plan.price}€
                     <span className="text-sm font-normal text-muted-foreground">

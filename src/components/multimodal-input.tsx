@@ -240,7 +240,7 @@ export default function MultimodalInput({
         value={input}
         onChange={handleInput}
         className={cx(
-          "min-h-[24px] max-h-[calc(25dvh)] overflow-y-scroll resize-none rounded-2xl !text-base bg-muted pb-10 scrollbar-track-accent",
+          "min-h-[24px] max-h-[calc(25dvh)] overflow-y-scroll resize-none rounded-2xl text-base! bg-muted pb-10 scrollbar-track-accent",
           className,
         )}
         rows={3}
@@ -375,7 +375,7 @@ function AttachmentsButton({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          className="rounded-md rounded-bl-lg p-[7px] h-fit hover:dark:bg-primary hover:dark:text-accent "
+          className="rounded-md rounded-bl-lg p-[7px] h-fit dark:hover:bg-primary dark:hover:text-accent "
           variant="ghost"
           disabled={isLoading}
         >

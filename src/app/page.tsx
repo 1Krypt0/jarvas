@@ -27,13 +27,13 @@ export default async function Home() {
         <main className="flex h-full w-full flex-col items-center gap-24 px-8 pb-24 pt-11 text-center md:gap-36 md:px-32 md:py-36">
           <section id="features" className="flex flex-col items-center gap-12 ">
             <Typography
-              className="max-w-2xl !text-5xl md:!text-8xl"
+              className="max-w-2xl text-5xl! md:text-8xl!"
               variant="h1"
             >
               Um assistente pessoal para a sua empresa
             </Typography>
             <Typography
-              className="max-w-2xl !text-xl md:!text-2xl"
+              className="max-w-2xl text-xl! md:text-2xl!"
               variant="h5"
             >
               Simplifique o acesso à informação importante para si com o poder
