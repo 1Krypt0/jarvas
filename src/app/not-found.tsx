@@ -31,7 +31,7 @@ export default function NotFound() {
               404
             </Typography>
             <Typography className="max-w-2xl !text-xl md:!text-xl" variant="h5">
-              Sorry! We could not find this page. But don't worry, there is
+              Sorry! We could not find this page. But don&apos;t worry, there is
               plenty of other things to see. Go look at those!
             </Typography>
             <Link href="/" className="underline">
