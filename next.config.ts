@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
   experimental: {
     authInterrupts: true,
   },
+  serverExternalPackages: ["pino", "pino-pretty"],
 };
 
 const withMDX = createMDX();
