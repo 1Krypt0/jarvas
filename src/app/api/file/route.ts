@@ -15,6 +15,7 @@ import { Chunk } from "@/db/schema";
 import { hasUserPaid, trackSpending } from "@/lib/stripe";
 import { FREE_PAGE_LIMIT, getLimits, WARN_USER_LIMIT } from "@/lib/constants";
 import { warnUserLimit } from "@/lib/email/email";
+import logger from "@/lib/logger";
 
 export async function POST(req: Request) {
   const session = await auth.api.getSession({
@@ -22,12 +23,19 @@ export async function POST(req: Request) {
   });
 
   if (!session || !session.user || !session.user.id) {
+    logger.warn(
+      { ip: req.headers.get("x-forwarded-for") },
+      "Unauthorized access attempt",
+    );
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const hasPaid = await hasUserPaid(session.user.id);
+  const userId = session.user.id;
+
+  const hasPaid = await hasUserPaid(userId);
 
   if (!hasPaid) {
+    logger.warn({ userId }, "User has not paid, blocking access");
     return new Response("Unauthorized", { status: 401 });
   }
 
@@ -36,6 +44,7 @@ export async function POST(req: Request) {
 
   for (let i = 0; i < files.length; i++) {
     if (files[i].type !== "application/pdf") {
+      logger.warn({ userId }, "User attempted upload of non-PDF file");
       return new Response("Only PDF files are allowed", { status: 415 });
     }
   }
@@ -55,6 +64,7 @@ export async function POST(req: Request) {
     session.user.plan === "free" &&
     session.user.pagesUsed + totalPages >= FREE_PAGE_LIMIT
   ) {
+    logger.warn({ userId }, "User on free plan has hit limit, blocking access");
     return new Response(
       "Upload limit has been reached. Cannot upload this many pages",
       { status: 401, statusText: "Limit hit" },
@@ -62,21 +72,22 @@ export async function POST(req: Request) {
   }
 
   for (let i = 0; i < files.length; i++) {
-    await uploadFile(files[i], session.user.id);
+    await uploadFile(files[i], userId);
   }
 
+  logger.info({ userId }, "Files Uploaded");
+
   if (session.user.plan !== "free") {
-    await trackSpending(
-      session.user.id,
-      "jarvas_page_uploads",
-      totalPages.toString(),
-    );
+    await trackSpending(userId, "jarvas_page_uploads", totalPages.toString());
+
+    logger.info({ userId }, "Tracked spending");
 
     const limits = getLimits(session.user.plan);
     const pastUsage = session.user.pagesUsed / limits.pageUploads;
     const newUsage = (session.user.pagesUsed + totalPages) / limits.pageUploads;
 
     if (newUsage >= WARN_USER_LIMIT && pastUsage < WARN_USER_LIMIT) {
+      logger.info({ userId }, "User near limits, sending warning");
       await warnUserLimit(
         session.user.email,
         "page",
@@ -139,31 +150,47 @@ export async function PATCH(req: Request) {
   const fileId = searchParams.get("id");
   const { newName } = await req.json();
 
-  if (!fileId) {
-    return new Response("No file found with that id", { status: 400 });
-  }
-
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
   if (!session || !session.user || !session.user.id) {
+    logger.warn(
+      { ip: req.headers.get("x-forwarded-for") },
+      "Unauthorized access attempt",
+    );
     return new Response("Unauthorized", { status: 401 });
+  }
+
+  const userId = session.user.id;
+
+  if (!fileId) {
+    logger.warn({ userId }, "FileId not specified in request");
+    return new Response("FileId not specified", { status: 400 });
   }
 
   const file = await getDocumentById(fileId);
 
-  if (file && file.userId !== session.user.id) {
+  if (!file) {
+    logger.warn({ userId }, "Attempted to access non-existant file");
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const hasPaid = await hasUserPaid(session.user.id);
+  if (file.userId !== userId) {
+    logger.warn({ userId }, "Attempted to access file not belonging to user");
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const hasPaid = await hasUserPaid(userId);
 
   if (!hasPaid) {
+    logger.warn({ userId }, "User has not paid, blocking access");
     return new Response("Unauthorized", { status: 401 });
   }
 
   await updateFileName(fileId, newName);
+
+  logger.info({ userId }, "File name updated");
 
   return new Response("File name updated", { status: 200 });
 }
@@ -172,31 +199,47 @@ export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
   const fileId = searchParams.get("id");
 
-  if (!fileId) {
-    return new Response("No file found with that id", { status: 400 });
-  }
-
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
   if (!session || !session.user || !session.user.id) {
+    logger.warn(
+      { ip: req.headers.get("x-forwarded-for") },
+      "Unauthorized access attempt",
+    );
     return new Response("Unauthorized", { status: 401 });
+  }
+
+  const userId = session.user.id;
+
+  if (!fileId) {
+    logger.warn({ userId }, "FileId not specified in request");
+    return new Response("FileId not specified", { status: 400 });
   }
 
   const file = await getDocumentById(fileId);
 
-  if (file && file.userId !== session.user.id) {
+  if (!file) {
+    logger.warn({ userId }, "Attempted to access non-existant file");
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const hasPaid = await hasUserPaid(session.user.id);
+  if (file.userId !== userId) {
+    logger.warn({ userId }, "Attempted to access file not belonging to user");
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const hasPaid = await hasUserPaid(userId);
 
   if (!hasPaid) {
+    logger.warn({ userId }, "User has not paid, blocking access");
     return new Response("Unauthorized", { status: 401 });
   }
 
   await deleteFile(fileId);
+
+  logger.info({ userId }, "File Deleted");
 
   return new Response("File deleted", { status: 200 });
 }
