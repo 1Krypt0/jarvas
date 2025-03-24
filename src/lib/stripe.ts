@@ -100,7 +100,7 @@ export const getStripeSubscriptionId = (
   subId: string;
   pageId: string;
   msgId: string;
-} => {
+} | null => {
   switch (planId) {
     case "starter":
       return {
@@ -121,6 +121,6 @@ export const getStripeSubscriptionId = (
         msgId: env.STRIPE_ENTERPRISE_MSG_ID,
       };
     default:
-      return { subId: "", pageId: "", msgId: "" };
+      return null;
   }
 };

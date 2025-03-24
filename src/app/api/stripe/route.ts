@@ -2,6 +2,7 @@ import { updateUserPlan } from "@/db/queries";
 import { env } from "@/env";
 import { auth } from "@/lib/auth";
 import { redis } from "@/lib/kv";
+import logger from "@/lib/logger";
 import {
   getStripeSubscriptionId,
   stripe,
@@ -10,20 +11,14 @@ import {
   syncStripeDataToKV,
 } from "@/lib/stripe";
 import { headers } from "next/headers";
-import { unauthorized } from "next/navigation";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
+// NOTE: There are 3 paths inside this route.
+// 1 - User moving from free to any paid tier -> has no subscription status
+// 2 - User moving from paid to free tier -> cancel and remove current subscription status
+// 3 - User moving from paid to paid subscription -> Change subscription type
 export async function GET(req: Request) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    unauthorized();
-  }
-
-  const userId = session.user.id;
   const { searchParams } = new URL(req.url);
   const newPlanId = searchParams.get("plan") as
     | "free"
@@ -31,32 +26,55 @@ export async function GET(req: Request) {
     | "pro"
     | "enterprise";
 
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    logger.warn(
+      { ip: req.headers.get("x-forwarded-for") },
+      "Unauthorized access attempt",
+    );
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const userId = session.user.id;
+
   if (!newPlanId) {
-    return NextResponse.json({ message: "Missing new Plan" }, { status: 404 });
+    logger.warn({ userId }, "ChatId not specified in request");
+    return new Response("Missing new Plan", { status: 404 });
   }
 
   const newSubscriptionData = getStripeSubscriptionId(newPlanId);
 
-  const stripeCustomerId = (await redis.get(`stripe:user:${userId}`)) as string;
+  if (!newSubscriptionData) {
+    logger.warn({ userId }, "Attempted to access non-existant subscription");
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const stripeCustomerId = (await redis.get(`stripe:user:${userId}`)) as
+    | string
+    | null;
+
+  if (!stripeCustomerId) {
+    logger.warn({ userId }, "Stripe Customer Id not found for user");
+    return new Response("Unauthorized", { status: 401 });
+  }
 
   const currentSubscriptionStatus = (await redis.get(
     `stripe:customer:${stripeCustomerId}`,
   )) as StripeSubCache;
 
+  // NOTE: Option 1: Free to Paid Tier
   if (
-    currentSubscriptionStatus &&
-    currentSubscriptionStatus.status !== "active"
+    !currentSubscriptionStatus ||
+    currentSubscriptionStatus.status === "none"
   ) {
-    return NextResponse.json(
-      { message: "You must first resolve your current subscription" },
-      {
-        status: 401,
-        statusText: "Unresolved Subscription",
-      },
+    logger.info(
+      { userId },
+      "No subscription found, moving from free to paid tier",
     );
-  }
 
-  if (!currentSubscriptionStatus) {
     const checkoutId = await createSubscription(
       stripeCustomerId,
       newSubscriptionData,
@@ -64,24 +82,50 @@ export async function GET(req: Request) {
     );
 
     if (!checkoutId) {
+      logger.error({ userId }, "Error creating subscription");
       return NextResponse.json(
         { message: "Error creating checkout session" },
         { status: 500 },
       );
     }
 
+    logger.info("Checkout session created");
+
     return NextResponse.json({ id: checkoutId });
   }
 
-  if (newPlanId === "free") {
-    await cancelCurrentSubscription(
-      currentSubscriptionStatus,
-      stripeCustomerId,
-      userId,
-      newPlanId,
-    );
-    return NextResponse.json({ message: "Plan changed successfully" });
+  if (currentSubscriptionStatus.status !== "active") {
+    return new Response("You must first resolve your current subscription", {
+      status: 401,
+      statusText: "Unresolved Subscription",
+    });
   }
+
+  // NOTE: Option 2: Paid to Free Tier
+  if (newPlanId === "free") {
+    logger.info({ userId }, "Moving user to free tier");
+
+    const res = await stripe.subscriptions.cancel(
+      currentSubscriptionStatus.subscriptionId!,
+    );
+
+    if (res.status !== "canceled") {
+      return new Response("Subscription was not cancelled properly", {
+        status: 500,
+      });
+    }
+
+    await redis.del(`stripe:customer:${stripeCustomerId}`);
+
+    await updateUserPlan(userId, newPlanId);
+
+    logger.info({ userId }, "Current subscription cancelled");
+
+    return new Response("Plan changed successfully", { status: 200 });
+  }
+
+  // NOTE: Option 3: Paid to Paid Tier
+  logger.info({ userId }, "Switching users subscription");
 
   await moveBetweenPaidPlans(
     currentSubscriptionStatus,
@@ -90,17 +134,23 @@ export async function GET(req: Request) {
     newPlanId,
   );
 
-  return NextResponse.json({ message: "Plan changed successfully" });
+  logger.info({ userId }, "Plan changed successfully");
+
+  return new Response("Plan changed successfully", { status: 200 });
 }
 
 export async function POST(req: Request) {
   const body = await req.text();
   const signature = (await headers()).get("Stripe-Signature");
 
-  if (!signature) return NextResponse.json({}, { status: 400 });
+  if (!signature) {
+    logger.warn("Received Stripe Webhook without signature");
+    return NextResponse.json({}, { status: 400 });
+  }
 
   try {
     if (typeof signature !== "string") {
+      logger.error("Signature was not a string");
       throw new Error("[STRIPE HOOK] Header isn't a string???");
     }
 
@@ -112,7 +162,7 @@ export async function POST(req: Request) {
 
     await processEvent(event);
   } catch (error) {
-    console.error("[STRIPE HOOK] Error processing event", error);
+    logger.error({ error }, "Error processing Stripe Webhook");
   }
 
   return NextResponse.json({ received: true });
@@ -181,32 +231,6 @@ const createSubscription = async (
   });
 
   return checkout.id;
-};
-
-const cancelCurrentSubscription = async (
-  currentSubscription: StripeSubCache,
-  stripeCustomerId: string,
-  userId: string,
-  newPlanId: "free" | "starter" | "pro" | "enterprise",
-) => {
-  if (currentSubscription.status !== "none") {
-    const res = await stripe.subscriptions.cancel(
-      currentSubscription.subscriptionId!,
-    );
-
-    if (res.status !== "canceled") {
-      return NextResponse.json(
-        { message: "Subscription was not cancelled properly" },
-        {
-          status: 500,
-        },
-      );
-    }
-
-    await redis.del(`stripe:customer:${stripeCustomerId}`);
-
-    await updateUserPlan(userId, newPlanId);
-  }
 };
 
 const moveBetweenPaidPlans = async (
