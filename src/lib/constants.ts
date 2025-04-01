@@ -1,34 +1,37 @@
 import { ArrowUpDown, Timer, Workflow } from "lucide-react";
 
 export const FREE_MSG_LIMIT = 30;
-export const FREE_PAGE_LIMIT = 100;
+export const FREE_CREDIT_LIMIT = 1000;
 
 export const STARTER_MSG_LIMIT = 2500;
-export const STARTER_PAGE_LIMIT = 10000;
+export const STARTER_CREDIT_LIMIT = 10000;
 
 export const PRO_MSG_LIMIT = 7500;
-export const PRO_PAGE_LIMIT = 25000;
+export const PRO_CREDIT_LIMIT = 25000;
 
-export const ENTERPRISE_PAGE_LIMIT = 100000;
 export const ENTERPRISE_MSG_LIMIT = Number.MAX_SAFE_INTEGER;
+export const ENTERPRISE_CREDIT_LIMIT = 100000;
 
 export const WARN_USER_LIMIT = 0.9;
+
+export const MAX_UPLOAD_SIZE = 50 * 1024 * 1024;
+export const MAX_UPLOADS = 5;
 
 export const getLimits = (plan: string) => {
   switch (plan) {
     case "free":
-      return { pageUploads: FREE_PAGE_LIMIT, messages: FREE_MSG_LIMIT };
+      return { fileCredits: FREE_CREDIT_LIMIT, messages: FREE_MSG_LIMIT };
     case "starter":
-      return { pageUploads: STARTER_PAGE_LIMIT, messages: STARTER_MSG_LIMIT };
+      return { fileCredits: STARTER_CREDIT_LIMIT, messages: STARTER_MSG_LIMIT };
     case "pro":
-      return { pageUploads: PRO_PAGE_LIMIT, messages: PRO_MSG_LIMIT };
+      return { fileCredits: PRO_CREDIT_LIMIT, messages: PRO_MSG_LIMIT };
     case "enterprise":
       return {
-        pageUploads: ENTERPRISE_PAGE_LIMIT,
+        fileCredits: ENTERPRISE_CREDIT_LIMIT,
         messages: Number.MAX_SAFE_INTEGER,
       };
     default:
-      return { pageUploads: FREE_PAGE_LIMIT, messages: FREE_MSG_LIMIT };
+      return { fileCredits: FREE_CREDIT_LIMIT, messages: FREE_MSG_LIMIT };
   }
 };
 
