@@ -61,10 +61,10 @@ export const createEmailTemplate = (
 
 export const warnUserLimit = async (
   email: string,
-  type: "page" | "message",
+  type: "file" | "message",
   amount: number,
 ) => {
-  const resource = type === "page" ? "Páginas" : "Mensagens";
+  const resource = type === "file" ? "Ficheiros" : "Mensagens";
   await resend.emails.send({
     from,
     to: email,

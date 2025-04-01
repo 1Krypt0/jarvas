@@ -146,7 +146,7 @@ export async function POST(req: Request) {
   logger.info({ userId }, "Files Uploaded");
 
   if (session.user.plan !== "free") {
-    await trackSpending(userId, "jarvas_page_uploads", totalChunks.toString());
+    await trackSpending(userId, "jarvas_file_uploads", totalChunks.toString());
 
     logger.info({ userId }, "Tracked spending");
 
@@ -159,7 +159,7 @@ export async function POST(req: Request) {
       logger.info({ userId }, "User near limits, sending warning");
       await warnUserLimit(
         session.user.email,
-        "page",
+        "file",
         Math.round(newUsage * 100),
       );
     }

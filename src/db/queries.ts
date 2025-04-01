@@ -76,14 +76,14 @@ export const saveFile = async (
   id: string,
   name: string,
   content: string,
-  pages: number,
+  chunks: number,
   userId: string,
 ) => {
-  await db.insert(file).values({ id, name, content, pages, userId });
+  await db.insert(file).values({ id, name, content, chunks, userId });
 
   await db
     .update(user)
-    .set({ pagesUsed: sql`${user.pagesUsed} + ${pages}` })
+    .set({ creditsUsed: sql`${user.creditsUsed} + ${chunks}` })
     .where(eq(user.id, userId));
 };
 
@@ -103,7 +103,7 @@ export const deleteFile = async (fileId: string) => {
 
   await db
     .update(user)
-    .set({ pagesUsed: sql`${user.pagesUsed} - ${deletedFile.pages}` })
+    .set({ creditsUsed: sql`${user.creditsUsed} - ${deletedFile.chunks}` })
     .where(eq(user.id, deletedFile.userId));
 };
 

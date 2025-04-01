@@ -20,10 +20,10 @@ import { AlertCircle, FileText, MessageSquareText } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
 export default function UsageDisplay({
-  pageUploads,
+  fileCredits,
   messages,
 }: {
-  pageUploads: { used: number; limit: number };
+  fileCredits: { used: number; limit: number };
   messages: { used: number; limit: number };
 }) {
   const [isHovering, setIsHovering] = useState<string | null>(null);
@@ -45,11 +45,11 @@ export default function UsageDisplay({
                 <span className="text-sm font-medium">Páginas carregadas</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="text-sm font-medium">{pageUploads.used}</span>
+                <span className="text-sm font-medium">{fileCredits.used}</span>
                 <span className="text-sm text-muted-foreground">
-                  / {pageUploads.limit}
+                  / {fileCredits.limit}
                 </span>
-                {pageUploads.used >= pageUploads.limit * 0.9 && (
+                {fileCredits.used >= fileCredits.limit * 0.9 && (
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <AlertCircle className="h-4 w-4 text-destructive" />
@@ -63,16 +63,16 @@ export default function UsageDisplay({
             </div>
             <div
               className="relative"
-              onMouseEnter={() => setIsHovering("pages")}
+              onMouseEnter={() => setIsHovering("fileCredits")}
               onMouseLeave={() => setIsHovering(null)}
             >
               <Progress
-                value={(pageUploads.used / pageUploads.limit) * 100}
+                value={(fileCredits.used / fileCredits.limit) * 100}
                 className="h-2"
               />
-              {isHovering === "pages" && (
+              {isHovering === "fileCredits" && (
                 <div className="absolute -top-8 left-1/2 -translate-x-1/2 rounded-md  px-2 py-1 text-xs shadow-md bg-primary text-primary-foreground">
-                  {Math.round((pageUploads.used / pageUploads.limit) * 100)}%
+                  {Math.round((fileCredits.used / fileCredits.limit) * 100)}%
                 </div>
               )}
             </div>

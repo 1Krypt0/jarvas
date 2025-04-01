@@ -82,7 +82,7 @@ export const auth = betterAuth({
         input: false,
         returned: true,
       },
-      pagesUsed: {
+      creditsUsed: {
         type: "number",
         defaultValue: 0,
         input: false,

@@ -21,7 +21,7 @@ export default async function Dashboard() {
   const hasPaid = await hasUserPaid(session.user.id);
 
   const limits = getLimits(session.user.plan);
-  const pagesUsed = session.user.pagesUsed;
+  const creditsUsed = session.user.creditsUsed;
   const messages = session.user.messagesUsed;
 
   return (
@@ -36,7 +36,7 @@ export default async function Dashboard() {
         <UserCard session={session} />
         <BillingCard session={session} hasPaid={hasPaid} />
         <UsageDisplay
-          pageUploads={{ used: pagesUsed, limit: limits.pageUploads }}
+          fileCredits={{ used: creditsUsed, limit: limits.fileCredits }}
           messages={{ used: messages, limit: limits.messages }}
         />
       </div>
