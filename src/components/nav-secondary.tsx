@@ -16,7 +16,7 @@ export const NavSecondary = () => {
             <SidebarMenuButton asChild size="sm">
               <a href="mailto:askjarvas@gmail.com">
                 <LifeBuoy size={24} />
-                <span>Apoio</span>
+                <span>Support</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

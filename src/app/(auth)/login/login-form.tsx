@@ -58,12 +58,12 @@ export default function LoginForm() {
         onError: (ctx) => {
           if (ctx.error.status === 403) {
             form.setError("email", {
-              message: "Por favor, verifique o seu email antes de fazer login.",
+              message: "Please verify your email before you attempt to login.",
             });
           } else {
-            form.setError("email", { message: "Email ou password inválidos." });
+            form.setError("email", { message: "Invalid Email or Password." });
             form.setError("password", {
-              message: "Email ou password inválidos.",
+              message: "Invalid Email or Password.",
             });
           }
           setLoading(false);
@@ -76,8 +76,8 @@ export default function LoginForm() {
     <>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Bem vindo de volta</CardTitle>
-          <CardDescription>Entre com a sua conta Google</CardDescription>
+          <CardTitle className="text-xl">Welcome Back</CardTitle>
+          <CardDescription>Login with your Google Account</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-6">
@@ -115,12 +115,12 @@ export default function LoginForm() {
                     d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0C79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"
                   />
                 </svg>
-                Faça Login com a Google
+                Login with Google
               </Button>
             </div>
             <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
               <span className="relative z-10 bg-card px-2 text-muted-foreground">
-                Ou continue com
+                Or continue with
               </span>
             </div>
           </div>
@@ -135,7 +135,7 @@ export default function LoginForm() {
                     <FormControl>
                       <Input
                         id="email"
-                        placeholder="Escreva o seu email aqui"
+                        placeholder="Enter your Email here"
                         type="email"
                         required
                         {...field}
@@ -157,12 +157,12 @@ export default function LoginForm() {
                         href="/forgot-password"
                         className="ml-auto text-sm underline-offset-4 underline"
                       >
-                        Esqueceu-se da password?
+                        Forgot your password?
                       </Link>
                     </div>
                     <FormControl>
                       <Input
-                        placeholder="Escreva a sua Password aqui"
+                        placeholder="Enter your Password here"
                         type="password"
                         required
                         {...field}
@@ -185,7 +185,7 @@ export default function LoginForm() {
                       />
                     </FormControl>
                     <FormLabel className="text-sm font-normal">
-                      Manter-me Autenticado
+                      Remember Me
                     </FormLabel>
                     <FormMessage />
                   </FormItem>
@@ -202,12 +202,12 @@ export default function LoginForm() {
               </Button>
               <div className="text-center text-sm">
                 <p>
-                  Ainda não tem conta?{" "}
+                  Don&apos;t have an occount?{" "}
                   <Link
                     href="/register"
                     className="underline underline-offset-4"
                   >
-                    Registe-se já
+                    Register Now
                   </Link>
                 </p>
               </div>
@@ -217,21 +217,21 @@ export default function LoginForm() {
       </Card>
 
       <div className="text-balance text-center text-xs text-muted-foreground">
-        Ao entrar na plataforma, está a concordar com os nossos{" "}
+        By entering the platform, you are agreeing with our{" "}
         <Link
           target="_blank"
           href="https://askjarvas.com/terms-of-service"
           className="hover:text-primary underline underline-offset-4"
         >
-          Termos de Serviço
+          Terms of Service
         </Link>{" "}
-        e a nossa{" "}
+        and our{" "}
         <Link
           target="_blank"
           href="https://askjarvas.com/privacy-policy"
           className="hover:text-primary underline underline-offset-4"
         >
-          Política de Privacidade
+          Privacy Policy
         </Link>
         .
       </div>

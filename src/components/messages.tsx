@@ -23,7 +23,7 @@ export default function Messages({
     <div className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4">
       {messages.length === 0 && (
         <Typography variant="h1" className="mx-auto mt-24">
-          Em que o posso ajudar?
+          How can I help you?
         </Typography>
       )}
 

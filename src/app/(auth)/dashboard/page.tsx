@@ -30,7 +30,7 @@ export default async function Dashboard() {
         <header>
           <Link href="/" className="flex gap-2">
             <ArrowLeft size={24} />
-            <span>Voltar</span>
+            <span>Back</span>
           </Link>
         </header>
         <UserCard session={session} />

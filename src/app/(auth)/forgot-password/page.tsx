@@ -51,14 +51,12 @@ export default function ForgetPasswordPage() {
       });
 
       if (res.error) {
-        toast.error("Ocorreu um erro, por favor tente novamente.");
-        console.error("Error:", res.error);
+        toast.error("An unexpected error occurred, please try again.");
       } else {
         setIsSubmitted(true);
       }
-    } catch (err) {
-      console.error(err);
-      toast.error("Ocorreu um erro, por favor tente novamente.");
+    } catch {
+      toast.error("An unexpected error occurred, please try again.");
     } finally {
       setLoading(false);
     }
@@ -70,21 +68,21 @@ export default function ForgetPasswordPage() {
         <div className="flex flex-col gap-6 mx-auto max-w-sm">
           <Card>
             <CardHeader className="text-center">
-              <CardTitle className="text-xl">Verifique o seu email</CardTitle>
+              <CardTitle className="text-xl">Check your Email</CardTitle>
               <CardDescription>
-                Enviamos um email para repor a password.
+                We have sent an email to reset your password.
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-6">
               <Alert>
                 <TriangleAlert className="h-4 w-4" />
                 <AlertDescription>
-                  Se não encontrar o email, verifique no spam.
+                  If you can&apos;t find the email, check the spam folder.
                 </AlertDescription>
               </Alert>
 
               <Button asChild>
-                <Link href="/login">Voltar ao login</Link>
+                <Link href="/login">Back to Login</Link>
               </Button>
             </CardContent>
           </Card>
@@ -98,9 +96,9 @@ export default function ForgetPasswordPage() {
       <div className="flex flex-col gap-6 mx-auto max-w-sm">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-xl">Reponha a password</CardTitle>
+            <CardTitle className="text-xl">Reset your Password</CardTitle>
             <CardDescription>
-              Escreva o seu email para repor a password
+              Enter your email to reset your password
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -118,7 +116,7 @@ export default function ForgetPasswordPage() {
                       <FormControl>
                         <Input
                           id="email"
-                          placeholder="Escreva o seu email aqui"
+                          placeholder="Enter your email here"
                           type="email"
                           required
                           {...field}
@@ -135,7 +133,7 @@ export default function ForgetPasswordPage() {
                   className="w-full"
                   disabled={loading}
                 >
-                  Enviar link de recuperação
+                  Send recovery link
                 </Button>
               </form>
             </Form>

@@ -15,11 +15,11 @@ export const registerSchema = z
     email: z.string().email(),
     password: z
       .string()
-      .min(8, { message: "A password precisa de pelo menos 8 dígitos" }),
+      .min(8, { message: "Your Password needs at least 8 characters" }),
     passwordConfirmation: z.string(),
   })
   .refine((data) => data.password === data.passwordConfirmation, {
-    message: "As passwords têm de condizer",
+    message: "Passwords must match",
     path: ["passwordConfirmation"],
   });
 

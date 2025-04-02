@@ -38,13 +38,13 @@ export default function MessageActions({
               variant="outline"
               onClick={async () => {
                 await copyToClipboard(message.content);
-                toast.success("Mensagem copiada!");
+                toast.success("Message copied to clipboard!");
               }}
             >
               <CopyIcon />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Copiar</TooltipContent>
+          <TooltipContent>Copy</TooltipContent>
         </Tooltip>
       </div>
     </TooltipProvider>

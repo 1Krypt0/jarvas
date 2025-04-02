@@ -29,15 +29,15 @@ import Link from "next/link";
 export default function RegisterForm({ callbackURL }: { callbackURL: string }) {
   const registerSchema = z
     .object({
-      name: z.string().nonempty({ message: "Nome não pode estar vazio" }),
-      email: z.string().email({ message: "Email inválido" }),
+      name: z.string().nonempty({ message: "Name cannot be empty" }),
+      email: z.string().email({ message: "Invalid Email" }),
       password: z
         .string()
-        .min(8, { message: "A password precisa de pelo menos 8 dígitos" }),
+        .min(8, { message: "Your Password needs at least 8 characters" }),
       passwordConfirmation: z.string(),
     })
     .refine((data) => data.password === data.passwordConfirmation, {
-      message: "As passwords têm de condizer",
+      message: "Passwords must match",
       path: ["passwordConfirmation"],
     });
 
@@ -64,16 +64,14 @@ export default function RegisterForm({ callbackURL }: { callbackURL: string }) {
         onRequest: () => setLoading(true),
         onSuccess: () => {
           toast.success(
-            "A sua conta foi registada com sucesso e um email de verificação foi enviado! Por favor, verifique a sua caixa de correio.",
-            {
-              duration: 8000,
-            },
+            "Your account has been registered successfully and a verification email has been sent! Please check your inbox.",
+            { duration: 8000 },
           );
         },
         onError: (ctx) => {
           if (ctx.error.message === "User already exists") {
             form.setError("email", {
-              message: "Já existe uma conta com esse email",
+              message: "An Account is already registered with that email",
             });
           }
           setLoading(false);
@@ -86,8 +84,8 @@ export default function RegisterForm({ callbackURL }: { callbackURL: string }) {
     <>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Criar uma Conta</CardTitle>
-          <CardDescription>Crie conta com a Google</CardDescription>
+          <CardTitle className="text-xl">Create an Account</CardTitle>
+          <CardDescription>Create an Account with Google</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-6">
@@ -125,12 +123,12 @@ export default function RegisterForm({ callbackURL }: { callbackURL: string }) {
                     d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0C79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"
                   />
                 </svg>
-                Criar conta com a Google
+                Register with Google
               </Button>
             </div>
             <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
               <span className="relative z-10 bg-card px-2 text-muted-foreground">
-                Ou continue com
+                Or continue with
               </span>
             </div>
           </div>
@@ -141,10 +139,10 @@ export default function RegisterForm({ callbackURL }: { callbackURL: string }) {
                 name="name"
                 render={({ field }) => (
                   <FormItem className="grid gap-2">
-                    <FormLabel>Nome</FormLabel>
+                    <FormLabel>Name</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Escreva o seu Nome aqui"
+                        placeholder="Enter your Name here"
                         type="text"
                         required
                         {...field}
@@ -164,7 +162,7 @@ export default function RegisterForm({ callbackURL }: { callbackURL: string }) {
                     <FormControl>
                       <Input
                         id="email"
-                        placeholder="Escreva o seu email aqui"
+                        placeholder="Enter your Email here"
                         type="email"
                         required
                         {...field}
@@ -183,7 +181,7 @@ export default function RegisterForm({ callbackURL }: { callbackURL: string }) {
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Escreva a sua Password aqui"
+                        placeholder="Enter your Password here"
                         type="password"
                         required
                         {...field}
@@ -199,10 +197,10 @@ export default function RegisterForm({ callbackURL }: { callbackURL: string }) {
                 name="passwordConfirmation"
                 render={({ field }) => (
                   <FormItem className="grid gap-2">
-                    <FormLabel>Confirme a sua Password</FormLabel>
+                    <FormLabel>Confirm your Password</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Escreva a Password novamente"
+                        placeholder="Confirm your Password here"
                         type="password"
                         required
                         {...field}
@@ -219,13 +217,13 @@ export default function RegisterForm({ callbackURL }: { callbackURL: string }) {
                 className="w-full"
                 disabled={loading}
               >
-                Criar Conta
+                Create Account
               </Button>
               <div className="text-center text-sm">
                 <p>
-                  Já tem conta criada?{" "}
+                  Already have an account?{" "}
                   <Link href="/login" className="underline underline-offset-4">
-                    Faça Login
+                    Login
                   </Link>
                 </p>
               </div>
@@ -235,21 +233,21 @@ export default function RegisterForm({ callbackURL }: { callbackURL: string }) {
       </Card>
 
       <div className="text-balance text-center text-xs text-muted-foreground">
-        Ao registar-se na plataforma, está a concordar com os nossos{" "}
+        By registering on the platform, you are agreeing with our{" "}
         <Link
           target="_blank"
           href="https://askjarvas.com/terms-of-service"
           className="hover:text-primary underline underline-offset-4"
         >
-          Termos de Serviço
+          Terms of Service
         </Link>{" "}
-        e a nossa{" "}
+        and our{" "}
         <Link
           target="_blank"
           href="https://askjarvas.com/privacy-policy"
           className="hover:text-primary underline underline-offset-4"
         >
-          Política de Privacidade
+          Privacy Policy
         </Link>
         .
       </div>

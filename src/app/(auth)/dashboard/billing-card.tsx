@@ -49,12 +49,12 @@ export default function BillingCard({
       switch (res.statusText) {
         case "Unresolved Subscription":
           toast.error(
-            "O seu estado de subscrição atual não o permite trocar de plano.",
+            "Your current subscription state does not allow you to switch plans.",
           );
           break;
         default:
           toast.error(
-            "Ocorreu um erro ao processar a subscrição. Por favor tente de novo. Se o problema persistir, por favor contacte-nos.",
+            "There was an error processing your subscription. Please try again. If the problem persists, please contact us.",
           );
           break;
       }
@@ -71,7 +71,7 @@ export default function BillingCard({
       await stripe?.redirectToCheckout({ sessionId: id });
     } else {
       setLoading((prev) => ({ ...prev, [newPlanId]: false }));
-      toast.success("O seu plano foi atualizado com sucesso!");
+      toast.success("Your plan was updated successfully!");
     }
 
     router.refresh();
@@ -80,9 +80,9 @@ export default function BillingCard({
   return (
     <Card id="billing">
       <CardHeader>
-        <CardTitle className="text-xl">Plano</CardTitle>
+        <CardTitle className="text-xl">Plan</CardTitle>
         <CardDescription>
-          O seu plano atual é o {currentPlan?.name}
+          Your current plan is <strong>{currentPlan?.name}</strong>
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -91,7 +91,7 @@ export default function BillingCard({
             <p className="text-5xl font-bold">
               {currentPlan?.price}€
               <span className="text-sm font-normal text-muted-foreground">
-                /mês
+                /month
               </span>
             </p>
           </div>
@@ -106,11 +106,11 @@ export default function BillingCard({
 
               <li className="flex items-center">
                 <Check className="mr-2 h-4 w-4 text-primary" />
-                <span>Apoio 24/7</span>
+                <span>24/7 Support</span>
               </li>
               <li className="flex items-center">
                 <Check className="mr-2 h-4 w-4 text-primary" />
-                <span>Atualizações regulares</span>
+                <span>Regular Updates</span>
               </li>
             </ul>
           </div>
@@ -121,17 +121,17 @@ export default function BillingCard({
             <Button size="sm" className="gap-2" variant="secondary" asChild>
               <Link href={env.NEXT_PUBLIC_STRIPE_BILLING_LINK}>
                 <CreditCard />
-                Gerir Subscrição
+                Manage Subscription
               </Link>
             </Button>
           )}
         </div>
 
         <Separator className="my-8" />
-        <h3 className="text-xl font-bold mb-4">Mudança de Plano</h3>
+        <h3 className="text-xl font-bold mb-4">Change Plan</h3>
         <h5 className="text-sm text-muted-foreground">
-          Sente que o plano atual não é suficiente? Que é demasiado para as suas
-          necessidades? Veja as nossa restantes ofertas aqui.
+          Feel like the current plan is not enough? Or that it is too much for
+          your use case? Check our other plans here.
         </h5>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 pt-8">
           {pricingTiers
@@ -142,8 +142,8 @@ export default function BillingCard({
                   <CardTitle className="text-xl">{plan.name}</CardTitle>
                   <CardDescription>
                     {currentPlan?.price < plan.price
-                      ? `Faça upgrada para o ${plan.name} e desbloqueie novos limites`
-                      : `Reduza para o plano ${plan.name}`}
+                      ? `Upgrade to ${plan.name} and unlock neww limits`
+                      : `Downgrade to ${plan.name}`}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="grow">
@@ -190,7 +190,7 @@ export default function BillingCard({
                       <Loader2 size={15} className="animate-spin" />
                     ) : (
                       <>
-                        Mude para o {plan.name}
+                        Change to {plan.name}
                         <ChevronRight className="ml-2 h-4 w-4" />
                       </>
                     )}

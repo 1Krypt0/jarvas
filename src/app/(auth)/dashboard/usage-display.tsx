@@ -32,9 +32,9 @@ export default function UsageDisplay({
     <TooltipProvider>
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl">Utilização</CardTitle>
+          <CardTitle className="text-xl">Usage</CardTitle>
           <CardDescription>
-            A sua utilização atual e os limites da sua conta.
+            Your current usage and your account limits.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -42,7 +42,7 @@ export default function UsageDisplay({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <FileText className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Páginas carregadas</span>
+                <span className="text-sm font-medium">File Upload Credits</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="text-sm font-medium">{fileCredits.used}</span>
@@ -55,7 +55,7 @@ export default function UsageDisplay({
                       <AlertCircle className="h-4 w-4 text-destructive" />
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Está a chegar ao limite de páginas!</p>
+                      <p>You are near your file upload limit!</p>
                     </TooltipContent>
                   </Tooltip>
                 )}
@@ -82,7 +82,7 @@ export default function UsageDisplay({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <MessageSquareText className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">Mensagens</span>
+                  <span className="text-sm font-medium">Messages</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="text-sm font-medium">{messages.used}</span>
@@ -95,7 +95,7 @@ export default function UsageDisplay({
                         <AlertCircle className="h-4 w-4 text-destructive" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Está a chegar ao seu limite de mensagens!</p>
+                        <p>You are near your message limit!</p>
                       </TooltipContent>
                     </Tooltip>
                   )}

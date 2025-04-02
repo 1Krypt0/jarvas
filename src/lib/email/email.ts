@@ -64,15 +64,15 @@ export const warnUserLimit = async (
   type: "file" | "message",
   amount: number,
 ) => {
-  const resource = type === "file" ? "Ficheiros" : "Mensagens";
+  const resource = type === "file" ? "File Upload" : "Messaging";
   await resend.emails.send({
     from,
     to: email,
-    subject: `Atingiu ${amount}% do seu limite de utilização de ${resource}`,
+    subject: `You have hit ${amount}% of your ${resource} limit`,
     html: createEmailTemplate(
-      "Está prestes a atingir o limite!",
-      `Reparamos que atingiu ${amount}% do seu limite de ${resource} para este mês. Estamos a enviar este e-mail para o relembrar que, atingindo os 100%, qualquer uso extra irá incorrer custos adicionais.`,
-      `Precisa de ajuda? Contacte a nossa <a href="mailto:askjarvas@gmail.com" style="color: #4A1A0D; text-decoration: none;">equipa de apoio.</a>`,
+      "You are about to hit the limit!",
+      `We have noticed you hit ${amount}% of your ${resource} limit for this month. We are sending you this email to remind you that, when hitting 100%, any extra usage will incur additional fees.`,
+      `Need assistance? Contact our <a href="mailto:askjarvas@gmail.com" style="color: #4A1A0D; text-decoration: none;">support team.</a>`,
     ),
   });
 };

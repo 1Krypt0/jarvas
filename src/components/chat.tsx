@@ -37,11 +37,11 @@ export default function Chat({
         "Message limit has been reached. Please upgrade to another plan"
       ) {
         toast.error(
-          "Infelizmente, atingiu o limite de mensagens do plano gratuito para este mês.",
+          "Unfortunately, you have reached your message limit for this month",
         );
       } else {
         toast.error(
-          "Ocorreu um erro ao processar a mensagem. Por favor, tente novamente.",
+          "There was an error processing the message. Please try again.",
         );
       }
     },

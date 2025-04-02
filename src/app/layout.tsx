@@ -9,20 +9,18 @@ import { Toaster } from "@/components/ui/sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Jarvas - O assistente pessoal da sua empresa",
+  title: "Jarvas - The Search Engine for your Company",
   description:
-    "Use a informação da sua empresa como um ativo com o qual pode falar",
+    "Jarvas is a RAG based search engine application built with AI and following an Agentic workflow to solve all your business needs",
   referrer: "origin-when-cross-origin",
   authors: [{ name: "Tiago Rodrigues", url: "https://tiagopbrodrigues.com" }],
   creator: "Tiago Rodrigues",
-  keywords: ["Jarvas", "AI", "RAG", "Chatbot", "Portugês"],
+  keywords: ["Jarvas", "AI", "RAG", "Chatbot", "Agents", "Agentic"],
   openGraph: {
     type: "website",
-    title: "Jarvas - O assistente pessoal da sua empresa",
+    title: "Jarvas - The Search Engine for your Company",
     siteName: "Ask Jarvas",
     url: "https://app.askjarvas.com",
-    description:
-      "Use a informação da sua empresa como um ativo com o qual pode falar",
     locale: "pt_PT",
   },
   robots: {

@@ -51,7 +51,7 @@ export default function PricingCard({
         <div className="mt-4 flex items-baseline text-5xl font-extrabold">
           {price}€
           <span className="ml-1 text-xl font-normal text-muted-foreground">
-            /mês
+            /month
           </span>
         </div>
       </CardHeader>

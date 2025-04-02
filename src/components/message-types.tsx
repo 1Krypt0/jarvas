@@ -116,7 +116,7 @@ export const PreviewMessage = ({
 const Sources = ({ sources }: { sources: string[] }) => {
   return (
     <div className="flex flex-col gap-4">
-      <p className="font-bold">Fontes consultadas:</p>
+      <p className="font-bold">Sources Used:</p>
       <ul>
         {sources.map((source, index) => (
           <Markdown key={index}>{`- ${source}`}</Markdown>
@@ -150,7 +150,7 @@ export const ThinkingMessage = () => {
 
         <div className="flex flex-col gap-2 w-full">
           <div className="flex flex-col gap-4 text-muted-foreground">
-            A pensar e consultar informação...
+            Thinking and gathering information...
           </div>
         </div>
       </div>
