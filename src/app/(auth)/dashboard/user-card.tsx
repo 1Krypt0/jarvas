@@ -85,7 +85,6 @@ export default function UserCard({ session }: { session: Session }) {
       <CardFooter className="gap-2 justify-between items-center">
         <Button
           className="gap-2 z-10"
-          variant="secondary"
           onClick={async () => {
             setIsSignOut(true);
             await authClient.signOut({
@@ -123,7 +122,7 @@ function EditUserDialog({ name }: { name: string }) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="gap-2" variant="secondary">
+        <Button size="sm" className="gap-2">
           <Edit size={13} />
           Edit User
         </Button>
@@ -188,7 +187,9 @@ function DeleteUserDialog() {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">Delete Account</Button>
+        <Button variant="destructive" className="text-foreground">
+          Delete Account
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -281,7 +282,7 @@ function ChangePasswordDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2 " variant="secondary" size="sm">
+        <Button className="gap-2 " size="sm">
           <Key />
           Change Password
         </Button>

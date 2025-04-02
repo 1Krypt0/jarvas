@@ -118,7 +118,7 @@ export default function BillingCard({
 
         <div className="pt-4">
           {hasPaid && currentPlan.id !== "free" && (
-            <Button size="sm" className="gap-2" variant="secondary" asChild>
+            <Button size="sm" className="gap-2" asChild>
               <Link href={env.NEXT_PUBLIC_STRIPE_BILLING_LINK}>
                 <CreditCard />
                 Manage Subscription
