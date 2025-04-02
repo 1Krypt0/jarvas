@@ -39,11 +39,9 @@ export default function FileLink({
     });
 
     if (!res.ok) {
-      toast.error(
-        "Ocorreu um erro ao atualizar o documento. Por favor tente de novo.",
-      );
+      toast.error("There was an error updating the file. Please try again.");
     } else {
-      toast.success("Documento atualizado com sucesso!");
+      toast.success("File updated successfully!");
     }
 
     router.refresh();
@@ -83,7 +81,7 @@ export default function FileLink({
         <DropdownMenuTrigger asChild>
           <SidebarMenuAction showOnHover>
             <Ellipsis />
-            <span className="sr-only">Mais</span>
+            <span className="sr-only">More</span>
           </SidebarMenuAction>
         </DropdownMenuTrigger>
 
@@ -94,11 +92,11 @@ export default function FileLink({
         >
           <DropdownMenuItem onSelect={() => setIsEditing(true)}>
             <Pencil className="text-muted-foreground" />
-            <span>Mudar o Nome</span>
+            <span>Rename</span>
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => onDelete(file.id)}>
             <Trash2 className="text-muted-foreground" />
-            <span>Apagar</span>
+            <span>Delete</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

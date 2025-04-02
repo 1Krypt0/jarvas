@@ -84,7 +84,7 @@ export function NavUser({
                 }}
               >
                 <User />
-                Conta
+                Account
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => {
@@ -92,7 +92,7 @@ export function NavUser({
                 }}
               >
                 <CreditCard />
-                Configurar Subscrição
+                Manage Subscription
               </DropdownMenuItem>
               {/* <DropdownMenuItem> */}
               {/*   <Bell /> */}
@@ -110,7 +110,7 @@ export function NavUser({
               }
             >
               <LogOut />
-              Terminar Sessão
+              Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

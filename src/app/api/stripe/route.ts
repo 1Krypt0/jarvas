@@ -207,7 +207,7 @@ const processEvent = async (event: Stripe.Event) => {
 
 const createSubscription = async (
   stripeCustomerId: string,
-  newSubscriptionData: { subId: string; pageId: string; msgId: string },
+  newSubscriptionData: { subId: string; creditId: string; msgId: string },
   newPlanId: string,
 ) => {
   const checkout = await stripe.checkout.sessions.create({
@@ -219,7 +219,7 @@ const createSubscription = async (
         quantity: 1,
       },
       {
-        price: newSubscriptionData.pageId,
+        price: newSubscriptionData.creditId,
       },
       {
         price: newSubscriptionData.msgId,
@@ -235,7 +235,7 @@ const createSubscription = async (
 
 const moveBetweenPaidPlans = async (
   currentSubscriptionStatus: StripeSubCache,
-  newSubscriptionData: { subId: string; pageId: string; msgId: string },
+  newSubscriptionData: { subId: string; creditId: string; msgId: string },
   userId: string,
   newPlanId: "free" | "starter" | "pro" | "enterprise",
 ) => {
@@ -251,10 +251,10 @@ const moveBetweenPaidPlans = async (
       case env.STRIPE_PRO_SUBSCRIPTION_ID:
       case env.STRIPE_ENTERPRISE_SUBSCRIPTION_ID:
         return { id: item.id, price: newSubscriptionData.subId };
-      case env.STRIPE_STARTER_PAGE_ID:
-      case env.STRIPE_PRO_PAGE_ID:
-      case env.STRIPE_ENTERPRISE_PAGE_ID:
-        return { id: item.id, price: newSubscriptionData.pageId };
+      case env.STRIPE_STARTER_CREDIT_ID:
+      case env.STRIPE_PRO_CREDIT_ID:
+      case env.STRIPE_ENTERPRISE_CREDIT_ID:
+        return { id: item.id, price: newSubscriptionData.creditId };
       case env.STRIPE_STARTER_MSG_ID:
       case env.STRIPE_PRO_MSG_ID:
       case env.STRIPE_ENTERPRISE_MSG_ID:

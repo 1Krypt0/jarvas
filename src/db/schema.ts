@@ -27,7 +27,7 @@ export const user = pgTable("user", {
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
   plan: text("plan"),
-  pagesUsed: integer("pages_used"),
+  creditsUsed: integer("credits_used"),
   messagesUsed: integer("messages_used"),
 });
 
@@ -102,7 +102,7 @@ export const file = pgTable("file", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   content: text("content").notNull(),
-  pages: integer("pages").notNull(),
+  chunks: integer("chunks").notNull(),
   userId: text("user_id")
     .notNull()
     .references(() => user.id, {

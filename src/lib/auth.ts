@@ -29,13 +29,13 @@ export const auth = betterAuth({
       await resend.emails.send({
         from,
         to: user.email,
-        subject: "Reponha a sua password",
+        subject: "Jarvas - Password Reset",
         html: createEmailTemplate(
-          "Repõe a tua password!",
-          "Recebemos um pedido para repor a password da tua conta. Se não fez este pedido, pode ignorar este e-mail sem problemas.",
-          `Se não fez um pedido de reposição de password, por favor ignore este e-mail. Precisa de ajuda? Contacte a nossa <a href="mailto:askjarvas@gmail.com" style="color: #4A1A0D; text-decoration: none;">equipa de apoio.</a>`,
+          "Reset your password!",
+          "We have received a request to reset your account's password. If you did not make this request, you can safely ignore this e-mail.",
+          `Need assintance? Contact our <a href="mailto:askjarvas@gmail.com" style="color: #4A1A0D; text-decoration: none;">support team.</a>`,
           url,
-          "Repor a Password",
+          "Reset Password",
         ),
       });
     },
@@ -47,13 +47,13 @@ export const auth = betterAuth({
       await resend.emails.send({
         from,
         to: user.email,
-        subject: "Verifique o seu email",
+        subject: "Jarvas - Verify your Email",
         html: createEmailTemplate(
-          "Verifica a tua Conta!",
-          "Olá! Por favor confirma o teu email para ativares a tua conta no Jarvas. Isto ajuda-nos a manter a tua conta segura.",
-          `Precisa de ajuda? Contacte a nossa <a href="mailto:askjarvas@gmail.com" style="color: #4A1A0D; text-decoration: none;">equipa de apoio.</a>`,
+          "Verify your Account!",
+          "Hey there! Please confirm your email to activate your Jarvas account. This helps us keep your account secure.",
+          `Need help? Contact our <a href="mailto:askjarvas@gmail.com" style="color: #4A1A0D; text-decoration: none;">support team.</a>`,
           url,
-          "Verificar Endereço",
+          "Verify Email",
         ),
       });
     },
@@ -82,7 +82,7 @@ export const auth = betterAuth({
         input: false,
         returned: true,
       },
-      pagesUsed: {
+      creditsUsed: {
         type: "number",
         defaultValue: 0,
         input: false,

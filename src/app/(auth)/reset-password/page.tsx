@@ -29,12 +29,12 @@ export default function ForgetPasswordPage() {
     .object({
       password: z
         .string()
-        .min(8, { message: "A password precisa de pelo menos 8 dígitos" }),
+        .min(8, { message: "Your Password needs at least 8 characters" }),
 
       passwordConfirmation: z.string(),
     })
     .refine((data) => data.password === data.passwordConfirmation, {
-      message: "As passwords têm de condizer",
+      message: "Passwords must match",
       path: ["passwordConfirmation"],
     });
 
@@ -60,8 +60,7 @@ export default function ForgetPasswordPage() {
     setLoading(false);
 
     if (res.error) {
-      console.error(res.error.message);
-      toast.error("Ocorreu um erro. Por favor, tente novamente.");
+      toast.error("An unexpected error occurred. Please try again");
     } else {
       router.push("/login");
     }
@@ -72,9 +71,9 @@ export default function ForgetPasswordPage() {
       <div className="flex flex-col gap-6 mx-auto max-w-sm">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-xl">Reponha a password</CardTitle>
+            <CardTitle className="text-xl">Reset your Password</CardTitle>
             <CardDescription>
-              Escreva a sua nova password e confirme-a.
+              Enter your New Password and Confirm it.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -88,10 +87,10 @@ export default function ForgetPasswordPage() {
                   name="password"
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>New Password</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Escreva a sua Password aqui"
+                          placeholder="Enter your new Password here"
                           type="password"
                           required
                           {...field}
@@ -107,10 +106,10 @@ export default function ForgetPasswordPage() {
                   name="passwordConfirmation"
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
-                      <FormLabel>Confirme a sua Password</FormLabel>
+                      <FormLabel>Confirm your Password</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Escreva a Password novamente"
+                          placeholder="Confirm your new Password here"
                           type="password"
                           required
                           {...field}
@@ -126,7 +125,7 @@ export default function ForgetPasswordPage() {
                   className="w-full"
                   disabled={loading}
                 >
-                  Reponha a Password
+                  Reset your Password
                 </Button>
               </form>
             </Form>

@@ -60,10 +60,10 @@ export const NavConversations = () => {
 
     if (!res.ok) {
       toast.error(
-        "Ocorreu um erro ao remover a conversa. Por favor tente de novo.",
+        "There was an error when deleting the chat. Please try again.",
       );
     } else {
-      toast.success("Conversa apagada com sucesso!");
+      toast.success("Chat deleted successfully!");
     }
 
     setDeleteDialogOpen(false);
@@ -80,13 +80,11 @@ export const NavConversations = () => {
       <SidebarGroup className="group-data-[collapsible=icon]:hidden">
         <SidebarGroupLabel>
           <MessageSquareText className="mr-2 size-4" />
-          Conversas
+          Chats
         </SidebarGroupLabel>
         <SidebarMenu>
           <SidebarMenuItem>
-            <p className="h-8 pl-2 text-sm">
-              As suas Conversas vão aparecer aqui
-            </p>
+            <p className="h-8 pl-2 text-sm">Your chats will appear here</p>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroup>
@@ -98,7 +96,7 @@ export const NavConversations = () => {
       <SidebarGroup className="group-data-[collapsible=icon]:hidden">
         <SidebarGroupLabel>
           <MessageSquareText className="mr-2 size-4" />
-          Conversas
+          Chats
         </SidebarGroupLabel>
 
         <SidebarMenu>
@@ -112,7 +110,7 @@ export const NavConversations = () => {
                   {conversations.length === 0 ? (
                     <SidebarMenuItem>
                       <p className="h-8 pl-2 text-sm">
-                        As suas Conversas vão aparecer aqui
+                        Your chats will appear here
                       </p>
                     </SidebarMenuItem>
                   ) : (
@@ -138,12 +136,12 @@ export const NavConversations = () => {
                             {showAll ? (
                               <>
                                 <Minus />
-                                <span>Mostrar Menos</span>
+                                <span>Show Less</span>
                               </>
                             ) : (
                               <>
                                 <Plus />
-                                <span>Mostrar Mais</span>
+                                <span>Show More</span>
                               </>
                             )}
                           </SidebarMenuButton>
@@ -160,14 +158,14 @@ export const NavConversations = () => {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent className="sm:max-w-[425px]">
           <AlertDialogHeader>
-            <AlertDialogTitle>Tem a certeza?</AlertDialogTitle>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta ação não pode ser desfeita.
+              This action cannot be undone
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Apagar</AlertDialogAction>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

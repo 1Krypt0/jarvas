@@ -56,7 +56,7 @@ export default function UserCard({ session }: { session: Session }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Perfil</CardTitle>
+        <CardTitle className="text-xl">Profile</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-8 grid-cols-1">
         <div className="flex items-center justify-between">
@@ -103,7 +103,7 @@ export default function UserCard({ session }: { session: Session }) {
             ) : (
               <div className="flex items-center gap-2">
                 <LogOut size={16} />
-                Terminar Sessão
+                Logout
               </div>
             )}
           </span>
@@ -125,16 +125,16 @@ function EditUserDialog({ name }: { name: string }) {
       <DialogTrigger asChild>
         <Button size="sm" className="gap-2" variant="secondary">
           <Edit size={13} />
-          Editar Utilizador
+          Edit User
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] w-11/12">
         <DialogHeader>
-          <DialogTitle>Editar Informação</DialogTitle>
-          <DialogDescription>Editar Informação do Utilizador</DialogDescription>
+          <DialogTitle>Edit User</DialogTitle>
+          <DialogDescription>Edit User Details</DialogDescription>
         </DialogHeader>
         <div className="grid gap-2">
-          <Label htmlFor="name">Nome</Label>
+          <Label htmlFor="name">Name</Label>
           <Input
             id="name"
             type="name"
@@ -154,10 +154,12 @@ function EditUserDialog({ name }: { name: string }) {
                 name: newName ? newName : undefined,
                 fetchOptions: {
                   onSuccess: () => {
-                    toast.success("Informação atualizada com sucesso!");
+                    toast.success("Your information was updated successfully!");
                   },
                   onError: () => {
-                    toast.error("Ocorreu um erro ao atualizar a informação!");
+                    toast.error(
+                      "There was a problem updating your information.",
+                    );
                   },
                 },
               });
@@ -170,7 +172,7 @@ function EditUserDialog({ name }: { name: string }) {
             {isLoading ? (
               <Loader2 size={15} className="animate-spin" />
             ) : (
-              "Atualizar"
+              "Update"
             )}
           </Button>
         </DialogFooter>
@@ -186,19 +188,19 @@ function DeleteUserDialog() {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">Apagar Conta</Button>
+        <Button variant="destructive">Delete Account</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Tem a certeza absoluta?</AlertDialogTitle>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            Esta ação não pode ser desfeita. Isto irá permanentemente apagar a
-            sua conta, a sua subscrição, e remover todos os seus documentos e
-            conversas do nosso servidor.
+            This action cannot be undone. It will permanently erase your
+            account, your subscription, and remove all documents and chats from
+            our server.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             disabled={isLoading}
             onClick={async () => {
@@ -213,7 +215,7 @@ function DeleteUserDialog() {
             {isLoading ? (
               <Loader2 size={15} className="animate-spin" />
             ) : (
-              "Apagar Conta"
+              "Delete Account"
             )}
           </AlertDialogAction>
         </AlertDialogFooter>
@@ -228,11 +230,11 @@ function ChangePasswordDialog() {
       currentPassword: z.string(),
       newPassword: z
         .string()
-        .min(8, { message: "A password precisa de pelo menos 8 dígitos" }),
+        .min(8, { message: "Your password needs at least 8 characters." }),
       confirmNewPassword: z.string(),
     })
     .refine((data) => data.newPassword === data.confirmNewPassword, {
-      message: "As passwords têm de condizer",
+      message: "The passwords must match.",
       path: ["confirmNewPassword"],
     });
 
@@ -261,17 +263,16 @@ function ChangePasswordDialog() {
     if (res.error) {
       if (res.error.code === "CREDENTIAL_ACCOUNT_NOT_FOUND") {
         toast.warning(
-          "A sua conta foi criada com a Google e, portanto, não tem uma password associada.",
+          "Your account was created with Google and, as such, has no password associated with it.",
         );
       } else {
         toast.error(
-          "Ocorreu um erro ao atualizar a password. Por favor, tente de novo.",
+          "There was an error updating your password. Please try again.",
         );
       }
-      console.error("Error:", res.error);
     } else {
       setOpen(false);
-      toast.success("Password atualizada com sucesso!");
+      toast.success("Your password was updated successfully!");
     }
 
     form.reset();
@@ -282,13 +283,13 @@ function ChangePasswordDialog() {
       <DialogTrigger asChild>
         <Button className="gap-2 " variant="secondary" size="sm">
           <Key />
-          Alterar Password
+          Change Password
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] w-11/12">
         <DialogHeader>
-          <DialogTitle>Alterar Password</DialogTitle>
-          <DialogDescription>Altere a sua Password</DialogDescription>
+          <DialogTitle>Change Password</DialogTitle>
+          <DialogDescription>Update your Password</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form className="grid gap-6" onSubmit={form.handleSubmit(onSubmit)}>
@@ -297,10 +298,10 @@ function ChangePasswordDialog() {
               name="currentPassword"
               render={({ field }) => (
                 <FormItem className="grid gap-2">
-                  <FormLabel>Password Atual</FormLabel>
+                  <FormLabel>Current Password</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Escreva a sua Password atual aqui"
+                      placeholder="Enter your Password here"
                       type="password"
                       required
                       {...field}
@@ -316,10 +317,10 @@ function ChangePasswordDialog() {
               name="newPassword"
               render={({ field }) => (
                 <FormItem className="grid gap-2">
-                  <FormLabel>Nova Password</FormLabel>
+                  <FormLabel>New Password</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Escreva a sua nova Password atual aqui"
+                      placeholder="Enter your New Password here"
                       type="password"
                       required
                       {...field}
@@ -335,10 +336,10 @@ function ChangePasswordDialog() {
               name="confirmNewPassword"
               render={({ field }) => (
                 <FormItem className="grid gap-2">
-                  <FormLabel>Confirme a Nova Password</FormLabel>
+                  <FormLabel>Confirm New Password</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Escreva a sua Password novamente"
+                      placeholder="Enter your New Password again"
                       type="password"
                       required
                       {...field}
@@ -353,7 +354,7 @@ function ChangePasswordDialog() {
               {loading ? (
                 <Loader2 size={15} className="animate-spin" />
               ) : (
-                "Atualizar Password"
+                "Update Password"
               )}
             </Button>
           </form>

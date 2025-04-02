@@ -15,11 +15,11 @@ export default function Loading() {
     <div className="flex min-h-screen items-center justify-center">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle>Uh Oh! Algo se passou!</CardTitle>
+          <CardTitle>Uh Oh! Something happened!</CardTitle>
           <CardDescription>
-            A tua subscrição foi cancelada ou algum erro ocorreu. Vais agora ser
-            automaticamente redirecionado para a tua página. Se não fores
-            automaticamente redirecionado, clica aqui.
+            Your subscription purchase was cancelled or an error occurred. You
+            will now be redirected to your dashboard. If you are not
+            automatically redirected, click here.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -29,7 +29,7 @@ export default function Loading() {
                 redirect("/dashboard");
               }}
             >
-              Redirecionar Manualment
+              Manually Redirect
             </Button>
           </div>
         </CardContent>

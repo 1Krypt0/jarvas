@@ -162,14 +162,9 @@ export default function MultimodalInput({
         };
       }
 
-      toast.error(
-        "Ocorreu um erro ao processar o documento. Por favor, tente novamente.",
-      );
-    } catch (error) {
-      console.error(error);
-      toast.error(
-        "Ocorreu um erro ao processar o documento. Por favor, tente novamente.",
-      );
+      toast.error("There was an error processing the file. Please try again");
+    } catch {
+      toast.error("There was an error processing the file. Please try again");
     }
   };
 
@@ -190,12 +185,8 @@ export default function MultimodalInput({
           ...currentAttachments,
           ...successfullyUploadedAttachments,
         ]);
-      } catch (error) {
-        console.error(error);
-
-        toast.error(
-          "Ocorreu um erro ao processar o documento. Por favor, tente novamente.",
-        );
+      } catch {
+        toast.error("There was an error processing the file. Please try again");
       } finally {
         setUploadQueue([]);
       }
@@ -236,7 +227,7 @@ export default function MultimodalInput({
 
       <Textarea
         ref={textareaRef}
-        placeholder="Envie uma mensagem..."
+        placeholder="Send a message..."
         value={input}
         onChange={handleInput}
         className={cx(
@@ -251,7 +242,7 @@ export default function MultimodalInput({
 
             if (isLoading) {
               toast.warning(
-                "Por favor aguarde que o modelo termine de gerar a resposta!",
+                "Please wait until the model finishes generating an answer!",
               );
             } else {
               submitForm();
@@ -326,7 +317,7 @@ function AttachmentsButton({
   const router = useRouter();
 
   const fileUploadSchema = z.object({
-    files: z.unknown({ message: "Carregue um documento aqui" }),
+    files: z.unknown({ message: "Upload a file here" }),
   });
 
   const form = useForm<z.infer<typeof fileUploadSchema>>({
@@ -352,15 +343,13 @@ function AttachmentsButton({
     if (!res.ok) {
       if (res.statusText === "Limit hit") {
         toast.error(
-          "Infelizmente, os documentos que está a tentar carregar excedem o limite do plano gratuito.",
+          "Unfortunately, the files your uploading exceed the credit limits of the free tier",
         );
       } else {
-        toast.error(
-          "Ocorreu um erro ao processar o documento. Por favor, tente novamente.",
-        );
+        toast.error("There was an error processing the file. Please try again");
       }
     } else {
-      toast.success("Documento processado com sucesso!");
+      toast.success("File uploaded successfully!");
     }
 
     router.refresh();
@@ -384,11 +373,10 @@ function AttachmentsButton({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Carregue Documentos</DialogTitle>
+          <DialogTitle>Upload Files</DialogTitle>
         </DialogHeader>
         <DialogDescription>
-          Carregue os seus Documentos aqui. Click em Upload quando estiver
-          pronto.
+          Upload your Files here. Click on Upload once you are done.
         </DialogDescription>
 
         <Form {...form}>
@@ -401,7 +389,7 @@ function AttachmentsButton({
               control={form.control}
               render={() => (
                 <FormItem>
-                  <FormLabel>Documentos</FormLabel>
+                  <FormLabel>Files</FormLabel>
                   <FormControl>
                     <Input type="file" required multiple {...fileRef} />
                   </FormControl>
@@ -413,7 +401,7 @@ function AttachmentsButton({
               {loading ? (
                 <Loader2 size={15} className="animate-spin" />
               ) : (
-                "Carregue Documentos"
+                "Upload Files"
               )}
             </Button>
           </form>

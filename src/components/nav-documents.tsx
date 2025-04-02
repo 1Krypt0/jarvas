@@ -46,11 +46,9 @@ export const NavDocuments = ({ documents }: { documents: Document[] }) => {
     });
 
     if (!res.ok) {
-      toast.error(
-        "Ocorreu um erro ao remover o documento. Por favor tente de novo.",
-      );
+      toast.error("There was an error deleting the file. Please try again.");
     } else {
-      toast.success("Documento apagado com sucesso!");
+      toast.success("File deleted successfully!");
     }
 
     setDeleteDialogOpen(false);
@@ -63,14 +61,12 @@ export const NavDocuments = ({ documents }: { documents: Document[] }) => {
       <SidebarGroup className="group-data-[collapsible=icon]:hidden">
         <SidebarGroupLabel>
           <FileText className="mr-2 size-4" />
-          Documentos
+          Files
         </SidebarGroupLabel>
         <SidebarMenu>
           {documents.length === 0 ? (
             <SidebarMenuItem>
-              <p className="h-8 pl-2 text-sm">
-                Os seus Documentos vão aparecer aqui
-              </p>
+              <p className="h-8 pl-2 text-sm">Your files will appear here</p>
             </SidebarMenuItem>
           ) : (
             <>
@@ -95,12 +91,12 @@ export const NavDocuments = ({ documents }: { documents: Document[] }) => {
                     {showAll ? (
                       <>
                         <Minus />
-                        <span>Mostrar Menos</span>
+                        <span>Show Less</span>
                       </>
                     ) : (
                       <>
                         <Plus />
-                        <span>Mostrar Mais</span>
+                        <span>Show More</span>
                       </>
                     )}
                   </SidebarMenuButton>
@@ -114,14 +110,14 @@ export const NavDocuments = ({ documents }: { documents: Document[] }) => {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent className="sm:max-w-[425px]">
           <AlertDialogHeader>
-            <AlertDialogTitle>Tem a certeza?</AlertDialogTitle>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta ação não pode ser desfeita.
+              This action cannot be undone
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Apagar</AlertDialogAction>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

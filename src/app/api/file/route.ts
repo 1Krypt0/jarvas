@@ -1,8 +1,7 @@
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { v4 as uuid } from "uuid";
-import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { MarkdownTextSplitter } from "langchain/text_splitter";
 import {
   saveChunks,
   saveFile,
@@ -13,9 +12,16 @@ import {
 import { embedDocuments } from "@/lib/openai";
 import { Chunk } from "@/db/schema";
 import { hasUserPaid, trackSpending } from "@/lib/stripe";
-import { FREE_PAGE_LIMIT, getLimits, WARN_USER_LIMIT } from "@/lib/constants";
+import {
+  FREE_CREDIT_LIMIT,
+  getLimits,
+  MAX_UPLOAD_SIZE,
+  MAX_UPLOADS,
+  WARN_USER_LIMIT,
+} from "@/lib/constants";
 import { warnUserLimit } from "@/lib/email/email";
 import logger from "@/lib/logger";
+import { env } from "@/env";
 
 export async function POST(req: Request) {
   const session = await auth.api.getSession({
@@ -42,95 +48,147 @@ export async function POST(req: Request) {
   const data = await req.formData();
   const files = data.getAll("files") as File[];
 
-  for (let i = 0; i < files.length; i++) {
-    if (files[i].type !== "application/pdf") {
-      logger.warn({ userId }, "User attempted upload of non-PDF file");
-      return new Response("Only PDF files are allowed", { status: 415 });
+  for (const file of files) {
+    if (file.size > MAX_UPLOAD_SIZE) {
+      logger.warn(
+        { userId },
+        "User attempted to upload file exceeding size limit",
+      );
+      return new Response("File too large", {
+        status: 413,
+        statusText: "File too large",
+      });
     }
   }
 
-  let totalPages = 0;
-  for (let i = 0; i < files.length; i++) {
-    const loader = new PDFLoader(files[i], {
-      splitPages: false,
+  const transformedFiles: { markdown: string; name: string }[] = [];
+
+  for (let i = 0; i < files.length; i += MAX_UPLOADS) {
+    const batch = files.slice(i, i + MAX_UPLOADS);
+
+    const batchBody = new FormData();
+    for (const file of batch) {
+      batchBody.append("files", file);
+    }
+
+    const res = await fetch(`${env.CLOUD_RUN_URL}/convert`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.CLOUD_RUN_KEY}`,
+      },
+      body: batchBody,
     });
 
-    const doc = await loader.load();
+    if (!res.ok) {
+      const { detail } = await res.json();
+      logger.error(
+        { userId },
+        `File conversion to Markdown unsuccessful. Reason: ${detail}`,
+      );
 
-    totalPages += doc[0].metadata.pdf.totalPages;
+      if (detail === "File list too large") {
+        logger.warn(
+          { userId },
+          "User attempted to upload file exceeding size limit",
+        );
+        return new Response("File too large", {
+          status: 413,
+          statusText: "File too large",
+        });
+      } else {
+        return new Response("Internal Server Error", { status: 500 });
+      }
+    }
+
+    const transformedFiletData: { files: string[] } = await res.json();
+    transformedFiles.push(
+      ...transformedFiletData.files.map((item, idx) => {
+        return { name: batch[idx].name, markdown: item };
+      }),
+    );
+  }
+
+  const splitter = new MarkdownTextSplitter({
+    chunkSize: 1000,
+    chunkOverlap: 200,
+  });
+
+  let totalChunks = 0;
+  const chunkedDocs = await Promise.all(
+    transformedFiles.map(async (file) => {
+      return {
+        name: file.name,
+        markdown: file.markdown,
+        chunks: await splitter.splitText(file.markdown),
+      };
+    }),
+  );
+
+  for (const file of chunkedDocs) {
+    totalChunks += file.chunks.length;
   }
 
   if (
     session.user.plan === "free" &&
-    session.user.pagesUsed + totalPages >= FREE_PAGE_LIMIT
+    session.user.creditsUsed + totalChunks >= FREE_CREDIT_LIMIT
   ) {
     logger.warn({ userId }, "User on free plan has hit limit, blocking access");
     return new Response(
-      "Upload limit has been reached. Cannot upload this many pages",
+      "Upload limit has been reached. Cannot upload this many files",
       { status: 401, statusText: "Limit hit" },
     );
   }
 
-  for (let i = 0; i < files.length; i++) {
-    await uploadFile(files[i], userId);
+  for (const file of chunkedDocs) {
+    await uploadFile(file, userId);
   }
 
   logger.info({ userId }, "Files Uploaded");
 
   if (session.user.plan !== "free") {
-    await trackSpending(userId, "jarvas_page_uploads", totalPages.toString());
+    await trackSpending(userId, "jarvas_file_uploads", totalChunks.toString());
 
     logger.info({ userId }, "Tracked spending");
 
     const limits = getLimits(session.user.plan);
-    const pastUsage = session.user.pagesUsed / limits.pageUploads;
-    const newUsage = (session.user.pagesUsed + totalPages) / limits.pageUploads;
+    const pastUsage = session.user.creditsUsed / limits.fileCredits;
+    const newUsage =
+      (session.user.creditsUsed + totalChunks) / limits.fileCredits;
 
     if (newUsage >= WARN_USER_LIMIT && pastUsage < WARN_USER_LIMIT) {
       logger.info({ userId }, "User near limits, sending warning");
       await warnUserLimit(
         session.user.email,
-        "page",
+        "file",
         Math.round(newUsage * 100),
       );
     }
   }
 
-  return new Response("File uploaded", { status: 200 });
+  return new Response("Files uploaded", { status: 200 });
 }
 
-const uploadFile = async (file: File, userId: string) => {
+const uploadFile = async (
+  file: { name: string; markdown: string; chunks: string[] },
+  userId: string,
+) => {
   const documentId = uuid();
-  const fileName = file.name.split(".")[0];
 
-  const loader = new PDFLoader(file, {
-    splitPages: false,
-  });
-
-  const doc = await loader.load();
-
-  const pages = doc[0].metadata.pdf.totalPages as number;
-
-  await saveFile(documentId, fileName, doc[0].pageContent, pages, userId);
-
-  const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 1000,
-    chunkOverlap: 200,
-  });
-
-  const chunks = await splitter.splitDocuments(doc);
-
-  const embeddings = await embedDocuments(
-    chunks.map((chunk) => chunk.pageContent),
+  await saveFile(
+    documentId,
+    file.name,
+    file.markdown,
+    file.chunks.length,
+    userId,
   );
 
-  const vectors: Chunk[] = [];
-  for (let i = 0; i < chunks.length; i++) {
-    const content = chunks[i].pageContent;
-    const metadata = { ...chunks[i].metadata.pdf.info };
-    const embedding = embeddings[i];
+  const embeddings = await embedDocuments(file.chunks);
 
-    delete metadata["Trapped"];
+  const vectors: Chunk[] = [];
+  for (let i = 0; i < file.chunks.length; i++) {
+    const content = file.chunks[i];
+    const metadata = {}; // TODO: Add relevant metadata once you know what it looks like
+    const embedding = embeddings[i];
 
     vectors.push({
       id: uuid(),

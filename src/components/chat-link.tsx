@@ -45,11 +45,9 @@ export default function ChatLink({
     setIsEditing(false);
 
     if (!res.ok) {
-      toast.error(
-        "Ocorreu um erro ao atualizar a conversa. Por favor tente de novo.",
-      );
+      toast.error("There was an error updating your chat. Please try again");
     } else {
-      toast.success("Conversa atualizada com sucesso!");
+      toast.success("Chat updated successfully!");
     }
 
     router.refresh();
@@ -94,7 +92,7 @@ export default function ChatLink({
         <DropdownMenuTrigger asChild>
           <SidebarMenuAction showOnHover>
             <Ellipsis />
-            <span className="sr-only">Mais</span>
+            <span className="sr-only">More</span>
           </SidebarMenuAction>
         </DropdownMenuTrigger>
 
@@ -105,11 +103,11 @@ export default function ChatLink({
         >
           <DropdownMenuItem onSelect={() => setIsEditing(true)}>
             <Pencil className="text-muted-foreground" />
-            <span>Mudar o Nome</span>
+            <span>Rename</span>
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => onDelete(chat.id)}>
             <Trash2 className="text-muted-foreground" />
-            <span>Apagar</span>
+            <span>Delete</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
