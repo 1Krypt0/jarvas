@@ -96,7 +96,7 @@ export default function BillingCard({
             </p>
           </div>
           <div>
-            <ul className="space-y-2 grid grid-cols-2 pt-4">
+            <ul className="gap-4 grid grid-cols-2 pt-4">
               {currentPlan?.features.map((feature) => (
                 <li className="flex items-center" key={feature.description}>
                   <Check className="mr-2 h-4 w-4 text-primary" />
@@ -142,7 +142,7 @@ export default function BillingCard({
                   <CardTitle className="text-xl">{plan.name}</CardTitle>
                   <CardDescription>
                     {currentPlan?.price < plan.price
-                      ? `Upgrade to ${plan.name} and unlock neww limits`
+                      ? `Upgrade to ${plan.name} and unlock new limits`
                       : `Downgrade to ${plan.name}`}
                   </CardDescription>
                 </CardHeader>
@@ -150,7 +150,7 @@ export default function BillingCard({
                   <p className="text-3xl font-bold mb-4">
                     {plan.price}€
                     <span className="text-sm font-normal text-muted-foreground">
-                      /mês
+                      /month
                     </span>
                   </p>
                   <ul className="space-y-2">
