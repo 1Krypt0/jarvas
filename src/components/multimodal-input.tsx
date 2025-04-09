@@ -37,6 +37,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { MAX_UPLOAD_SIZE } from "@/lib/constants";
 
 export default function MultimodalInput({
   chatId,
@@ -345,6 +346,10 @@ function AttachmentsButton({
         toast.error(
           "Unfortunately, the files your uploading exceed the credit limits of the free tier",
         );
+      } else if (res.statusText === "File too large") {
+        toast.error(
+          `One of the files you are trying to upload is too large! There is a limit of ${MAX_UPLOAD_SIZE / (1024 * 1024)}MB per file`,
+        );
       } else {
         toast.error("There was an error processing the file. Please try again");
       }
@@ -376,7 +381,8 @@ function AttachmentsButton({
           <DialogTitle>Upload Files</DialogTitle>
         </DialogHeader>
         <DialogDescription>
-          Upload your Files here. Click on Upload once you are done.
+          Upload your Files here. Click on Upload once you are done. Maximum
+          allowed file size of {MAX_UPLOAD_SIZE / (1024 * 1024)}MB.
         </DialogDescription>
 
         <Form {...form}>
